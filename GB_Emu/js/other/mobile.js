@@ -1,67 +1,115 @@
-var catcher
 var inFullscreen = false;
 var mainCanvas = null;
 var fullscreenCanvas = null;
 var showAsMinimal = false;
-var B64Load = null;
-var FileLoad = null;
 var keyZones = [
-	["right", [39]],
-	["left", [37]],
-	["up", [38]],
-	["down", [40]],
-	["a", [88, 74]],
-	["b", [90, 81, 89]],
-	["select", [16]],
-	["start", [13]]
+  ["right", [39]],
+  ["left", [37]],
+  ["up", [38]],
+  ["down", [40]],
+  ["a", [88, 74]],
+  ["b", [90, 81, 89]],
+  ["select", [16]],
+  ["start", [13]]
 ];
+var cout = console.log.bind(console);
+function startGame (blob) {
+  var binaryHandle = new FileReader();
+  binaryHandle.onload = function () {
+    if (this.readyState === 2) {
+      try {
+        start(mainCanvas, this.result);
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+  };
+  binaryHandle.readAsBinaryString(blob);
+};
+
+function loadViaMozActivity () {
+  var activity = new MozActivity({
+    name: "pick",
+    data: {},
+  });
+  activity.onsuccess = function () {
+    startGame(this.result.blob);
+  };
+  activity.onerror = function () {
+    alert(this.error.name);
+  };
+};
+
+function loadViaXHR () {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "insert_relative_path_to_gb_rom_here");
+  xhr.responseType = "blob";
+  xhr.onload = function () {
+    startGame(new Blob([this.response], { type: "text/plain" }));
+  };
+  xhr.send();
+};
+
+function shim (eles) {
+  function onDown (e) {
+    var keyZone = e.target.dataset.keyZone;
+    if (!keyZone) {
+      keyZone = e.target.parentNode.dataset.keyZone;
+      if (!keyZone) return;
+    }
+    GameBoyKeyDown(keyZone);
+    navigator.vibrate(50);
+  };
+  function onUp (e) {
+    var keyZone = e.target.dataset.keyZone;
+    if (!keyZone) {
+      keyZone = e.target.parentNode.dataset.keyZone;
+      if (!keyZone) return;
+    }
+    GameBoyKeyUp(keyZone);
+    navigator.vibrate(0);
+  };
+  eles.forEach(function (ele) {
+    ele.ontouchstart = ele.onmousedown = onDown;
+    ele.ontouchend = ele.onmouseup = onUp;
+  });
+};
+
+var $ = document.getElementById.bind(document);
+function registerTouchEventShim () {
+  shim([
+    $("a_button_group"),
+    $("b_button_group"),
+    $("arrow_up"),
+    $("arrow_down"),
+    $("arrow_right"),
+    $("arrow_left"),
+    $("select_button_group"),
+    $("start_button_group")
+  ]);
+};
+
+var gameBoyColors = ["#33B678", "#FFDC2B", "#F61300", "#0356F2"];
+function pickRandomColor () {
+  var nintendo = $("nintendo");
+  $("gameboy_shell").style.backgroundColor =
+    $("on_off").style.color =
+    nintendo.style.borderColor =
+    nintendo.style.color =
+    gameBoyColors[(gameBoyColors.length * Math.random()) | 0];
+};
+
 function windowingInitialize() {
 	cout("windowingInitialize() called.", 0);
-	windowStacks[0] = windowCreate("GameBoy", true);
-	windowStacks[1] = windowCreate("terminal", false);
-	windowStacks[2] = windowCreate("about", false);
-	windowStacks[3] = windowCreate("settings", false);
-	windowStacks[4] = windowCreate("input_select", false);
-	windowStacks[5] = windowCreate("instructions", false);
-	windowStacks[6] = windowCreate("local_storage_popup", false);
-	windowStacks[7] = windowCreate("local_storage_listing", false);
-	windowStacks[8] = windowCreate("freeze_listing", false);
-	windowStacks[9] = windowCreate("save_importer", false);
+  pickRandomColor();
 	mainCanvas = document.getElementById("mainCanvas");
-	fullscreenCanvas = document.getElementById("fullscreen");
-	try {
-		//Hook the GUI controls.
-		registerGUIEvents();
-	}
-	catch (error) {
-		cout("Fatal windowing error: \"" + error.message + "\" file:" + error.fileName + " line: " + error.lineNumber, 2);
-	}
-	//Update the settings to the emulator's default:
-	document.getElementById("enable_sound").checked = settings[0];
-	document.getElementById("enable_gbc_bios").checked = settings[1];
-	document.getElementById("disable_colors").checked = settings[2];
-	document.getElementById("rom_only_override").checked = settings[9];
-	document.getElementById("mbc_enable_override").checked = settings[10];
-	document.getElementById("enable_colorization").checked = settings[4];
-	document.getElementById("do_minimal").checked = showAsMinimal;
-	document.getElementById("software_resizing").checked = settings[12];
-	document.getElementById("typed_arrays_disallow").checked = settings[5];
-	document.getElementById("gb_boot_rom_utilized").checked = settings[11];
-	document.getElementById("resize_smoothing").checked = settings[13];
-    document.getElementById("channel1").checked = settings[14][0];
-    document.getElementById("channel2").checked = settings[14][1];
-    document.getElementById("channel3").checked = settings[14][2];
-    document.getElementById("channel4").checked = settings[14][3];
-    var opened = localStorage.getItem("opened")
-    if(opened === "true"){
-        stringload()
-        localStorage.setItem("opened","")
-        console.log("opened from ROSE, loading saved ROM")
-    } else if(opened === null || opened === undefined){
-        localStorage.setItem("opened","")
-        console.log("opened normally")
-    }
+  registerTouchEventShim();
+  window.onunload = autoSave;
+  ("MozActivity" in window ? loadViaMozActivity : loadViaXHR)();
 }
+var DEBUG_MESSAGES = false;
+var DEBUG_WINDOWING = false;
+window.addEventListener("DOMContentLoaded", windowingInitialize);
 function registerGUIEvents() {
 	cout("In registerGUIEvents() : Registering GUI Events.", -1);
 	addEvent("click", document.getElementById("terminal_clear_button"), clear_terminal);
@@ -107,19 +155,6 @@ function registerGUIEvents() {
 			}
 		}
 	});
-    B64Load =  function (input) {
-		var datauri = input
-		if (datauri != null && datauri.length > 0) {
-			try {
-				cout(Math.floor(datauri.length * 3 / 4) + " bytes of data submitted by form (text length of " + datauri.length + ").", 0);
-				initPlayer();
-				start(mainCanvas, base64_decode(datauri));
-			}
-			catch (error) {
-				alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
-			}
-		}
-	}
 	addEvent("click", document.getElementById("set_volume"), function () {
 		if (GameBoyEmulatorInitialized()) {
 			var volume = prompt("Set the volume here:", "1.0");
@@ -137,7 +172,7 @@ function registerGUIEvents() {
 			}
 		}
 	});
-    addEvent("click", document.getElementById("internal_file_clicker"), function () {
+	addEvent("click", document.getElementById("internal_file_clicker"), function () {
 		var file_opener = document.getElementById("local_file_open");
 		windowStacks[4].show();
 		file_opener.click();
@@ -147,7 +182,6 @@ function registerGUIEvents() {
 	});
 	addEvent("change", document.getElementById("local_file_open"), function () {
 		windowStacks[4].hide();
-        console.log(this.files)
 		if (typeof this.files != "undefined") {
 			try {
 				if (this.files.length >= 1) {
@@ -198,60 +232,6 @@ function registerGUIEvents() {
 			cout("could not find the handle on the file to open.", 2);
 		}
 	});
-    FileLoad = function (input) {
-        this.files = []
-        this.files[0] = input
-		windowStacks[4].hide();
-		if (typeof this.files != "undefined") {
-			try {
-				if (this.files.length >= 1) {
-					cout("Reading the local file \"" + this.files[0].name + "\"", 0);
-					try {
-						//Gecko 1.9.2+ (Standard Method)
-						var binaryHandle = new FileReader();
-						binaryHandle.onload = function () {
-							if (this.readyState == 2) {
-								cout("file loaded.", 0);
-								try {
-									initPlayer();
-									start(mainCanvas, this.result);
-								}
-								catch (error) {
-									alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
-								}
-							}
-							else {
-								cout("loading file, please wait...", 0);
-							}
-						}
-						binaryHandle.readAsBinaryString(this.files[this.files.length - 1]);
-					}
-					catch (error) {
-						cout("Browser does not support the FileReader object, falling back to the non-standard File object access,", 2);
-						//Gecko 1.9.0, 1.9.1 (Non-Standard Method)
-						var romImageString = this.files[this.files.length - 1].getAsBinary();
-						try {
-							initPlayer();
-							start(mainCanvas, romImageString);
-						}
-						catch (error) {
-							alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
-						}
-						
-					}
-				}
-				else {
-					cout("Incorrect number of files selected for local loading.", 1);
-				}
-			}
-			catch (error) {
-				cout("Could not load in a locally stored ROM file.", 2);
-			}
-		}
-		else {
-			cout("could not find the handle on the file to open.", 2);
-		}
-	};
 	addEvent("change", document.getElementById("save_open"), function () {
 		windowStacks[9].hide();
 		if (typeof this.files != "undefined") {
@@ -282,8 +262,6 @@ function registerGUIEvents() {
 						cout("Browser does not support the FileReader object, falling back to the non-standard File object access,", 2);
 						//Gecko 1.9.0, 1.9.1 (Non-Standard Method)
 						var romImageString = this.files[this.files.length - 1].getAsBinary();
-                        console.log(romImageString)
-                        catcher = romImageString
 						try {
 							import_save(romImageString);
 							refreshStorageListing();
@@ -552,6 +530,7 @@ function refreshStorageListing() {
 	linkToManipulate.download = "gameboy_color_saves.export";
 }
 function getBlobPreEncoded(keyName) {
+  alert("getBlobPreEncoded");
 	if (keyName.substring(0, 9) == "B64_SRAM_") {
 		return [keyName.substring(4), base64_decode(findValue(keyName))];
 	}
@@ -635,6 +614,7 @@ function checkStorageLength() {
 	}
 }
 function getLocalStorageKeys() {
+  alert("getLocalStorageKeys");
 	var storageLength = checkStorageLength();
 	var keysFound = [];
 	var index = 0;
