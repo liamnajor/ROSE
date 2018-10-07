@@ -62,40 +62,18 @@ var testhack = function(){
 
 var button = function(){
     var ROM = localStorage.getItem('ROM');
-    if(ROM === null || ROM === undefined || document.getElementById("Bytes").value != ""){
-        var bytes = document.getElementById("Bytes").value
+    if(ROM === null || ROM === undefined || hexout != ""){
+        var bytes = hexout
         localStorage.setItem("ROM", bytes)
         console.log("saved to local storage")
     } else {
-        document.getElementById("Bytes").value = ROM
-        var bytes = document.getElementById("Bytes").value
+        hexout = ROM
+        var bytes = ROM
+        console.log("loaded from local storage")
     }
-    localStorage.setItem("playROM", "")
     var e = bytes.length
     var p = 0
     var i = e/2
-    var g = 0, d = 0, a = 0, x = 0, h = 0, w = 0, f = ""
-    while(d <= i){
-        if (g === 16){
-            g = 0
-            a += 1
-        }
-        if (a === 16){
-            a = 0
-            x += 1
-        }
-        if (x === 16){
-            x = 0
-            h += 1
-        }
-        if (h === 16){
-            h = 0
-            w += 1
-        }
-        f += "0x"+w.toString(16)+""+h.toString(16)+""+x.toString(16)+""+a.toString(16)+""+g.toString(16)+""
-        d += 16
-        g += 16
-    }
     while(e >= 0){
         var counter = e/2 -1
         var b = e - 2
@@ -109,9 +87,6 @@ var button = function(){
     var q = ""
     while(t >= 16){
         var u = j + 14
-        var n = f.substr(j, u)
-        var z = n.substr(0, 7)
-        q += ""+z+" "
         var l = k + 15
         j += 7
         while(l >= k){
@@ -121,7 +96,6 @@ var button = function(){
         q += " "
         t -= 16
     }
-    hex = q
     var r = c.length - 147456 
     var z = r / 16383
     var y = ""+z+""
@@ -130,7 +104,7 @@ var button = function(){
 }
 var encode = function(){
     var value = ""
-    var bytes = document.getElementById("Bytes").value
+    var bytes = hexout
     /*var str = ""+hex+""
     var e = str.split(" ");
     var d = 1
@@ -147,7 +121,6 @@ var encode = function(){
         i += 1
     }
     var saver = Converter.stringHexadecimalToBytes(value)
-    c = saver
     var m = 262143
     var w = []
     var v = 0
@@ -155,7 +128,7 @@ var encode = function(){
         w[v] = saver[v]
         v += 1
     }
+    //localStorage.setItem("ROM", ""+value+"")
     save(w)
-    window.alert("encoding complete")
 }
 main();

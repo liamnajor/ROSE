@@ -1,5 +1,5 @@
 // main
-
+var hexout
 function main()
 {
 	var session = new Session([]);
@@ -35,34 +35,6 @@ function Converter()
 	// static class
 }
 {
-	Converter.PrintableCharacters = 
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		+ "abcdefghijklmnopqrstuvwxyz"
-		+ "0123456789";
-		// todo - Symbols.
-
-	Converter.bytesToStringASCII = function(bytes)
-	{
-		var returnValue = "";
-
-		for (var i = 0; i < bytes.length; i++)
-		{
-			var byte = bytes[i];
-			var byteAsCharASCII = String.fromCharCode
-			(
-				byte
-			);
-
-			if (Converter.PrintableCharacters.indexOf(byteAsCharASCII) == -1)
-			{
-				byteAsCharASCII = ".";	
-			}
-
-			returnValue += byteAsCharASCII;
-		}
-
-		return returnValue;
-	}
 
 	Converter.bytesToStringHexadecimal = function(bytes)
 	{
@@ -135,31 +107,9 @@ function Session(bytes)
 		if (this.domElement == null)
 		{
 			var divSession = document.createElement("div");
-
-			var textareaHexadecimal = document.createElement("textarea");
-			textareaHexadecimal.cols = 10;
-			textareaHexadecimal.disabled = true;
-			textareaHexadecimal.rows = 1;
-			textareaHexadecimal.id = "Bytes"
-			textareaHexadecimal.onkeyup = this.textareaHexadecimal_KeyUp.bind(this);
-			textareaHexadecimal.oninput = this.textareaHexadecimal_Changed.bind(this);
-			this.textareaHexadecimal = textareaHexadecimal;
-			divSession.appendChild(textareaHexadecimal);
-
-			var textareaASCII = document.createElement("textarea");
-			textareaASCII.cols = 1;
-			textareaASCII.rows = 1;
-			textareaASCII.disabled = true;
-			this.textareaASCII = textareaASCII;
-			divSession.appendChild(textareaASCII);
-
 			var divFileOperations = document.createElement("div");
             divFileOperations.id = "div"
 		
-			var buttonSave = document.createElement("button");
-			buttonSave.innerHTML = "Save";
-			buttonSave.onclick = this.buttonSave_Clicked.bind(this);
-			divFileOperations.appendChild(buttonSave);
 			var inputFileToLoad = document.createElement("input");
 			inputFileToLoad.type = "file";
             inputFileToLoad.id = "File"
@@ -169,15 +119,6 @@ function Session(bytes)
 
 			var divCursor = document.createElement("div");
 			
-			var labelCursorPosition = document.createElement("label");
-			labelCursorPosition.innerHTML = "Cursor Position:";
-			divCursor.appendChild(labelCursorPosition);
-
-			var inputCursorPosition = document.createElement("input");
-			inputCursorPosition.disabled = true;
-			this.inputCursorPosition = inputCursorPosition;
-			divCursor.appendChild(inputCursorPosition);
-
 			var divMain = document.getElementById("divMain");
 			divMain.appendChild(divSession);
 
@@ -188,48 +129,11 @@ function Session(bytes)
 		(
 			this.bytes
 		);
-		this.textareaHexadecimal.value = 
-			bytesAsStringHexadecimal + this.finalNibble;
-
-		var bytesAsStringASCII = Converter.bytesToStringASCII
-		(
-			this.bytes
-		);
-		this.textareaASCII.value = bytesAsStringASCII;
-
-		var cursorPos = this.textareaHexadecimal.selectionStart;
-		var cursorPosAsString = 
-			"0d" + cursorPos 
-			+ "; 0x" + cursorPos.toString(16)
-			+ "; 0b" + cursorPos.toString(2);
-
-		this.inputCursorPosition.value = cursorPosAsString;
-
-		return this.domElement;
-	}
+		hexout = bytesAsStringHexadecimal + this.finalNibble;
+    }
 
 	// events
 
-	Session.prototype.buttonSave_Clicked = function()
-	{
-		var dataAsArrayBuffer = new ArrayBuffer(this.bytes.length);
-		var dataAsArrayUnsigned = new Uint8Array(dataAsArrayBuffer);
-	    for (var i = 0; i < this.bytes.length; i++) 
-		{
-			dataAsArrayUnsigned[i] = this.bytes[i];
-		}
-    	var dataAsBlob = new Blob([dataAsArrayBuffer], {type:'bytes'});
-
-
-		var link = document.createElement("a");
-		link.href = window.URL.createObjectURL(dataAsBlob);
-        if (document.getElementById("filename").value === ""){
-            link.download = "data.bin"
-        } else {
-            link.download = document.getElementById("filename").value
-        }
-		link.click();
-	}
 
 	Session.prototype.inputFileToLoad_Changed = function(event)
 	{
@@ -258,45 +162,4 @@ function Session(bytes)
 		this.domElementUpdate();
 	}
 
-	Session.prototype.textareaHexadecimal_Changed = function(event)
-	{
-		var bytesAsStringHexadecimal = event.target.value;
-		this.bytes = Converter.stringHexadecimalToBytes
-		(
-			bytesAsStringHexadecimal
-		);
-
-		if (bytesAsStringHexadecimal.length % 2 == 0)
-		{
-			this.finalNibble = "";
-		}
-		else
-		{
-			this.finalNibble = bytesAsStringHexadecimal.substr
-			(
-				bytesAsStringHexadecimal.length - 1,
-				1
-			);
-
-			var finalNibbleAsInt = parseInt(this.finalNibble, 16);
-			if (isNaN(finalNibbleAsInt) == true)
-			{
-				this.finalNibble = "";
-			}
-		}
-
-		this.domElementUpdate();
-        document.GetElementById("debug").value = event
-	}
-    
-	Session.prototype.textareaHexadecimal_KeyUp = function(event)
-	{
-		if (event.key.indexOf("Arrow") == 0)
-		{
-			this.domElementUpdate();
-		}
-	}
 }
-
-// run
-
