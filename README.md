@@ -1,3 +1,3 @@
-# Metroid-2-Randomizer
-An item randomizer for Metroid 2: Return of Samus
-https://liamnajor.github.io/Metroid-2-Randomizer/
+# ROSE
+A (to be) full-fetured editor for Metroid 2: return of Samus
+https://liamnajor.github.io/ROSE/
