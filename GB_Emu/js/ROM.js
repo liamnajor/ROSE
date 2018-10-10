@@ -132,9 +132,6 @@ Converter.stringHexadecimalToBytes = function(stringHexadecimal)
     
     FileLoad(blobby)
 }
-var writemem = function(address, valstring){
-	gameboy.memoryWriter[parseInt(""+address+"", 16)](gameboy, parseInt(""+address+"", 16), parseInt(""+valstring+"", 16))
-}
-var readmem = function(address){
-	gameboy.memoryReader[parseInt(""+address+"", 16)](gameboy, parseInt(""+address+"", 16))
-}
+/*	gameboy.memoryWriter[parseInt(""+address+"", 16)](gameboy, parseInt(""+address+"", 16), parseInt(""+valstring+"", 16))
+
+	gameboy.memoryReader[parseInt(""+address+"", 16)](gameboy, parseInt(""+address+"", 16))*/
