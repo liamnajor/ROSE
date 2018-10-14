@@ -64,11 +64,11 @@ var renderbank = function(){
         var renderer = roomedit.getContext("2d")
         renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
         d += 1
-        console.log(d)
         }
     }
+    
     roomedit.addEventListener("mousedown", function(e){
-        var ctx = this.getContext("2d")
+    var placeblock = function(ctx){
         var edittile = true
         if(tile === null || tile === undefined){
             edittile = false
@@ -99,26 +99,48 @@ var renderbank = function(){
         console.log(y)
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderroom()
-        
-        //c[]
-        
-        /*var ctx = this.getContext("2d")
-        var x = Math.floor(e.offsetX/16)*16
-        var y = Math.floor(e.offsetY/16)*16
-        tile = bank
-        console.log(""+bank+","+tile+"")
-        ctx.clearRect(0, 0, 256, 256);
-        changeTileset(imagetileset)
-        drawgrid(ctx, "#FF0000")
-        drawgrid(ctx, "#FF0000")
-        ctx.beginPath();
-        ctx.moveTo(x-1,y-1);
-        ctx.lineTo(x-1,y+17);
-        ctx.lineTo(x+17,y+17);
-        ctx.lineTo(x+17,y-1);
-        ctx.lineTo(x-1,y-1);
-        ctx.stroke();*/
-          })
+    }
+        var ctx = this.getContext("2d")
+        placeblock(ctx)
+    })
+    roomedit.addEventListener("mousemove", function(e){
+    var placeblock = function(ctx){
+        var edittile = true
+        if(tile === null || tile === undefined){
+            edittile = false
+        }
+        var pos = parseInt(""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+"", 16)
+        var posb = ""+parseInt(chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].pointer+"00", 16)
+        posb -= parseInt("4000", 16)
+        posb += parseInt(startbank[input.selectedIndex], 16)
+        posb += pos
+        if(edittile === true){
+            c[posb] = tile
+            chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
+        } else {
+            console.error("exception: tile not selected")
+            console.log("edits not applied")
+        }
+        var x = Math.floor(e.offsetX/16)
+        var y = Math.floor(e.offsetY/16)
+        var xpos = parseInt(tile.substr(1, 2), 16)*16
+        var ypos = parseInt(tile.substr(0, 1), 16)*16
+        var xclear = x*16
+        var yclear = y*16
+        console.log(posb.toString(16))
+        console.log(pos.toString(16))
+        console.log(xpos)
+        console.log(ypos)
+        console.log(x)
+        console.log(y)
+        ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
+        renderroom()
+    }
+        var ctx = this.getContext("2d")
+        if(e.buttons === 1){
+            placeblock(ctx)
+        }
+    })
     canvas.addEventListener("mousedown", function(e){
         var pointertext = document.getElementById("pointers")
         var scrolltext = document.getElementById("scroll")
