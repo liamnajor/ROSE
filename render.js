@@ -260,19 +260,70 @@ var renderbank = function(){
             chunks[point].chunk[e] = c[locp]
             e += 1
         }
-        /*while(e != 256){
-            //DOES NOT WORK
-            var hex = chunks[point].pointer
-            var pointer = parseInt(hex, 16)
-            pointer -= parseInt("40", 16)
-            //
-            var byte = c[parseInt(startbank[input.selectedindex], 16)+parseInt("500", 16)+pointer+e]
-            chunks[point].chunk[e] = byte
-            e += 1
-        }*/
         point += 1
     }
 }
-/*
-var input = document.getElementById("bankselect")
-document.getElementById("tiles").getContext("2d").drawImage("Tilesets/"+parseInt(input.selectedIndex+8, 16)+"", 0, 0, 256, 128)*/
+/*set spawn template(need to implement the save editor first to get the pointer locations)
+document.getElementById("spawn").onclick = fubnction(){
+    c[{}] = (current screen x position)
+    c[{}] = (current screen y position)
+    c[{}] = prompt("samus x position", "00")
+    c[{}] = prompt("samus y position", "00")
+    //use scroll borders to cip screen location of spawn
+    /*
+    stop down:
+0F
+0E
+0D
+0C
+0B
+0A
+09
+08
+stop up:
+0F
+0E
+0D
+0C
+07
+06
+05
+04
+stop left:
+0F
+0E
+0B
+07
+0A
+06
+03
+02
+stop right: 
+0F
+0D
+0B
+09
+07
+05
+03
+01
+
+00-Free Scroll
+01-Stop Scrolling Right
+02-Stop Scrolling Left
+03-Vertical Shaft
+04-Stop Scrolling Up
+05-Stop Scrolling Up Right Corner
+06-Stop Scrolling Up Left Corner
+07-Vertical Shaft End Up
+08-Stop Scrolling Down
+09-Stop Scrolling Down Right
+0A-Stop Scrolling Down Left
+0B-Vertical Shaft End Down
+0C-Hallway
+0D-Hallway End Right
+0E-Hallway End Left
+0F-No Scroll
+    */
+}
+*/
