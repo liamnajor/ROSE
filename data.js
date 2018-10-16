@@ -81,39 +81,11 @@ var button = function(){
         c[counter] = res.substr(0, 2)
         e = b
     }
-    var t = c.length
-    var k = 0
-    var j = 0
-    var q = ""
-    while(t >= 16){
-        var u = j + 14
-        var l = k + 15
-        j += 7
-        while(l >= k){
-            q += ""+c[k]+","
-            k += 1
-        }
-        q += " "
-        t -= 16
-    }
-    var r = c.length - 147456 
-    var z = r / 16383
-    var y = ""+z+""
-    var b = y.split(".")
     renderbank()
 }
 var encode = function(){
     var value = ""
     var bytes = hexout
-    /*var str = ""+hex+""
-    var e = str.split(" ");
-    var d = 1
-    var j = ""
-    while (d <= e.length){
-        j += ""+e[d]+""
-        d += 2
-    }
-    c = j.split(",")*/
     //c[parseInt({address in hexidecimal}, 16) OR {address in base-10] = {replacement}
     var i = 0
     while(i <= bytes.length){
@@ -128,7 +100,7 @@ var encode = function(){
         w[v] = saver[v]
         v += 1
     }
-    //localStorage.setItem("ROM", ""+value+"")
+    localStorage.setItem("ROM", ""+value+"")
     save(w)
 }
 main();

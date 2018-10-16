@@ -324,6 +324,6 @@ stop right:
 0D-Hallway End Right
 0E-Hallway End Left
 0F-No Scroll
-    */
+    
 }
 */
