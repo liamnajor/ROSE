@@ -147,6 +147,7 @@ var renderbank = function(){
         var transtext = document.getElementById("rtransition")
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         selected = parseInt(bank, 16)
+        selected.hex = bank
         console.log(""+bank+","+selected+"")
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
@@ -263,14 +264,23 @@ var renderbank = function(){
         point += 1
     }
 }
-/*set spawn template(need to implement the save editor first to get the pointer locations)
-document.getElementById("spawn").onclick = fubnction(){
-    c[{}] = (current screen x position)
-    c[{}] = (current screen y position)
-    c[{}] = prompt("samus x position", "00")
-    c[{}] = prompt("samus y position", "00")
-    //use scroll borders to cip screen location of spawn
-    /*
+/*set spawn template(need to implement the save editor first to get the pointer locations)*/
+document.getElementById("spawn").onclick = function(){
+    hex = selected.toString(16)
+    c[parseInt("4E67", 16)] = hex.substr(0, 1)
+    c[parseInt("4E65", 16)] = hex.substr(1, 2)
+    c[parseInt("4E64", 16)] = prompt("samus y position, pixels(hexadecimal, 00-FF)) 
+    c[parseInt("4E66", 16)] = prompt("samus x position, pixels(hexadecimal, 00-FF))
+    c[parseInt("4E6B", 16)] = c[parseInt("4E67", 16)] 
+    c[parseInt("4E69", 16)] = c[parseInt("4E65", 16)] 
+    c[parseInt("4E68", 16)] = c[parseInt("4E64", 16)]
+    c[parseInt("4E6A", 16)] = c[parseInt("4E66", 16)]
+    var bank = document.getElementById("bankselect").selectedIndex + 9
+    c[parseInt("4E66", 16)] = bank.toString(16)
+    window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F. will fix later")}
+    /* 
+    TODO: set metatiles, graphics properly
+    /*use scroll borders to cip screen location of spawn later
     stop down:
 0F
 0E
@@ -324,6 +334,6 @@ stop right:
 0D-Hallway End Right
 0E-Hallway End Left
 0F-No Scroll
-    
+
 }
 */
