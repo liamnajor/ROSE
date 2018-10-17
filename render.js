@@ -91,12 +91,6 @@ var renderbank = function(){
         var ypos = parseInt(tile.substr(0, 1), 16)*16
         var xclear = x*16
         var yclear = y*16
-        console.log(posb.toString(16))
-        console.log(pos.toString(16))
-        console.log(xpos)
-        console.log(ypos)
-        console.log(x)
-        console.log(y)
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderroom()
     }
@@ -127,12 +121,6 @@ var renderbank = function(){
         var ypos = parseInt(tile.substr(0, 1), 16)*16
         var xclear = x*16
         var yclear = y*16
-        console.log(posb.toString(16))
-        console.log(pos.toString(16))
-        console.log(xpos)
-        console.log(ypos)
-        console.log(x)
-        console.log(y)
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderroom()
     }
@@ -147,7 +135,6 @@ var renderbank = function(){
         var transtext = document.getElementById("rtransition")
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         selected = parseInt(bank, 16)
-        selected.hex = bank
         console.log(""+bank+","+selected+"")
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
@@ -265,22 +252,45 @@ var renderbank = function(){
     }
 }
 /*set spawn template(need to implement the save editor first to get the pointer locations)*/
-document.getElementById("spawn").onclick = function(){
+var spawn = function(){
     hex = selected.toString(16)
-    c[parseInt("4E67", 16)] = hex.substr(0, 1)
-    c[parseInt("4E65", 16)] = hex.substr(1, 2)
-    c[parseInt("4E64", 16)] = prompt("samus y position, pixels(hexadecimal, 00-FF)) 
-    c[parseInt("4E66", 16)] = prompt("samus x position, pixels(hexadecimal, 00-FF))
-    c[parseInt("4E6B", 16)] = c[parseInt("4E67", 16)] 
-    c[parseInt("4E69", 16)] = c[parseInt("4E65", 16)] 
-    c[parseInt("4E68", 16)] = c[parseInt("4E64", 16)]
-    c[parseInt("4E6A", 16)] = c[parseInt("4E66", 16)]
+    var y = prompt("samus y position, pixels(hexadecimal, 00-FF)")
+    var x = prompt("samus x position, pixels(hexadecimal, 00-FF)")
+    c[parseInt("4E64", 16)] = y
+    c[parseInt("4E65", 16)] = "0"+hex.substr(0, 1)+""
+    c[parseInt("4E66", 16)] = x
+    c[parseInt("4E67", 16)] = "0"+hex.substr(1, 2)+""
+    c[parseInt("4E68", 16)] = y
+    c[parseInt("4E69", 16)] = "0"+hex.substr(0, 1)+""
+    c[parseInt("4E6A", 16)] = x
+    c[parseInt("4E6B", 16)] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
-    c[parseInt("4E66", 16)] = bank.toString(16)
-    window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F. will fix later")}
+    c[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
+    window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F. Will fix later.")
+    console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
+
     /* 
     TODO: set metatiles, graphics properly
-    /*use scroll borders to cip screen location of spawn later
+    var tileset = document.getElementById("tileset").selectedIndex + 9
+    var sel = tileset.toString(16)
+    if(sel === "9"){
+    
+    } else if(sel === "a"){
+    
+    } else if(sel === "b"){
+    
+    } else if(sel === "c"){
+    
+    } else if(sel === "d"){
+    
+    } else if(sel === "e"){
+    
+    } else if(sel === "f"){
+    
+    } else {
+        window.alert("INVALID TILESET(this should be impossable to trigger)")
+    }
+    /*use scroll borders to clip screen location of the camera at spawn (low priority)
     stop down:
 0F
 0E
@@ -335,5 +345,5 @@ stop right:
 0E-Hallway End Left
 0F-No Scroll
 
-}
 */
+}

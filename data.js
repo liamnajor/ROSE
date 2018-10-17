@@ -7,7 +7,7 @@ var adresses = {//I know I spelled addresses wrong, but I'd already copy-pasted 
 var testhack = function(){
     //opens gameboy emulator in a new tab/window
         localStorage.setItem("opened", "true")
-    window.open("GB_Emu/index.xhtml")
+        window.open("GB_Emu/index.xhtml")
 }
 	var converter = function(input)
 	{
@@ -92,6 +92,8 @@ var encode = function(){
         value += ""+c[i]+""
         i += 1
     }
+    localStorage.setItem("ROM", ""+value+"")
+    console.log("saved output to local storage")
     var saver = Converter.stringHexadecimalToBytes(value)
     var m = 262143
     var w = []
@@ -100,7 +102,6 @@ var encode = function(){
         w[v] = saver[v]
         v += 1
     }
-    localStorage.setItem("ROM", ""+value+"")
     save(w)
 }
 main();
