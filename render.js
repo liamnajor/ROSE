@@ -267,6 +267,7 @@ var spawn = function(){
     var bank = document.getElementById("bankselect").selectedIndex + 9
     c[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
     window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F. Will fix later.")
+    
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
 
     /* 
@@ -274,21 +275,53 @@ var spawn = function(){
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = tileset.toString(16)
     if(sel === "9"){
-    
+    Metatile:
+    20880(4880)
+    Tiles:
+    1C000(4000)
     } else if(sel === "a"){
-    
+    Metatile:
+    20A80(4A80)
+    Tiles:
+    1C800(4800)
     } else if(sel === "b"){
-    
+    Metatile:
+    20C80(4C80)
+    Tiles:
+    ???
     } else if(sel === "c"){
-    
+    Metatile:
+    21280(5280)
+    Tiles:
+    1E000(6000)
     } else if(sel === "d"){
-    
+    Metatile:
+    21080(5080)
+    Tiles:
+    1D800(5800)
     } else if(sel === "e"){
-    
+    varient 1:    
+        Metatile:
+        216A8(Acid Up, 56A8)
+        Tiles:
+        1E800(6800)
+    varient 2:
+        Metatile:
+        21480(Acid Mid, 5480)
+        Tiles:
+        1ED30(6D30)
+    varient 3:
+        Metatile:
+        21594(Acid Down, 5594)
+        Tiles:
+        1F260(7260)
     } else if(sel === "f"){
+    Metatile:
+    217BC(57BC)
+    Tiles:
     
     } else {
-        window.alert("INVALID TILESET(this should be impossable to trigger)")
+        window.alert("INVALID TILESET(this should be impossable to trigger, tell me how you did it)")
     }
     /*use scroll borders to clip screen location of the camera at spawn (low priority)
     stop down:
@@ -345,5 +378,40 @@ stop right:
 0E-Hallway End Left
 0F-No Scroll
 
+
+Metatile Definitions
+0x20880-0x20A7F - Bubbles, Ruins 3 Catacombs
+0x20A80-0x20C7F - Inside Ruins
+0x20C80-0x20E7F - Final Ruins
+0x20E80-0x2107F - Queen's Room
+0x21080-0x2127F - First/Last Caves
+0x21280-0x2147F - Outside/Ship
+0x21480-0x21593 - Acid Caves (Acid Mid)
+0x21594-0x218A7 - Acid Caves (Acid Down)
+0x216A8-0x217BB - Acid Caves (Acid Up)
+0x217BC-0x219BB - Outside Ruins
+
+Collision Data
+0x20080-0x2087F - 0x100 per tileset
+20080(4080) - ???(set 1)
+20180(4180) - ???(set 2)
+20280(4280) - ???(set 3)
+20380(4380) - ???(set 4)
+20480(4480) - ???(set 5)
+20580(4580) - outside/ship(set 6)
+20680(4680) - ???(set 7)
+20780(4780) - ???(set 8)
+
+Tiles
+0x1C000-0x1C7FF - Bubbles, Ruins 3 Catacombs
+0x1C800-0x1CFFF - Inside Ruins
+0x1D000-0x1D7FF - Queeny
+0x1D800-0x1DFFF - First/Last Caves
+0x1E000-0x1E7FF - Outside/Ship
+0x1E800-0x1ED2F - Caves with Acid
+0x1ED30-0x1F25F - Caves with Acid variant 1
+0x1F260-0x1F78F - Caves with Acid variant 2
+0x1F790-0x1FB6F - Powerups and Refills
+0x1FB70-0x1FFFF - Free Space
 */
 }
