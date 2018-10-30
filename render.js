@@ -7,6 +7,12 @@ var selected
 var prevbank
 var tile
 var imagetileset
+var tiles0 = "00"
+var tiles1 = "60"
+var metatiles0 = "80"
+var metatiles1 = "52"
+var collision0 = "80"
+var collision1 = "45"
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
@@ -252,77 +258,130 @@ var renderbank = function(){
     }
 }
 /*set spawn template(need to implement the save editor first to get the pointer locations)*/
-var spawn = function(){
+var spawn = function(c, x, y){
     hex = selected.toString(16)
     var y = prompt("samus y position, pixels(hexadecimal, 00-FF)")
     var x = prompt("samus x position, pixels(hexadecimal, 00-FF)")
-    c[parseInt("4E64", 16)] = y
-    c[parseInt("4E65", 16)] = "0"+hex.substr(0, 1)+""
-    c[parseInt("4E66", 16)] = x
-    c[parseInt("4E67", 16)] = "0"+hex.substr(1, 2)+""
-    c[parseInt("4E68", 16)] = y
-    c[parseInt("4E69", 16)] = "0"+hex.substr(0, 1)+""
-    c[parseInt("4E6A", 16)] = x
-    c[parseInt("4E6B", 16)] = "0"+hex.substr(1, 2)+""
+    c[20068] = ""+y+""
+    c[20069] = "0"+hex.substr(0, 1)+""
+    c[20070] = ""+x+""
+    c[20071] = "0"+hex.substr(1, 2)+""
+    c[20072] = ""+y+""
+    c[20073] = "0"+hex.substr(0, 1)+""
+    c[20074] = ""+x+""
+    c[20075] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
     c[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
     window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F. Will fix later.")
     
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
-
-    /* 
-    TODO: set metatiles, graphics properly
+    //TODO: set metatiles, graphics properly
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = tileset.toString(16)
-    if(sel === "9"){
+    /*if(sel === "9"){
     Metatile:
     20880(4880)
     Tiles:
     1C000(4000)
+    collision:
+    20080(4080)(??
+    tiles0 = 
+    tiles1 = 
+    metatiles0 = 
+    metatiles1 = 
+    collision0 = 
+    collision1 = 
     } else if(sel === "a"){
     Metatile:
     20A80(4A80)
     Tiles:
     1C800(4800)
+    collision:
+    20180(4180)(??)
+    tiles0 = 
+    tiles1 = 
+    metatiles0 = 
+    metatiles1 = 
+    collision0 = 
+    collision1 = 
     } else if(sel === "b"){
     Metatile:
     20C80(4C80)
     Tiles:
     ???
+    collision:
+    20280(4280)(??)
+    tiles0 = 
+    tiles1 = 
+    metatiles0 = 
+    metatiles1 = 
+    collision0 = 
+    collision1 = 
     } else if(sel === "c"){
     Metatile:
     21280(5280)
     Tiles:
     1E000(6000)
+    collision:
+    20580(4580)(??)
+    tiles0 = 
+    tiles1 = 
+    metatiles0 = 
+    metatiles1 = 
+    collision0 = 
+    collision1 = 
     } else if(sel === "d"){
     Metatile:
     21080(5080)
     Tiles:
     1D800(5800)
-    } else if(sel === "e"){
-    varient 1:    
-        Metatile:
-        216A8(Acid Up, 56A8)
-        Tiles:
-        1E800(6800)
-    varient 2:
-        Metatile:
-        21480(Acid Mid, 5480)
-        Tiles:
-        1ED30(6D30)
-    varient 3:
-        Metatile:
-        21594(Acid Down, 5594)
-        Tiles:
-        1F260(7260)
-    } else if(sel === "f"){
+    collision:
+    20480(4480)(??)
+    tiles0 = 
+    tiles1 = 
+    metatiles0 = 
+    metatiles1 = 
+    collision0 = 
+    collision1 = 
+    } else */if(sel === "e"){
+    var c = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
+    if (c === 1){
+        tiles0 = "00"
+        tiles1 = "68"
+        metatiles0 = "A8"
+        metatiles1 = "56"
+        console.log("acid not lowered")
+    } else if(c === 2){
+        tiles0 = "30"
+        tiles1 = "6D"
+        metatiles0 = "80"
+        metatiles1 = "54"
+        console.log("acid lowered halfway")
+    } else if (c === 3){
+        tiles0 = "60"
+        tiles1 = "72"
+        metatiles0 = "94"
+        metatiles1 = "55"
+        console.log("acid lowered fully")
+    }
+    collision0 = "80"
+    collision1 = "46" 
+    /*} else if(sel === "f"){
     Metatile:
     217BC(57BC)
     Tiles:
     
+    collision:
+    20080(4780)(??)
+    */
     } else {
         window.alert("INVALID TILESET(this should be impossable to trigger, tell me how you did it)")
     }
+    //(base values) 4E6F	$6000	graphics
+
+    //(base values) 4E71    $5280  	Metatile
+
+    //(base values) 4E73    $4580   collision
     /*use scroll borders to clip screen location of the camera at spawn (low priority)
     stop down:
 0F

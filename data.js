@@ -1,3 +1,12 @@
+var localstoragesupported = true
+try {
+  eval('localStorage.setItem("test", "test")')
+}
+catch(error) {
+  console.error(error);
+  localstoragesupported = false
+}
+console.log(localstoragesupported)
 var c = []
 var hex = null
 var adresses = {//I know I spelled addresses wrong, but I'd already copy-pasted all the shit below and this was quicker
@@ -61,6 +70,7 @@ var testhack = function(){
 
 
 var button = function(){
+    if(localstoragesupported === true){
     var ROM = localStorage.getItem('ROM');
     if(ROM === null || ROM === undefined || hexout != ""){
         var bytes = hexout
@@ -70,6 +80,10 @@ var button = function(){
         hexout = ROM
         var bytes = ROM
         console.log("loaded from local storage")
+    }} else {
+        var ROM = hexout
+        var bytes = ROM
+        console.log("loaded from local file, local storage overridden/not supported")
     }
     var e = bytes.length
     var p = 0
@@ -87,13 +101,27 @@ var encode = function(){
     var value = ""
     var bytes = hexout
     //c[parseInt({address in hexidecimal}, 16) OR {address in base-10] = {replacement}
+    //(base values) 4E6F	$6000	graphics
+    c[parseInt("4E6F", 16)]	= tiles0
+    c[parseInt("4E70", 16)] = tiles1
+
+    //(base values) 4E71    $5280  	Metatile
+    c[parseInt("4E71", 16)] = metatiles0
+    c[parseInt("4E72", 16)] = metatiles1
+
+    //(base values) 4E73    $4580   collision
+    c[parseInt("4E73", 16)] = collision0
+    c[parseInt("4E74", 16)]	= collision1
     var i = 0
     while(i <= bytes.length){
         value += ""+c[i]+""
         i += 1
     }
+    
+    if(localstoragesupported === true){
     localStorage.setItem("ROM", ""+value+"")
     console.log("saved output to local storage")
+    }
     var saver = Converter.stringHexadecimalToBytes(value)
     var m = 262143
     var w = []
@@ -102,6 +130,28 @@ var encode = function(){
         w[v] = saver[v]
         v += 1
     }
+    console.log("encoding complete")
     save(w)
 }
 main();
+document.getElementById("sorter").addEventListener("click", function(e){
+    if (e.button === 0){
+    button()}
+})
+document.getElementById("encode").addEventListener("click", function(e){
+    if (e.button === 0){
+    encode(true)}
+})
+document.getElementById("tileset").addEventListener("change", function() {
+    loadtileset()
+})
+document.getElementById("bankselect").addEventListener("change", function() {
+    renderbank()
+})
+
+document.getElementById("spawn").addEventListener("click", function(e){
+    if (e.button === 0){
+    var y = prompt("samus y position, pixels(hexadecimal, 00-FF)")
+    var x = prompt("samus x position, pixels(hexadecimal, 00-FF)")
+    spawn(c, x, y)}
+})
