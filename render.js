@@ -272,7 +272,7 @@ var spawn = function(c, x, y){
     c[20075] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
     c[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
-    window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F. Will fix later.")
+    window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F or selected tileset E. Will fix later.")
     
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
     //TODO: set metatiles, graphics properly
