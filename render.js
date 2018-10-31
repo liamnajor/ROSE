@@ -260,8 +260,6 @@ var renderbank = function(){
 /*set spawn template(need to implement the save editor first to get the pointer locations)*/
 var spawn = function(c, x, y){
     hex = selected.toString(16)
-    var y = prompt("samus y position, pixels(hexadecimal, 00-FF)")
-    var x = prompt("samus x position, pixels(hexadecimal, 00-FF)")
     c[20068] = ""+y+""
     c[20069] = "0"+hex.substr(0, 1)+""
     c[20070] = ""+x+""
@@ -278,96 +276,104 @@ var spawn = function(c, x, y){
     //TODO: set metatiles, graphics properly
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = tileset.toString(16)
-    /*if(sel === "9"){
-    Metatile:
+    if(sel === "9"){
+    tiles1 = "40"
+    tiles0 = "00"
+    metatiles1 = "48"
+    metatiles0 = "80"
+    collision1 = "40"
+    collision0 = "80"
+    /*Metatile:
     20880(4880)
     Tiles:
     1C000(4000)
     collision:
-    20080(4080)(??
-    tiles0 = 
-    tiles1 = 
-    metatiles0 = 
-    metatiles1 = 
-    collision0 = 
-    collision1 = 
+    20080(4080)(??)*/
     } else if(sel === "a"){
-    Metatile:
+    tiles1 = "48"
+    tiles0 = "00"
+    metatiles1 = "4A"
+    metatiles0 = "80"
+    collision1 = "41"
+    collision0 = "80"
+    /*Metatile:
     20A80(4A80)
     Tiles:
     1C800(4800)
     collision:
-    20180(4180)(??)
-    tiles0 = 
-    tiles1 = 
-    metatiles0 = 
-    metatiles1 = 
-    collision0 = 
-    collision1 = 
+    20180(4180)(??)*/
     } else if(sel === "b"){
-    Metatile:
+    //tiles1 = 
+    //tiles0 = 
+    metatiles1 = "4C"
+    metatiles0 = "80"
+    collision1 = "42"
+    collision0 = "80"
+    window.alert("tiles not set, graphics will break!")
+    /*Metatile:
     20C80(4C80)
     Tiles:
     ???
     collision:
-    20280(4280)(??)
-    tiles0 = 
-    tiles1 = 
-    metatiles0 = 
-    metatiles1 = 
-    collision0 = 
-    collision1 = 
+    20280(4280)(??)*/
     } else if(sel === "c"){
-    Metatile:
+    tiles1 = "60"
+    tiles0 = "00"
+    metatiles1 = "52"
+    metatiles0 = "80"
+    collision1 = "45"
+    collision0 = "80"
+    /*Metatile:
     21280(5280)
     Tiles:
     1E000(6000)
     collision:
-    20580(4580)(??)
-    tiles0 = 
-    tiles1 = 
-    metatiles0 = 
-    metatiles1 = 
-    collision0 = 
-    collision1 = 
+    20580(4580)(??)*/
     } else if(sel === "d"){
-    Metatile:
+    tiles1 = "58"
+    tiles0 = "00"
+    metatiles1 = "50"
+    metatiles0 = "80"
+    collision1 = "44"
+    collision0 = "80"
+    /*Metatile:
     21080(5080)
     Tiles:
     1D800(5800)
     collision:
-    20480(4480)(??)
-    tiles0 = 
-    tiles1 = 
-    metatiles0 = 
-    metatiles1 = 
-    collision0 = 
-    collision1 = 
-    } else */if(sel === "e"){
+    20480(4480)(??)*/
+    } else if(sel === "e"){
     var c = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
     if (c === 1){
-        tiles0 = "00"
         tiles1 = "68"
-        metatiles0 = "A8"
+        tiles0 = "00"
         metatiles1 = "56"
+        metatiles0 = "A8"
         console.log("acid not lowered")
     } else if(c === 2){
-        tiles0 = "30"
         tiles1 = "6D"
-        metatiles0 = "80"
+        tiles0 = "30"
         metatiles1 = "54"
+        metatiles0 = "80"
         console.log("acid lowered halfway")
     } else if (c === 3){
-        tiles0 = "60"
         tiles1 = "72"
-        metatiles0 = "94"
+        tiles0 = "60"
         metatiles1 = "55"
+        metatiles0 = "94"
         console.log("acid lowered fully")
     }
-    collision0 = "80"
     collision1 = "46" 
-    /*} else if(sel === "f"){
-    Metatile:
+    collision0 = "80"
+    } else if(sel === "f"){
+    //tiles1 = 
+    //tiles0 = 
+    metatiles1 = "57"
+    metatiles0 = "BC"
+    collision1 = "47"
+    collision0 = "80"
+    window.alert("tiles not set, graphics will break!")
+    /*Metatile:
     217BC(57BC)
     Tiles:
     
@@ -375,7 +381,7 @@ var spawn = function(c, x, y){
     20080(4780)(??)
     */
     } else {
-        window.alert("INVALID TILESET(this should be impossable to trigger, tell me how you did it)")
+        window.alert("INVALID TILESET(this should be impossable to trigger, please tell me how you did it)")
     }
     //(base values) 4E6F	$6000	graphics
 
