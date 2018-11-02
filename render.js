@@ -294,7 +294,7 @@ var spawn = function(c, x, y){
     tiles0 = "00"
     metatiles1 = "4A"
     metatiles0 = "80"
-    collision1 = "41"
+    collision1 = "42"
     collision0 = "80"
     /*Metatile:
     20A80(4A80)
@@ -303,6 +303,7 @@ var spawn = function(c, x, y){
     collision:
     20180(4180)(??)*/
     } else if(sel === "b"){
+    //71BC or BC71
     //tiles1 = 
     //tiles0 = 
     metatiles1 = "4C"
