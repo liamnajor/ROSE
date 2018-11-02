@@ -367,8 +367,9 @@ var spawn = function(c, x, y){
     collision1 = "46" 
     collision0 = "80"
     } else if(sel === "f"){
-    //tiles1 = 
-    //tiles0 = 
+    //69bc
+    //tiles1 = "BC"
+    //tiles0 = "69"
     metatiles1 = "57"
     metatiles0 = "BC"
     collision1 = "47"
