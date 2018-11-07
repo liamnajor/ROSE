@@ -13,6 +13,7 @@ var metatiles0 = "80"
 var metatiles1 = "52"
 var collision0 = "80"
 var collision1 = "45"
+var tilebank = "07"
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
@@ -270,7 +271,7 @@ var spawn = function(c, x, y){
     c[20075] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
     c[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
-    window.alert("WARNING! this will mess up the graphics and collision unless you are within bank F or selected tileset E. Will fix later.")
+    window.alert("warning: collision data might not be right, expect glitches.")
     
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
     //TODO: set metatiles, graphics properly
@@ -283,12 +284,6 @@ var spawn = function(c, x, y){
     metatiles0 = "80"
     collision1 = "40"
     collision0 = "80"
-    /*Metatile:
-    20880(4880)
-    Tiles:
-    1C000(4000)
-    collision:
-    20080(4080)(??)*/
     } else if(sel === "a"){
     tiles1 = "48"
     tiles0 = "00"
@@ -296,27 +291,14 @@ var spawn = function(c, x, y){
     metatiles0 = "80"
     collision1 = "42"
     collision0 = "80"
-    /*Metatile:
-    20A80(4A80)
-    Tiles:
-    1C800(4800)
-    collision:
-    20180(4180)(??)*/
     } else if(sel === "b"){
-    //71BC or BC71
-    //tiles1 = 
-    //tiles0 = 
+    tiles1 = "71"
+    tiles0 = "BC"
+    tilebank = "08"
     metatiles1 = "4C"
     metatiles0 = "80"
     collision1 = "42"
     collision0 = "80"
-    window.alert("tiles not set, graphics will break!")
-    /*Metatile:
-    20C80(4C80)
-    Tiles:
-    ???
-    collision:
-    20280(4280)(??)*/
     } else if(sel === "c"){
     tiles1 = "60"
     tiles0 = "00"
@@ -324,12 +306,6 @@ var spawn = function(c, x, y){
     metatiles0 = "80"
     collision1 = "45"
     collision0 = "80"
-    /*Metatile:
-    21280(5280)
-    Tiles:
-    1E000(6000)
-    collision:
-    20580(4580)(??)*/
     } else if(sel === "d"){
     tiles1 = "58"
     tiles0 = "00"
@@ -337,12 +313,6 @@ var spawn = function(c, x, y){
     metatiles0 = "80"
     collision1 = "44"
     collision0 = "80"
-    /*Metatile:
-    21080(5080)
-    Tiles:
-    1D800(5800)
-    collision:
-    20480(4480)(??)*/
     } else if(sel === "e"){
     var c = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
     if (c === 1){
@@ -367,21 +337,13 @@ var spawn = function(c, x, y){
     collision1 = "46" 
     collision0 = "80"
     } else if(sel === "f"){
-    //69bc
-    //tiles1 = "BC"
-    //tiles0 = "69"
+    tiles1 = "69"
+    tiles0 = "BC"
+    tilebank = "08"
     metatiles1 = "57"
     metatiles0 = "BC"
     collision1 = "47"
     collision0 = "80"
-    window.alert("tiles not set, graphics will break!")
-    /*Metatile:
-    217BC(57BC)
-    Tiles:
-    
-    collision:
-    20080(4780)(??)
-    */
     } else {
         window.alert("INVALID TILESET(this should be impossable to trigger, please tell me how you did it)")
     }

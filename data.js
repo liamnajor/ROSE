@@ -112,6 +112,7 @@ var encode = function(){
     //(base values) 4E73    $4580   collision
     c[parseInt("4E73", 16)] = collision0
     c[parseInt("4E74", 16)]	= collision1
+    c[parseInt("4E6E", 16)] = tilebank
     var i = 0
     while(i <= bytes.length){
         value += ""+c[i]+""
