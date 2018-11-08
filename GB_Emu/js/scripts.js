@@ -4,9 +4,10 @@ window.addEventListener("keydown", function(e){
     if(e.key === "a"){
         memory.write("FF9B", "09")
     }
-    if(e.key === "F12"){
+    if(e.key === "s"){
         memory.write("D050", "05")
-        memory.write("D051", "99")
+        memory.write("D051", "FF")
+        memory.write("D052", "05")
         memory.write("D055", "04")
         memory.write("D053", "FF")
         memory.write("D054", "FF")
@@ -14,4 +15,5 @@ window.addEventListener("keydown", function(e){
         memory.write("D082", "FF")
         memory.write("D045", "FF")
     }
+    memory.read("D816")
 })
