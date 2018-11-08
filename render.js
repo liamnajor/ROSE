@@ -283,7 +283,7 @@ var spawn = function(c, x, y){
     tiles0 = "00"
     metatiles1 = "48"
     metatiles0 = "80"
-    collision1 = "40"
+    collision1 = "41"//correct
     collision0 = "80"
     } else if(sel === "a"){
     tilebank = "07"
@@ -291,7 +291,7 @@ var spawn = function(c, x, y){
     tiles0 = "00"
     metatiles1 = "4A"
     metatiles0 = "80"
-    collision1 = "42"
+    collision1 = "42"//unknown
     collision0 = "80"
     } else if(sel === "b"){
     tiles1 = "71"
@@ -299,7 +299,7 @@ var spawn = function(c, x, y){
     tilebank = "08"
     metatiles1 = "4C"
     metatiles0 = "80"
-    collision1 = "42"
+    collision1 = "42"//unknown
     collision0 = "80"
     } else if(sel === "c"){
     tilebank = "07"
@@ -307,7 +307,7 @@ var spawn = function(c, x, y){
     tiles0 = "00"
     metatiles1 = "52"
     metatiles0 = "80"
-    collision1 = "45"
+    collision1 = "45"//correct
     collision0 = "80"
     } else if(sel === "d"){
     tilebank = "07"
@@ -315,7 +315,7 @@ var spawn = function(c, x, y){
     tiles0 = "00"
     metatiles1 = "50"
     metatiles0 = "80"
-    collision1 = "44"
+    collision1 = "44"//unknown, might be ruins interior
     collision0 = "80"
     } else if(sel === "e"){
     var c = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
@@ -339,7 +339,7 @@ var spawn = function(c, x, y){
         console.log("acid lowered fully")
     }
     tilebank = "07"
-    collision1 = "46" 
+    collision1 = "46" //correct, but glitchy
     collision0 = "80"
     } else if(sel === "f"){
     tiles1 = "69"
@@ -347,7 +347,7 @@ var spawn = function(c, x, y){
     tilebank = "08"
     metatiles1 = "57"
     metatiles0 = "BC"
-    collision1 = "47"
+    collision1 = "47"//correct, I think...
     collision0 = "80"
     } else {
         window.alert("INVALID TILESET(this should be impossable to trigger, please tell me how you did it)")
