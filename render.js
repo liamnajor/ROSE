@@ -278,6 +278,7 @@ var spawn = function(c, x, y){
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = tileset.toString(16)
     if(sel === "9"){
+    tilebank = "07"
     tiles1 = "40"
     tiles0 = "00"
     metatiles1 = "48"
@@ -285,6 +286,7 @@ var spawn = function(c, x, y){
     collision1 = "40"
     collision0 = "80"
     } else if(sel === "a"){
+    tilebank = "07"
     tiles1 = "48"
     tiles0 = "00"
     metatiles1 = "4A"
@@ -300,6 +302,7 @@ var spawn = function(c, x, y){
     collision1 = "42"
     collision0 = "80"
     } else if(sel === "c"){
+    tilebank = "07"
     tiles1 = "60"
     tiles0 = "00"
     metatiles1 = "52"
@@ -307,6 +310,7 @@ var spawn = function(c, x, y){
     collision1 = "45"
     collision0 = "80"
     } else if(sel === "d"){
+    tilebank = "07"
     tiles1 = "58"
     tiles0 = "00"
     metatiles1 = "50"
@@ -334,6 +338,7 @@ var spawn = function(c, x, y){
         metatiles0 = "94"
         console.log("acid lowered fully")
     }
+    tilebank = "07"
     collision1 = "46" 
     collision0 = "80"
     } else if(sel === "f"){
