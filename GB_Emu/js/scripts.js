@@ -15,5 +15,9 @@ window.addEventListener("keydown", function(e){
         memory.write("D082", "FF")
         memory.write("D045", "FF")
     }
-    memory.read("D816")
+    var beam = memory.read("D816")
+    if(e.key === "1"){
+        //D055 saved
+        //D04D equipped
+    }
 })
