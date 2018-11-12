@@ -14,12 +14,16 @@ var metatiles1 = "52"
 var collision0 = "80"
 var collision1 = "45"
 var tilebank = "07"
+var samus
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
     console.log("drew tileset")
 }
 var loadtileset = function(){
+    var samusimg = new Image(16, 32);
+    samusimg.src = "Object Sprites/samus.png"
+    samus = samusimg
     var select = document.getElementById("tileset")
     var tileset = new Image(256, 128);
     var selected = select.selectedIndex+9
@@ -72,6 +76,20 @@ var renderbank = function(){
         renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
         d += 1
         }
+        var pos = selected.toString(16)
+        var bank = document.getElementById("bankselect").selectedIndex + 9
+        if(c[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
+            if(c[20073] === "0"+pos.substr(0, 1)+""){
+                if(c[20075] === "0"+pos.substr(1, 2)+""){
+                    var x = parseInt(c[20074], 16)
+                    var y = parseInt(c[20072], 16)
+                    console.log("shh...you can totally see samus, and not a streatched breakable block, at x:"+x+" and y:"+y+"...I totally have implemented her sprite code...")
+                    var ctx = roomedit.getContext("2d")
+                    ctx.drawImage(samus, x, y+10)
+                    //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
+                }
+            }
+        }
     }
     
     roomedit.addEventListener("mousedown", function(e){
@@ -101,10 +119,28 @@ var renderbank = function(){
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderroom()
     }
+    if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
         placeblock(ctx)
+    } else if(document.getElementById("mode").selectedIndex === 1){
+        console.log("unimplemented")
+    } else if(document.getElementById("mode").selectedIndex === 2){
+        var x = Math.floor(e.offsetX/16)
+        var y = Math.floor(e.offsetY/16)
+        var sy = y*16
+        var sx = x*16
+        var ctx = this.getContext("2d")
+        //ctx.drawImage(samus, sx*16, y*16)
+        //ctx.drawImage(imagetileset,0,0,16,16,x*16,y*16,16,16)
+        ctx.drawImage(samus, sx, sy-16)
+        spawn(c, x.toString(16), y.toString(16))
+    } else {
+        console.log("unimplemented")
+    }
     })
+    
     roomedit.addEventListener("mousemove", function(e){
+    if(document.getElementById("mode").selectedIndex === 0){
     var placeblock = function(ctx){
         var edittile = true
         if(tile === null || tile === undefined){
@@ -135,6 +171,7 @@ var renderbank = function(){
         if(e.buttons === 1){
             placeblock(ctx)
         }
+    }
     })
     canvas.addEventListener("mousedown", function(e){
         var pointertext = document.getElementById("pointers")
