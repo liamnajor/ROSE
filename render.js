@@ -1,5 +1,6 @@
 var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]//all are placeholders, besides F
 var pointers = []
+var epointers = []
 var room_transitions = []
 var scroll = []
 var chunks = []
@@ -178,11 +179,13 @@ var renderbank = function(){
         var scrolltext = document.getElementById("scroll")
         var transtext = document.getElementById("rtransition")
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
+        var epointertext = document.getElementById("enemy-dat")
         selected = parseInt(bank, 16)
         console.log(""+bank+","+selected+"")
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
         scrolltext.value = scroll[selected]
+        epointertext.value = epointers[selected]
         ctx.clearRect(0, 0, 256, 256);
         drawgrid(ctx)
         drawgrid(ctx)
@@ -222,6 +225,20 @@ var renderbank = function(){
             scroll[selected] = scrolltext.value
             console.log("changed scroll data at "+locp.toString(16)+" to "+scrolltext.value+"")
         }
+/*            var e = ""+epointer1+""+epointer2+""
+            var f = parseInt(e, 16)
+            var i = 0
+            var enemies = []
+            while(c[f] != "ff"){
+                var ID = c[parseInt(""+epointer1+"", 16)]
+                var type = c[parseInt(""+epointer1+"", 16) + 1]
+                var xpos = c[parseInt(""+epointer1+"", 16) + 2]
+                var ypos = c[parseInt(""+epointer1+"", 16) + 3]
+                f += 4
+                eneimies[e] = [ID, type, xpos, ypos]
+                i += 1
+            }
+            console.log(enemies.length)*/
         renderroom()
     })
     var drawgrid = function(ctx, style){
@@ -272,6 +289,15 @@ var renderbank = function(){
         var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
         var locp = loc + point
         scroll[point] = c[locp]
+        point += 1
+    }
+    point = 0
+    while(point != 256){
+        var p = point*2
+        var selection = input.selectedIndex*512
+        var loc = parseInt("C2E0", 16)+selection
+        var locp = loc + p
+        epointers[point] = ""+c[locp]+""+c[locp*2]+""
         point += 1
     }
     point = 0
