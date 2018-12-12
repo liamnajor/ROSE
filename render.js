@@ -1,9 +1,10 @@
-var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]//all are placeholders, besides F
+var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
 var pointers = []
 var epointers = []
 var room_transitions = []
 var scroll = []
 var chunks = []
+var objects = [[]] //will place a bunch of arrays of 3 in here, one for each unique object type (I think, if not I will just add more). they will correspond numarically, so a simple objects[(parseInt({type}, 16)] will get the 2 values, which are the X and Y of the object on its spritesheet and which spritesheet it's on.
 var selected
 var prevbank
 var tile
@@ -16,6 +17,7 @@ var collision0 = "80"
 var collision1 = "45"
 var tilebank = "07"
 var samus
+var obj
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
@@ -25,6 +27,9 @@ var loadtileset = function(){
     var samusimg = new Image(16, 32);
     samusimg.src = "Object Sprites/samus.png"
     samus = samusimg
+    var objimg = new Image(16, 16)
+    objimg.src = Object Sprites/obj.png
+    obj = objimg
     var select = document.getElementById("tileset")
     var tileset = new Image(256, 128);
     var selected = select.selectedIndex+9
@@ -84,7 +89,6 @@ var renderbank = function(){
                 if(c[20075] === "0"+pos.substr(1, 2)+""){
                     var x = parseInt(c[20074], 16)
                     var y = parseInt(c[20072], 16)
-                    console.log("shh...you can totally see samus, and not a streatched breakable block, at x:"+x+" and y:"+y+"...I totally have implemented her sprite code...")
                     var ctx = roomedit.getContext("2d")
                     ctx.drawImage(samus, x, y+10)
                     //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
@@ -92,7 +96,6 @@ var renderbank = function(){
             }
         }
     }
-    
     roomedit.addEventListener("mousedown", function(e){
     var placeblock = function(ctx){
         var edittile = true
@@ -124,7 +127,20 @@ var renderbank = function(){
         var ctx = this.getContext("2d")
         placeblock(ctx)
     } else if(document.getElementById("mode").selectedIndex === 1){
+        var ID = prompt("Object ID, hexidecimal", 00)
         console.log("unimplemented")
+        var x = Math.floor(e.offsetX/16)
+        var y = Math.floor(e.offsetY/16)
+        var sy = y*16
+        var sx = x*16
+        var type = document.getElementById("OBJType").value
+        var loc = document.getElementById("enemy-dat").value
+        var e = loc.substr(2, 4)
+        var d = parseInt(e, 16)
+        d += parseInt("80", 16)
+        e = loc.substr(0, 2)
+        console.log("doesn't add to the ROM yet, but you just added "+ID+""+type+""+sx.toString(16)+""+sy.toString(16)+" to "+d.toString(16)+""+e+"")
+        //ctx.drawImage(objects[(parseInt(type, 16)][2],objects[(parseInt(type, 16)][0],objects[(parseInt(type, 16)][1])
     } else if(document.getElementById("mode").selectedIndex === 2){
         var x = Math.floor(e.offsetX/16)
         var y = Math.floor(e.offsetY/16)
@@ -133,8 +149,8 @@ var renderbank = function(){
         var ctx = this.getContext("2d")
         //ctx.drawImage(samus, sx*16, y*16)
         //ctx.drawImage(imagetileset,0,0,16,16,x*16,y*16,16,16)
-        ctx.drawImage(samus, sx, sy-16)
-        spawn(c, x.toString(16), y.toString(16))
+        ctx.drawImage(samus, sx, sy-7)
+        spawn(c, sx.toString(16), sy.toString(16))
     } else {
         console.log("unimplemented")
     }
@@ -292,13 +308,24 @@ var renderbank = function(){
         point += 1
     }
     point = 0
-    while(point != 256){
-        var p = point*2
+    while(point != 512){
         var selection = input.selectedIndex*512
         var loc = parseInt("C2E0", 16)+selection
-        var locp = loc + p
-        epointers[point] = ""+c[locp]+""+c[locp*2]+""
-        point += 1
+        var locp = loc + point
+        epointers[point] = ""+c[locp]+""+c[locp+1]+""
+        point += 2
+        //add 8 to second byte to get actual enemy location(pointers are little-endian)
+    }
+    point = 0
+    var p = 0
+    while(point != 512){
+        var selection = input.selectedIndex*512
+        var loc = parseInt("C2E0", 16)+selection
+        var locp = loc + point
+        epointers[p] = ""+c[locp]+""+c[locp+1]+""
+        point += 2
+        p += 1
+        //add 8 to second byte to get actual enemy location(pointers are little-endian)
     }
     point = 0
     while(point != 59){
