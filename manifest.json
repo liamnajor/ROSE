@@ -17,9 +17,6 @@
     }
   },
   "offline_enabled": true,
-  "chrome_settings_overrides": {
-    "unsafe-inline":"true"
-  },
   "permissions": [
     "app.window.alwaysOnTop",
     {
