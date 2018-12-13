@@ -110,8 +110,8 @@ var renderbank = function(){
         var ctx = roomedit.getContext("2d")
         while(e != 4){
             var p = d*4
-            var x = d+2
-            var y = d+3
+            var x = p+2
+            var y = p+3
             if(e === 0){
                 if(c[loc + p] != "ff"){
                     e = 2
