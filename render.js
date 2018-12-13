@@ -18,6 +18,7 @@ var collision1 = "45"
 var tilebank = "07"
 var samus
 var obj
+var objnum
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
@@ -95,6 +96,40 @@ var renderbank = function(){
                 }
             }
         }
+        console.log(epointers[selected])
+        var loc = epointers[selected]
+        var e = loc.substr(2, 4)
+        var d = parseInt(e, 16)
+        d += parseInt("80", 16)
+        e = loc.substr(0, 2)
+        var loc = parseInt(""+d.toString(16)+""+e+"", 16)
+        console.log(loc)
+        //ID,type,x,y
+        e = 0
+        d = 0
+        var ctx = roomedit.getContext("2d")
+        while(e != 4){
+            var p = d*4
+            var x = d+2
+            var y = d+3
+            if(e === 0){
+                if(c[loc + p] != "ff"){
+                    e = 2
+                } else {
+                    e = 4
+                }
+            }
+            if(e === 2){
+                ctx.drawImage(obj, parseInt(c[loc + x], 16), parseInt(c[loc + y], 16))
+                console.log(obj)
+                console.log(samus)
+                console.log("drew object number "+d+" at X:"+c[loc + x]+" and Y:"+c[loc + y]+"")
+                console.log(""+d+":"+c[loc + p]+""+c[loc + p + 1]+""+c[loc + x]+""+c[loc + y]+"")
+                d += 1
+                e = 0
+            }
+        }
+        objnum = d
     }
     roomedit.addEventListener("mousedown", function(e){
     var placeblock = function(ctx){
@@ -127,8 +162,8 @@ var renderbank = function(){
         var ctx = this.getContext("2d")
         placeblock(ctx)
     } else if(document.getElementById("mode").selectedIndex === 1){
-        var ID = prompt("Object ID, hexidecimal", 00)
-        console.log("unimplemented")
+        var ctx = this.getContext("2d")
+        var ID = document.getElementById("OBJID").value
         var x = Math.floor(e.offsetX/16)
         var y = Math.floor(e.offsetY/16)
         var sy = y*16
@@ -139,7 +174,28 @@ var renderbank = function(){
         var d = parseInt(e, 16)
         d += parseInt("80", 16)
         e = loc.substr(0, 2)
-        console.log("doesn't add to the ROM yet, but you just added "+ID+""+type+""+sx.toString(16)+""+sy.toString(16)+" to "+d.toString(16)+""+e+"")
+        loc = parseInt(""+d.toString(16)+""+e+"", 16)
+        ctx.drawImage(obj, sx, sy)
+        var num = objnum*4
+        if(sy.toString(16) === "0"){
+            sy = "00"
+        } else {
+            var yy = sy.toString(16)
+            sy = yy
+        }
+        if(sx.toString(16) === "0"){
+            sx = "00"
+        } else {
+            var yy = sx.toString(16)
+            sx = yy
+        }
+        console.log("doesn't add to the ROM yet, but you just added "+ID+""+type+""+sx.toString(16)+""+sy.toString(16)+" to "+loc.toString(16)+"")
+        c[loc+num] = ID
+        c[loc+num+1] = type
+        c[loc+num+2] = sx
+        c[loc+num+3] = sy
+        c[loc+num+4] = "ff"
+        objnum += 1
         //ctx.drawImage(objects[(parseInt(type, 16)][2],objects[(parseInt(type, 16)][0],objects[(parseInt(type, 16)][1])
     } else if(document.getElementById("mode").selectedIndex === 2){
         var x = Math.floor(e.offsetX/16)
@@ -241,6 +297,13 @@ var renderbank = function(){
             scroll[selected] = scrolltext.value
             console.log("changed scroll data at "+locp.toString(16)+" to "+scrolltext.value+"")
         }
+         epointertext.onchange=function(){
+            var selection = input.selectedIndex*512
+            var loc = parseInt("C2E0", 16)+selection
+            var locp = loc + selected
+            epointers[selected] = epointertext.value
+            c[loc] = epointertext.value
+            }
 /*            var e = ""+epointer1+""+epointer2+""
             var f = parseInt(e, 16)
             var i = 0
