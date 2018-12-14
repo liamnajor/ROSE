@@ -149,10 +149,3 @@ document.getElementById("tileset").addEventListener("change", function() {
 document.getElementById("bankselect").addEventListener("change", function() {
     renderbank()
 })
-
-document.getElementById("spawn").addEventListener("click", function(e){
-    if (e.button === 0){
-    var y = prompt("samus y position, pixels(hexadecimal, 00-FF)")
-    var x = prompt("samus x position, pixels(hexadecimal, 00-FF)")
-    spawn(c, x, y)}
-})

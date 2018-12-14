@@ -121,10 +121,8 @@ var renderbank = function(){
             }
             if(e === 2){
                 ctx.drawImage(obj, parseInt(c[loc + x], 16), parseInt(c[loc + y], 16))
-                console.log(obj)
-                console.log(samus)
                 console.log("drew object number "+d+" at X:"+c[loc + x]+" and Y:"+c[loc + y]+"")
-                console.log(""+d+":"+c[loc + p]+""+c[loc + p + 1]+""+c[loc + x]+""+c[loc + y]+"")
+                console.log("obj"+d+":"+c[loc + p]+" "+c[loc + p + 1]+" "+c[loc + x]+" "+c[loc + y]+" ")
                 d += 1
                 e = 0
             }
@@ -189,7 +187,6 @@ var renderbank = function(){
             var yy = sx.toString(16)
             sx = yy
         }
-        console.log("doesn't add to the ROM yet, but you just added "+ID+""+type+""+sx.toString(16)+""+sy.toString(16)+" to "+loc.toString(16)+"")
         c[loc+num] = ID
         c[loc+num+1] = type
         c[loc+num+2] = sx
@@ -601,4 +598,72 @@ Tiles
 0x1F790-0x1FB6F - Powerups and Refills
 0x1FB70-0x1FFFF - Free Space
 */
+}
+var viewdat = function(){
+    var loc = epointers[selected]
+    var e = loc.substr(2, 4)
+    var d = parseInt(e, 16)
+    d += parseInt("80", 16)
+    e = loc.substr(0, 2)
+    var loc = parseInt(""+d.toString(16)+""+e+"", 16)
+    console.log(loc)
+    e = 0
+    d = 0
+    //objnum
+    var objects = ""
+    while(e != 4){
+            var p = d*4
+            if(c[loc + p] != "ff"){
+                d += 1
+                objects += ""+d+":"+c[loc + p]+" "+c[loc + p + 1]+" "+c[loc + p + 2]+" "+c[loc + p + 3]+"\n"
+            } else {
+                e = 4
+            }
+        }
+    window.alert(objects)
+}
+var deleteobj = function(input){
+    var loc = epointers[selected]
+    var e = loc.substr(2, 4)
+    var d = parseInt(e, 16)
+    d += parseInt("80", 16)
+    e = loc.substr(0, 2)
+    var loc = parseInt(""+d.toString(16)+""+e+"", 16)
+    console.log(loc)
+    e = 0
+    d = 0
+    //objnum
+    var objects = []
+    while(e != 4){
+            var p = d*4
+            if(c[loc + p] != "ff"){
+                objects[d] = [""+c[loc + p]+"",""+c[loc + p + 1]+"",""+c[loc + p + 2]+"",""+c[loc + p + 3]+""]
+                d += 1
+            } else {
+                e = 4
+            }
+        }
+    var p = input*4
+    c[loc + p] = "ff"
+    c[loc + p + 1] = "ff"
+    c[loc + p + 2] = "ff"
+    c[loc + p + 3] = "ff"
+    console.log("deleted object "+input+", with "+d+" total")
+    if(input < d){
+        var f = d-input
+        console.log("some objects ("+f+" to be exact) were orphaned, fixing")
+        while (f != 0){
+        var g = f*4
+        c[loc + p] = c[loc + p + g]
+        c[loc + p] = c[loc + p + 1 + g]
+        c[loc + p] = c[loc + p + 2 + g]
+        c[loc + p] = c[loc + p + 3 + g]
+        c[loc + p + f] = "ff"
+        c[loc + p + 1 + g] = "ff"
+        c[loc + p + 2 + g] = "ff"
+        c[loc + p + 3 + g] = "ff"
+        console.log("object "+f+" fixed")
+        f -= 1
+        }
+    }
 }
