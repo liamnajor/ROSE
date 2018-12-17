@@ -614,8 +614,8 @@ var viewdat = function(){
     while(e != 4){
             var p = d*4
             if(c[loc + p] != "ff"){
-                d += 1
                 objects += ""+d+":"+c[loc + p]+" "+c[loc + p + 1]+" "+c[loc + p + 2]+" "+c[loc + p + 3]+"\n"
+                d += 1
             } else {
                 e = 4
             }
@@ -655,15 +655,20 @@ var deleteobj = function(input){
         while (f != 0){
         var g = f*4
         c[loc + p] = c[loc + p + g]
-        c[loc + p] = c[loc + p + 1 + g]
-        c[loc + p] = c[loc + p + 2 + g]
-        c[loc + p] = c[loc + p + 3 + g]
-        c[loc + p + f] = "ff"
-        c[loc + p + 1 + g] = "ff"
-        c[loc + p + 2 + g] = "ff"
-        c[loc + p + 3 + g] = "ff"
+        c[loc + p + 1] = c[loc + p + 1 + g]
+        c[loc + p + 2] = c[loc + p + 2 + g]
+        c[loc + p + 3] = c[loc + p + 3 + g]
+        console.log(""+c[loc + p]+""+c[loc + p + 1]+""+c[loc + p + 2]+""+c[loc + p + 3]+"")
+        if(f === 1){
+            c[loc + p + g] = "ff"
+            c[loc + p + 1 + g] = "ff"
+            c[loc + p + 2 + g] = "ff"
+            c[loc + p + 3 + g] = "ff"
+            }
         console.log("object "+f+" fixed")
+        console.log(""+c[loc + p + g]+""+c[loc + p + 1 + g]+""+c[loc + p + 2 + g]+""+c[loc + p + 3 + g]+"")
         f -= 1
+        input += 1
         }
     }
 }
