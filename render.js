@@ -173,7 +173,9 @@ var renderbank = function(){
         d += parseInt("80", 16)
         e = loc.substr(0, 2)
         loc = parseInt(""+d.toString(16)+""+e+"", 16)
-        ctx.drawImage(obj, sx, sy)
+        
+        if(objnum <= 15){
+            ctx.drawImage(obj, sx, sy)
         var num = objnum*4
         if(sy.toString(16) === "0"){
             sy = "00"
@@ -193,6 +195,9 @@ var renderbank = function(){
         c[loc+num+3] = sy
         c[loc+num+4] = "ff"
         objnum += 1
+        } else {
+            window.alert("16 is the object limit per screen")
+        }
         //ctx.drawImage(objects[(parseInt(type, 16)][2],objects[(parseInt(type, 16)][0],objects[(parseInt(type, 16)][1])
     } else if(document.getElementById("mode").selectedIndex === 2){
         var x = Math.floor(e.offsetX/16)
@@ -643,32 +648,25 @@ var deleteobj = function(input){
                 e = 4
             }
         }
+    d -= 1
     var p = input*4
-    c[loc + p] = "ff"
-    c[loc + p + 1] = "ff"
-    c[loc + p + 2] = "ff"
-    c[loc + p + 3] = "ff"
-    console.log("deleted object "+input+", with "+d+" total")
+    console.log("deleting object "+input+", with "+d+" total")
     if(input < d){
         var f = d-input
-        console.log("some objects ("+f+" to be exact) were orphaned, fixing")
-        while (f != 0){
-        var g = f*4
-        c[loc + p] = c[loc + p + g]
-        c[loc + p + 1] = c[loc + p + 1 + g]
-        c[loc + p + 2] = c[loc + p + 2 + g]
-        c[loc + p + 3] = c[loc + p + 3 + g]
-        console.log(""+c[loc + p]+""+c[loc + p + 1]+""+c[loc + p + 2]+""+c[loc + p + 3]+"")
-        if(f === 1){
-            c[loc + p + g] = "ff"
-            c[loc + p + 1 + g] = "ff"
-            c[loc + p + 2 + g] = "ff"
-            c[loc + p + 3 + g] = "ff"
-            }
-        console.log("object "+f+" fixed")
-        console.log(""+c[loc + p + g]+""+c[loc + p + 1 + g]+""+c[loc + p + 2 + g]+""+c[loc + p + 3 + g]+"")
-        f -= 1
-        input += 1
-        }
+        console.log(""+f+" objects were orphaned")
+        var g = d*4
+        c[loc + p] = c[loc + g]
+        c[loc + 1 + p] = c[loc + 1 + g]
+        c[loc + 2 + p] = c[loc + 2 + g]
+        c[loc + 3 + p] = c[loc + 3 + g]       
+            
+        c[loc + g] = "ff"
+        c[loc + 1 + g] = "ff"
+        c[loc + 2 + g] = "ff"
+        c[loc + 3 + g] = "ff"
+        console.log("fixed")
     }
+}
+var deleted = function(){
+    deleteobj(document.getElementById("objselect").selectedIndex)
 }
