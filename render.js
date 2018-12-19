@@ -665,6 +665,12 @@ var deleteobj = function(input){
         c[loc + 2 + g] = "ff"
         c[loc + 3 + g] = "ff"
         console.log("fixed")
+    } else {
+        var g = d*4
+        c[loc + g] = "ff"
+        c[loc + 1 + g] = "ff"
+        c[loc + 2 + g] = "ff"
+        c[loc + 3 + g] = "ff"
     }
 }
 var deleted = function(){
