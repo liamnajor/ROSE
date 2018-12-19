@@ -623,6 +623,9 @@ var viewdat = function(){
                 d += 1
             } else {
                 e = 4
+                if(d === 0){
+                objects = "No objects on current screen"
+                }
             }
         }
     window.alert(objects)
