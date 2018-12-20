@@ -1,4 +1,5 @@
 var localstoragesupported = true
+var startbank = []
 try {
   eval('localStorage.setItem("test", "test")')
 }
@@ -94,6 +95,19 @@ var button = function(){
         var res = bytes.substr(b, e)
         c[counter] = res.substr(0, 2)
         e = b
+    }
+    var s = parseInt("24000", 16)
+    var h = 0
+    var hs = c.length
+    console.log(hs.toString(16))
+    while (s != hs){
+        startbank[h] = s.toString(16)
+        s += parseInt("4000", 16)
+        h += 1
+        console.log(s.toString(16))
+        if(h >= 256){
+            break
+        }
     }
     renderbank()
 }

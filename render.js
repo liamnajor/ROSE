@@ -1,10 +1,10 @@
-var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
+//var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
+var totalbanksadded = 0
 var pointers = []
 var epointers = []
 var room_transitions = []
 var scroll = []
 var chunks = []
-var objects = [[]] //will place a bunch of arrays of 3 in here, one for each unique object type (I think, if not I will just add more). they will correspond numarically, so a simple objects[(parseInt({type}, 16)] will get the 2 values, which are the X and Y of the object on its spritesheet and which spritesheet it's on.
 var selected
 var prevbank
 var tile
@@ -156,10 +156,13 @@ var renderbank = function(){
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderroom()
     }
+    var k = 0
+    //for some wacko reason, 2 objects were being placed at once. K fixes this.
     if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
         placeblock(ctx)
     } else if(document.getElementById("mode").selectedIndex === 1){
+        if(k === 0){
         var ctx = this.getContext("2d")
         var ID = document.getElementById("OBJID").value
         var x = Math.floor(e.offsetX/16)
@@ -195,8 +198,12 @@ var renderbank = function(){
         c[loc+num+3] = sy
         c[loc+num+4] = "ff"
         objnum += 1
+        k += 1
         } else {
             window.alert("16 is the object limit per screen")
+        }
+        } else if(k === 1){
+            k = 0
         }
         //ctx.drawImage(objects[(parseInt(type, 16)][2],objects[(parseInt(type, 16)][0],objects[(parseInt(type, 16)][1])
     } else if(document.getElementById("mode").selectedIndex === 2){
@@ -246,6 +253,8 @@ var renderbank = function(){
         if(e.buttons === 1){
             placeblock(ctx)
         }
+    } else {
+        console.log("only placing one at a time for your sanity")
     }
     })
     canvas.addEventListener("mousedown", function(e){
@@ -412,6 +421,19 @@ var renderbank = function(){
         }
         point += 1
     }
+    if(startbank.length >= 8){
+        var e = 0
+        var parent = document.getElementById("bankselect")
+        
+        while(e != startbank.length - 7){
+            var g = 16 + e
+            var select = document.createElement("option")
+            select.innerHTML = g.toString(16)
+            parent.appendChild(select)
+            e += 1
+        }
+    }
+    totalbanksadded = c.length/parseInt("4000", 16)
 }
 /*set spawn template(need to implement the save editor first to get the pointer locations)*/
 var spawn = function(c, x, y){
@@ -678,4 +700,24 @@ var deleteobj = function(input){
 }
 var deleted = function(){
     deleteobj(document.getElementById("objselect").selectedIndex)
+}
+var addbank = function(n){
+if (totalbanksadded <= 256){
+var e = 0
+var g = n*parseInt("4000", 16)
+var f = c.length
+while(e != g){
+	var h = f + e
+	c[h] = "00"
+    e += 1
+}
+    if(n === 1){
+    console.log("added 1 bank")} else {
+    console.log("added "+n+" banks")
+    }
+    totalbanksadded += 1
+    console.log(totalbanksadded)
+} else {
+    window.alert("it would be useles to add anymore banks, you wack job. what do you need this many for?!!")
+}
 }
