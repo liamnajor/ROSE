@@ -19,6 +19,21 @@ var tilebank = "07"
 var samus
 var obj
 var objnum
+    var addbankelement = function(){
+    if(startbank.length >= 8){
+        var e = 0
+        var parent = document.getElementById("bankselect")
+        
+        while(e != startbank.length - 7){
+            var g = 16 + e
+            var select = document.createElement("option")
+            select.innerHTML = g.toString(16)
+            parent.appendChild(select)
+            e += 1
+        }
+    }
+    totalbanksadded = c.length/parseInt("4000", 16)
+    }
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
@@ -314,6 +329,7 @@ var renderbank = function(){
             var locp = loc + selected
             epointers[selected] = epointertext.value
             c[loc] = epointertext.value
+             console.log("changed object pointer at "+locp.toString(16)+" to "+epointertext.value+"")
             }
 /*            var e = ""+epointer1+""+epointer2+""
             var f = parseInt(e, 16)
@@ -421,16 +437,21 @@ var renderbank = function(){
         }
         point += 1
     }
+    console.log(totalbanksadded)
     if(startbank.length >= 8){
         var e = 0
         var parent = document.getElementById("bankselect")
-        
         while(e != startbank.length - 7){
-            var g = 16 + e
-            var select = document.createElement("option")
-            select.innerHTML = g.toString(16)
-            parent.appendChild(select)
-            e += 1
+            if(parent.childNodes.length <= 254){
+                var g = 16 + e
+                var select = document.createElement("option")
+                select.innerHTML = g.toString(16)
+                parent.appendChild(select)
+                e += 1
+            } else {
+                window.alert("TOO MANY BANKS! The Great Depression will plague your hack...")
+                break
+            }
         }
     }
     totalbanksadded = c.length/parseInt("4000", 16)
@@ -706,18 +727,51 @@ if (totalbanksadded <= 256){
 var e = 0
 var g = n*parseInt("4000", 16)
 var f = c.length
-while(e != g){
+    while(e <= 512){
 	var h = f + e
 	c[h] = "00"
-    e += 1
-}
-    if(n === 1){
-    console.log("added 1 bank")} else {
-    console.log("added "+n+" banks")
+    c[h+1] = "45"
+    e += 2
     }
-    totalbanksadded += 1
+    e = 0
+    while(e != 256){
+	var h = f + e + 512
+	c[h] = "0f"
+    e += 1
+    }
+    e = 0
+    while(e != g-256-512){
+	var h = f + e + 512 + 256
+	c[h] = "00"
+    c[h+1] = "00"
+    e += 2
+    }
+
+    
+    if(n === 1){
+    console.log("added 1 bank")
+    } else {
+    console.log("added "+n+" banks("+totalbanksadded+" total)")
+    }
+    totalbanksadded += n
     console.log(totalbanksadded)
+    if(startbank.length >= 8){
+        var e = 0
+        var parent = document.getElementById("bankselect")
+        while(e != startbank.length - 7){
+            if(parent.childNodes.length <= 254){
+                var g = 16 + e
+                var select = document.createElement("option")
+                select.innerHTML = g.toString(16)
+                parent.appendChild(select)
+                e += 1
+            } else {
+                window.alert("TOO MANY BANKS! The Great Depression will plague your hack...")
+                break
+            }
+        }
+    }
 } else {
-    window.alert("it would be useles to add anymore banks, you wack job. what do you need this many for?!!")
+    window.alert("it would be useles to add anymore banks, you wack job. what do you need more then 256 for?!! assuming samus is 2 meters tall, each tile would be 1 meter. there are 256 screens of 256 tiles in those 256 banks. there is no way you need about 256^3 (or 16777216, or 16777.216 kilometers, or about 65 square kilometers) meters worth of space(unless you are using those banks for something else...in which case, tell me what,and open your hex editor.")
 }
 }
