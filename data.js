@@ -127,6 +127,56 @@ var encode = function(){
     c[parseInt("4E73", 16)] = collision0
     c[parseInt("4E74", 16)]	= collision1
     c[parseInt("4E6E", 16)] = tilebank
+    if(localStorage.getItem("mapbank") != null){
+        var mapp = localStorage.getItem("map")
+        var map = mapp.split(",",260)
+        var selected = parseInt(localStorage.getItem("mapbank"), 16)*16384
+        var f = selected - 16384
+        var e = 0
+        var g = 0
+        while(e <= 512){
+            var h = f + e
+            c[h] = "00"
+            var num = Math.floor(parseInt(map[g], 16)/4)
+            if(num > 58){
+                num = 58
+            }
+            num+=69
+            c[h+1] = num.toString(16)
+            e += 2
+            g += 1
+            }
+            e = 0
+            while(e <= 256){
+            var h = f + e + 512
+            c[h] = "00"
+            e += 1
+            }
+            e = 0
+        while(e <= 512){
+            var h = f + e + 512 + 256
+            c[h] = "00"
+            c[h+1] = "00"
+            e += 2
+            }
+            e = 1280
+            var h = f + e //+ 512 + 256 + 512
+            g = 0
+            console.log(h)
+                while(g != 58){
+                    var chunk = localStorage.getItem("chunk"+g+"").split(",", 512)
+                    var i = 0
+                    while (i != 256){
+                        var b = g*256
+                        c[i+h+b] = chunk[i]
+                        i += 1
+                        e += 1
+                    }
+                    g += 1
+                    console.log(""+g+","+e+"")
+                }
+            
+        }
     var i = 0
     while(i <= bytes.length){
         value += ""+c[i]+""
