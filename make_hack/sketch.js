@@ -145,4 +145,5 @@ if(chunknum <= 58){
     localStorage.setItem("mapbank", bank)
     } else {
         console.log("stopped")
+        canvas.style = "display:none;"
     }
