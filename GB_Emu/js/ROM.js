@@ -1,6 +1,20 @@
 var c = []
+var h = false
 var output
 var Converter = {}
+var frames = 0
+var frame = new CustomEvent('EnterFrame')
+        setInterval(function(){
+        window.dispatchEvent(frame)
+        frames += 1
+        }, 1000/10)
+window.addEventListener("EnterFrame", function(){
+    
+    if(frames >= 5 && h === true){
+        memory.write("FF9B", "c")
+        h = false
+    }
+})
 function blobToFile(theBlob, fileName){
     //A Blob() is almost a File() - it's just missing the two properties below which we will add
     theBlob.lastModifiedDate = new Date();
@@ -57,8 +71,9 @@ Converter.stringHexadecimalToBytes = function(stringHexadecimal)
     }
     var blobby = blobToFile(save(w), "m2.gb")
     FileLoad(blobby)
+        h = true
 }
-    var memory = {
+ var memory = {
         write:function(address, valstring){
 	gameboy.memoryWriter[parseInt(""+address+"", 16)](gameboy, parseInt(""+address+"", 16), parseInt(""+valstring+"", 16))},
         read:function(address){
