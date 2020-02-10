@@ -158,6 +158,7 @@ var renderbank = function(added){
         tile = bank
         console.log(""+bank+","+tile+"")
         ctx.clearRect(0, 0, 256, 256);
+	changeTileset(imagetileset)
         drawgrid(ctx, "#FF0000")
         drawgrid(ctx, "#FF0000")
         var x = Math.floor(e.offsetX/16)*16
