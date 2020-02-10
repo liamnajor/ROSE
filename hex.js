@@ -1,4 +1,6 @@
 // main
+    var Icon = new Image();
+    Icon.src = "ROSE.png"
 var hexout
 function main()
 {

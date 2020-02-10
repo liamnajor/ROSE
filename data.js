@@ -109,7 +109,7 @@ var button = function(){
             break
         }
     }
-    renderbank()
+    renderbank(true)
 }
 var encode = function(){
     var value = ""
@@ -211,5 +211,5 @@ document.getElementById("tileset").addEventListener("change", function() {
     loadtileset()
 })
 document.getElementById("bankselect").addEventListener("change", function() {
-    renderbank()
+    renderbank(false)
 })

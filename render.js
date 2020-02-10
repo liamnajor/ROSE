@@ -1,4 +1,17 @@
 //var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
+var tileset = document.getElementById("tileset").selectedIndex+9
+var frame = new CustomEvent('EnterFrame')
+        setInterval(function(){
+        window.dispatchEvent(frame)
+        }, 1000/10)
+window.addEventListener("EnterFrame", function(){
+    var temp = document.getElementById("tileset").selectedIndex+9
+    if(temp != tileset){
+        renderroom()
+        changeTileset(imagetileset)
+        tileset = temp
+    }
+})
 var totalbanksadded = 0
 var pointers = []
 var epointers = []
@@ -19,6 +32,7 @@ var tilebank = "07"
 var samus
 var obj
 var objnum
+var k = 0
     var addbankelement = function(){
     if(startbank.length >= 8){
         var e = 0
@@ -52,32 +66,7 @@ var loadtileset = function(){
     tileset.src = "Tilesets/"+selected.toString(16)+".png";
     imagetileset =  tileset
 }
-var renderbank = function(){
-    var input = document.getElementById("bankselect") //select element, loads a bank
-    var canvas = document.getElementById("edit")
-    var ctx = canvas.getContext("2d")
-    var roomedit = document.getElementById("roomedit")
-    var tileset = document.getElementById("tilesetimage")
-    tileset.addEventListener("mousedown", function(e){
-        var ctx = this.getContext("2d")
-        var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
-        tile = bank
-        console.log(""+bank+","+tile+"")
-        ctx.clearRect(0, 0, 256, 256);
-        changeTileset(imagetileset)
-        drawgrid(ctx, "#FF0000")
-        drawgrid(ctx, "#FF0000")
-        var x = Math.floor(e.offsetX/16)*16
-        var y = Math.floor(e.offsetY/16)*16
-        ctx.beginPath();
-        ctx.moveTo(x-1,y-1);
-        ctx.lineTo(x-1,y+17);
-        ctx.lineTo(x+17,y+17);
-        ctx.lineTo(x+17,y-1);
-        ctx.lineTo(x-1,y-1);
-        ctx.stroke();      
-    })
-    var renderroom = function(){
+var renderroom = function(){
         var d = 0
         while(d != 256){
         var xpos = d
@@ -95,6 +84,20 @@ var renderbank = function(){
             tiley += 1
         }
         var renderer = roomedit.getContext("2d")
+        var xOffset = 0
+        var yOffset = 0
+        if(x != undefined ||x != null){
+        if(xOffset >= 0){
+            roomedit.width += xOffset
+        }
+        if(yOffset >= 0){
+            roomedit.height += yOffset
+        }} else {
+            xOffset = 0
+            yOffset = 0
+        } 
+        xpos += xOffset
+        ypos += yOffset
         renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
         d += 1
         }
@@ -111,14 +114,12 @@ var renderbank = function(){
                 }
             }
         }
-        console.log(epointers[selected])
         var loc = epointers[selected]
         var e = loc.substr(2, 4)
         var d = parseInt(e, 16)
         d += parseInt("80", 16)
         e = loc.substr(0, 2)
         var loc = parseInt(""+d.toString(16)+""+e+"", 16)
-        console.log(loc)
         //ID,type,x,y
         e = 0
         d = 0
@@ -144,6 +145,34 @@ var renderbank = function(){
         }
         objnum = d
     }
+var renderbank = function(added){
+    var input = document.getElementById("bankselect") //select element, loads a bank
+    var canvas = document.getElementById("edit")
+    var ctx = canvas.getContext("2d")
+    var roomedit = document.getElementById("roomedit")
+    var tileset = document.getElementById("tilesetimage")
+    if(added === true){
+        tileset.addEventListener("mousedown", function(e){
+        var ctx = this.getContext("2d")
+        var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
+        tile = bank
+        console.log(""+bank+","+tile+"")
+        ctx.clearRect(0, 0, 256, 256);
+        drawgrid(ctx, "#FF0000")
+        drawgrid(ctx, "#FF0000")
+        var x = Math.floor(e.offsetX/16)*16
+        var y = Math.floor(e.offsetY/16)*16
+        ctx.beginPath();
+        ctx.moveTo(x-1,y-1);
+        ctx.lineTo(x-1,y+17);
+        ctx.lineTo(x+17,y+17);
+        ctx.lineTo(x+17,y-1);
+        ctx.lineTo(x-1,y-1);
+        ctx.stroke();      
+    })} else if(added === false || added === null || added === undefined){
+    }
+    
+    if(added === true){
     roomedit.addEventListener("mousedown", function(e){
     var placeblock = function(ctx){
         var edittile = true
@@ -171,13 +200,11 @@ var renderbank = function(){
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderroom()
     }
-    var k = 0
     //for some wacko reason, 2 objects were being placed at once. K fixes this.
     if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
         placeblock(ctx)
     } else if(document.getElementById("mode").selectedIndex === 1){
-        if(k === 0){
         var ctx = this.getContext("2d")
         var ID = document.getElementById("OBJID").value
         var x = Math.floor(e.offsetX/16)
@@ -217,9 +244,6 @@ var renderbank = function(){
         } else {
             window.alert("16 is the object limit per screen")
         }
-        } else if(k === 1){
-            k = 0
-        }
         //ctx.drawImage(objects[(parseInt(type, 16)][2],objects[(parseInt(type, 16)][0],objects[(parseInt(type, 16)][1])
     } else if(document.getElementById("mode").selectedIndex === 2){
         var x = Math.floor(e.offsetX/16)
@@ -229,13 +253,14 @@ var renderbank = function(){
         var ctx = this.getContext("2d")
         //ctx.drawImage(samus, sx*16, y*16)
         //ctx.drawImage(imagetileset,0,0,16,16,x*16,y*16,16,16)
-        ctx.drawImage(samus, sx, sy-7)
+        //ctx.drawImage(samus, sx, sy-7)
         spawn(c, sx.toString(16), sy.toString(16))
+        renderroom()
     } else {
         console.log("unimplemented")
     }
-    })
-    
+    })}
+    if(added === true){
     roomedit.addEventListener("mousemove", function(e){
     if(document.getElementById("mode").selectedIndex === 0){
     var placeblock = function(ctx){
@@ -272,6 +297,7 @@ var renderbank = function(){
         console.log("only placing one at a time for your sanity")
     }
     })
+    if(added === true){
     canvas.addEventListener("mousedown", function(e){
         var pointertext = document.getElementById("pointers")
         var scrolltext = document.getElementById("scroll")
@@ -346,7 +372,7 @@ var renderbank = function(){
             }
             console.log(enemies.length)*/
         renderroom()
-    })
+    })}}
     var drawgrid = function(ctx, style){
         if(style != undefined||style != null){
            ctx.fillStyle = style;
@@ -469,7 +495,7 @@ var spawn = function(c, x, y){
     c[20075] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
     c[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
-    window.alert("warning: collision data might not be right, expect glitches.")
+    //window.alert("warning: collision data might not be right, expect glitches.")
     
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
     //TODO: set metatiles, graphics properly
@@ -662,7 +688,8 @@ var viewdat = function(){
     while(e != 4){
             var p = d*4
             if(c[loc + p] != "ff"){
-                objects += ""+d+":"+c[loc + p]+" "+c[loc + p + 1]+" "+c[loc + p + 2]+" "+c[loc + p + 3]+"\n"
+                objects += "<p>Object "+d+"(raw):"+c[loc + p]+" "+c[loc + p + 1]+" "+c[loc + p + 2]+" "+c[loc + p + 3]+"</p>"
+                objects += "<p>Object "+d+" - ID:"+c[loc + p]+", Type:"+c[loc + p + 1]+", X:"+c[loc + p + 2]+", Y:"+c[loc + p + 3]+"</p>"
                 d += 1
             } else {
                 e = 4
@@ -671,9 +698,10 @@ var viewdat = function(){
                 }
             }
         }
-    window.alert(objects)
+    document.getElementById("OBJData").innerHTML = objects
 }
 var deleteobj = function(input){
+    renderroom()
     var loc = epointers[selected]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
@@ -697,6 +725,7 @@ var deleteobj = function(input){
     d -= 1
     var p = input*4
     console.log("deleting object "+input+", with "+d+" total")
+    objnum -= 1
     if(input < d){
         var f = d-input
         console.log(""+f+" objects were orphaned")
@@ -710,7 +739,7 @@ var deleteobj = function(input){
         c[loc + 1 + g] = "ff"
         c[loc + 2 + g] = "ff"
         c[loc + 3 + g] = "ff"
-        console.log("fixed")
+        console.log("fixed all orphaned objects")
     } else {
         var g = d*4
         c[loc + g] = "ff"
@@ -723,7 +752,7 @@ var deleted = function(){
     deleteobj(document.getElementById("objselect").selectedIndex)
 }
 var addbank = function(n){
-if (totalbanksadded <= 256){
+if (totalbanksadded <= 255){
 var e = 0
 var g = n*parseInt("4000", 16)
 var f = c.length
@@ -767,11 +796,12 @@ var f = c.length
                 e += 1
             } else {
                 window.alert("TOO MANY BANKS! The Great Depression will plague your hack...")
+                e += 1
                 break
             }
         }
     }
 } else {
-    window.alert("it would be useles to add anymore banks, you wack job. what do you need more then 256 for?!! assuming samus is 2 meters tall, each tile would be 1 meter. there are 256 screens of 256 tiles in those 256 banks. there is no way you need about 256^3 (or 16777216, or 16777.216 kilometers, or about 65 square kilometers) meters worth of space(unless you are using those banks for something else...in which case, tell me what,and open your hex editor.")
+    window.alert("it would be useles to add anymore banks, you wack job. What do you need more then 256 for?!! Aassuming samus is 2 meters tall, each tile would be 1 meter. there are 256 screens of 256 tiles in those 256 banks. There is no way you need about 256^3 (or 16777216, or 16777.216 kilometers, or about 65 square kilometers) meters worth of space(unless you are using those banks for something else...in which case, tell me what,and open your hex editor).")
 }
 }
