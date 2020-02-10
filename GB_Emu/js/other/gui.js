@@ -57,6 +57,7 @@ function windowingInitialize() {
         stringload()
         localStorage.setItem("opened","")
         console.log("opened from ROSE, loading saved ROM")
+        h = true
     } else if(opened === null || opened === undefined){
         localStorage.setItem("opened","")
         console.log("opened normally")
@@ -251,7 +252,7 @@ function registerGUIEvents() {
 		else {
 			cout("could not find the handle on the file to open.", 2);
 		}
-	};
+    };
 	addEvent("change", document.getElementById("save_open"), function () {
 		windowStacks[9].hide();
 		if (typeof this.files != "undefined") {
