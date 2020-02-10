@@ -1,17 +1,4 @@
 //var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
-var tileset = document.getElementById("tileset").selectedIndex+9
-var frame = new CustomEvent('EnterFrame')
-        setInterval(function(){
-        window.dispatchEvent(frame)
-        }, 1000/10)
-window.addEventListener("EnterFrame", function(){
-    var temp = document.getElementById("tileset").selectedIndex+9
-    if(temp != tileset){
-        renderroom()
-        changeTileset(imagetileset)
-        tileset = temp
-    }
-})
 var totalbanksadded = 0
 var pointers = []
 var epointers = []
@@ -158,7 +145,7 @@ var renderbank = function(added){
         tile = bank
         console.log(""+bank+","+tile+"")
         ctx.clearRect(0, 0, 256, 256);
-	changeTileset(imagetileset)
+        changeTileset(imagetileset)
         drawgrid(ctx, "#FF0000")
         drawgrid(ctx, "#FF0000")
         var x = Math.floor(e.offsetX/16)*16
@@ -170,6 +157,7 @@ var renderbank = function(added){
         ctx.lineTo(x+17,y-1);
         ctx.lineTo(x-1,y-1);
         ctx.stroke();      
+            
     })} else if(added === false || added === null || added === undefined){
     }
     
@@ -324,6 +312,8 @@ var renderbank = function(added){
         ctx.lineTo(x+17,y-1);
         ctx.lineTo(x-1,y-1);
         ctx.stroke();
+        
+    setInterval(function(){window.dispatchEvent(frame)}, 1000/10)
         //renderroom()
         pointertext.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)
@@ -806,3 +796,9 @@ var f = c.length
     window.alert("it would be useles to add anymore banks, you wack job. What do you need more then 256 for?!! Aassuming samus is 2 meters tall, each tile would be 1 meter. there are 256 screens of 256 tiles in those 256 banks. There is no way you need about 256^3 (or 16777216, or 16777.216 kilometers, or about 65 square kilometers) meters worth of space(unless you are using those banks for something else...in which case, tell me what,and open your hex editor).")
 }
 }
+var frame = new CustomEvent('EnterFrame')
+window.addEventListener("EnterFrame", function(){
+        renderroom()
+        changeTileset(imagetileset)
+    
+})
