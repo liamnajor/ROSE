@@ -167,8 +167,8 @@ var renderbank = function(added){
     var tileset = document.getElementById("tilesetimage")
     if(added === true){
         tileset.addEventListener("mousedown", function(e){
-	ctx.fillStyle = "white";
         var ctx = this.getContext("2d")
+	ctx.fillStyle = "white";
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         tile = bank
         //console.log(""+bank+","+tile+"")
