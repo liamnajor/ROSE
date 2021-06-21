@@ -696,8 +696,11 @@ var rawObjects = []
                 }
             }
         }
+if(objects[document.getElementById("objselect").selectedIndex]!=undefined){
     document.getElementById("OBJData").innerHTML = objects[document.getElementById("objselect").selectedIndex]
-    document.getElementById("OBJData").innerHTML += rawObjects[document.getElementById("objselect").selectedIndex]
+    document.getElementById("OBJData").innerHTML += rawObjects[document.getElementById("objselect").selectedIndex]} else {
+document.getElementById("OBJData").innerHTML = "Invalid object. It doesn't exist."
+}
 }
 var deleteobj = function(input){
     renderroom()
@@ -802,8 +805,15 @@ var f = byteArray.length
     }
 }
 }
+
 var frame = new CustomEvent('EnterFrame')
+
+    setInterval(function(){window.dispatchEvent(frame)}, 1000/10)
 window.addEventListener("EnterFrame", function(){
+if(hexout !=""){
+if(fileChange === false){
+decode()
+fileChange = true}}
         renderroom()
         changeTileset(imagetileset)
     
