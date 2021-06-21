@@ -70,7 +70,7 @@ var testhack = function(){
     }
 
 
-var button = function(){
+var decode = function(){
     if(localstoragesupported === true){
     var ROM = localStorage.getItem('ROM');
     if(ROM === null || ROM === undefined || hexout != ""){
