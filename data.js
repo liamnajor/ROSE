@@ -8,9 +8,9 @@ catch(error) {
   localstoragesupported = false
 }
 console.log(localstoragesupported)
-var c = []
+var byteArray = []
 var hex = null
-var adresses = {//I know I spelled addresses wrong, but I'd already copy-pasted all the shit below and this was quicker
+var addresses = {
         items:[["DF97","E041"],["DDC9","E023"],["DE49","DFE7"],["DFBF","DFFA"],"DD89","DF58","DDE5","DED2","DFA6","DA24"],
         graphics:[["14725","14DE2","150B2","1510C","15255","15531"],["14743","14759","15072","150D3","1520E","1527A","153BC","15525","1552F"],["15095","150BB","15529"],["14C22","150B4","150C2","15199","15527","1552B"],"15132",["150A6","15533"],"15084",["154FE","15500","15523"],["14804","1498F","15026","15521","1552D"],["14C0C","15047"]]
     }
@@ -93,12 +93,12 @@ var button = function(){
         var counter = e/2 -1
         var b = e - 2
         var res = bytes.substr(b, e)
-        c[counter] = res.substr(0, 2)
+        byteArray[counter] = res.substr(0, 2)
         e = b
     }
     var s = parseInt("24000", 16)
     var h = 0
-    var hs = c.length
+    var hs = byteArray.length
     console.log(hs.toString(16))
     while (s != hs){
         startbank[h] = s.toString(16)
@@ -114,19 +114,19 @@ var button = function(){
 var encode = function(){
     var value = ""
     var bytes = hexout
-    //c[parseInt({address in hexidecimal}, 16) OR {address in base-10] = {replacement}
+    //byteArray[parseInt({address in hexidecimal}, 16) OR {address in base-10] = {replacement}
     //(base values) 4E6F	$6000	graphics
-    c[parseInt("4E6F", 16)]	= tiles0
-    c[parseInt("4E70", 16)] = tiles1
+    byteArray[parseInt("4E6F", 16)]	= tiles0
+    byteArray[parseInt("4E70", 16)] = tiles1
 
     //(base values) 4E71    $5280  	Metatile
-    c[parseInt("4E71", 16)] = metatiles0
-    c[parseInt("4E72", 16)] = metatiles1
+    byteArray[parseInt("4E71", 16)] = metatiles0
+    byteArray[parseInt("4E72", 16)] = metatiles1
 
     //(base values) 4E73    $4580   collision
-    c[parseInt("4E73", 16)] = collision0
-    c[parseInt("4E74", 16)]	= collision1
-    c[parseInt("4E6E", 16)] = tilebank
+    byteArray[parseInt("4E73", 16)] = collision0
+    byteArray[parseInt("4E74", 16)]	= collision1
+    byteArray[parseInt("4E6E", 16)] = tilebank
     if(localStorage.getItem("mapbank") != null){
         var mapp = localStorage.getItem("map")
         var map = mapp.split(",",260)
@@ -136,27 +136,27 @@ var encode = function(){
         var g = 0
         while(e <= 512){
             var h = f + e
-            c[h] = "00"
+            byteArray[h] = "00"
             var num = Math.floor(parseInt(map[g], 16)/4)
             if(num > 58){
                 num = 58
             }
             num+=69
-            c[h+1] = num.toString(16)
+            byteArray[h+1] = num.toString(16)
             e += 2
             g += 1
             }
             e = 0
             while(e <= 256){
             var h = f + e + 512
-            c[h] = "00"
+            byteArray[h] = "00"
             e += 1
             }
             e = 0
         while(e <= 512){
             var h = f + e + 512 + 256
-            c[h] = "00"
-            c[h+1] = "00"
+            byteArray[h] = "00"
+            byteArray[h+1] = "00"
             e += 2
             }
             e = 1280
@@ -168,7 +168,7 @@ var encode = function(){
                     var i = 0
                     while (i != 256){
                         var b = g*256
-                        c[i+h+b] = chunk[i]
+                        byteArray[i+h+b] = chunk[i]
                         i += 1
                         e += 1
                     }
@@ -179,7 +179,7 @@ var encode = function(){
         }
     var i = 0
     while(i <= bytes.length){
-        value += ""+c[i]+""
+        value += ""+byteArray[i]+""
         i += 1
     }
     

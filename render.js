@@ -1,4 +1,30 @@
 //var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
+
+var tilectx = document.getElementById("tilesetimage").getContext("2d")
+var drawgrid = function(ctx, style){
+        if(style != undefined||style != null){
+           ctx.fillStyle = style;
+        } else {
+	   ctx.fillStyle = "white";
+        }
+        var x = 0
+        while(x != 272){
+            ctx.beginPath();
+            ctx.moveTo(0,x);
+            ctx.lineTo(256,x);
+            ctx.stroke();
+            x += 16
+        }
+        x = 0
+        while(x != 272){
+            ctx.beginPath();
+            ctx.moveTo(x,0);
+            ctx.lineTo(x,256);
+            ctx.stroke();
+            x += 16
+        }
+    }
+var fileChange = false
 var totalbanksadded = 0
 var pointers = []
 var epointers = []
@@ -33,7 +59,7 @@ var k = 0
             e += 1
         }
     }
-    totalbanksadded = c.length/parseInt("4000", 16)
+    totalbanksadded = byteArray.length/parseInt("4000", 16)
     }
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
@@ -52,6 +78,7 @@ var loadtileset = function(){
     var selected = select.selectedIndex+9
     tileset.src = "Tilesets/"+selected.toString(16)+".png";
     imagetileset =  tileset
+    drawgrid(tilectx)
 }
 var renderroom = function(){
         var d = 0
@@ -90,11 +117,11 @@ var renderroom = function(){
         }
         var pos = selected.toString(16)
         var bank = document.getElementById("bankselect").selectedIndex + 9
-        if(c[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
-            if(c[20073] === "0"+pos.substr(0, 1)+""){
-                if(c[20075] === "0"+pos.substr(1, 2)+""){
-                    var x = parseInt(c[20074], 16)
-                    var y = parseInt(c[20072], 16)
+        if(byteArray[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
+            if(byteArray[20073] === "0"+pos.substr(0, 1)+""){
+                if(byteArray[20075] === "0"+pos.substr(1, 2)+""){
+                    var x = parseInt(byteArray[20074], 16)
+                    var y = parseInt(byteArray[20072], 16)
                     var ctx = roomedit.getContext("2d")
                     ctx.drawImage(samus, x, y+10)
                     //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
@@ -116,16 +143,16 @@ var renderroom = function(){
             var x = p+2
             var y = p+3
             if(e === 0){
-                if(c[loc + p] != "ff"){
+                if(byteArray[loc + p] != "ff"){
                     e = 2
                 } else {
                     e = 4
                 }
             }
             if(e === 2){
-                ctx.drawImage(obj, parseInt(c[loc + x], 16), parseInt(c[loc + y], 16))
-                console.log("drew object number "+d+" at X:"+c[loc + x]+" and Y:"+c[loc + y]+"")
-                console.log("obj"+d+":"+c[loc + p]+" "+c[loc + p + 1]+" "+c[loc + x]+" "+c[loc + y]+" ")
+                ctx.drawImage(obj, parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16))
+                console.log("drew object number "+d+" at X:"+byteArray[loc + x]+" and Y:"+byteArray[loc + y]+"")
+                console.log("obj"+d+":"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + x]+" "+byteArray[loc + y]+" ")
                 d += 1
                 e = 0
             }
@@ -140,14 +167,15 @@ var renderbank = function(added){
     var tileset = document.getElementById("tilesetimage")
     if(added === true){
         tileset.addEventListener("mousedown", function(e){
+	ctx.fillStyle = "white";
         var ctx = this.getContext("2d")
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         tile = bank
-        console.log(""+bank+","+tile+"")
+        //console.log(""+bank+","+tile+"")
         ctx.clearRect(0, 0, 256, 256);
         changeTileset(imagetileset)
-        drawgrid(ctx, "#FF0000")
-        drawgrid(ctx, "#FF0000")
+        drawgrid(ctx, "white")
+        drawgrid(ctx, "white")
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
         ctx.beginPath();
@@ -174,7 +202,7 @@ var renderbank = function(added){
         posb += parseInt(startbank[input.selectedIndex], 16)
         posb += pos
         if(edittile === true){
-            c[posb] = tile
+            byteArray[posb] = tile
             chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
         } else {
             console.error("exception: tile not selected")
@@ -223,11 +251,11 @@ var renderbank = function(added){
             var yy = sx.toString(16)
             sx = yy
         }
-        c[loc+num] = ID
-        c[loc+num+1] = type
-        c[loc+num+2] = sx
-        c[loc+num+3] = sy
-        c[loc+num+4] = "ff"
+        byteArray[loc+num] = ID
+        byteArray[loc+num+1] = type
+        byteArray[loc+num+2] = sx
+        byteArray[loc+num+3] = sy
+        byteArray[loc+num+4] = "ff"
         objnum += 1
         k += 1
         } else {
@@ -243,7 +271,7 @@ var renderbank = function(added){
         //ctx.drawImage(samus, sx*16, y*16)
         //ctx.drawImage(imagetileset,0,0,16,16,x*16,y*16,16,16)
         //ctx.drawImage(samus, sx, sy-7)
-        spawn(c, sx.toString(16), sy.toString(16))
+        spawn(byteArray, sx.toString(16), sy.toString(16))
         renderroom()
     } else {
         console.log("unimplemented")
@@ -263,7 +291,7 @@ var renderbank = function(added){
         posb += parseInt(startbank[input.selectedIndex], 16)
         posb += pos
         if(edittile === true){
-            c[posb] = tile
+            byteArray[posb] = tile
             chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
         } else {
             console.error("exception: tile not selected")
@@ -299,10 +327,10 @@ var renderbank = function(added){
         transtext.value = room_transitions[selected]
         scrolltext.value = scroll[selected]
         epointertext.value = epointers[selected]
+        ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
         drawgrid(ctx)
         drawgrid(ctx)
-        ctx.fillStyle = "#000000";
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
         ctx.beginPath();
@@ -319,8 +347,8 @@ var renderbank = function(added){
             var loc = parseInt(startbank[input.selectedIndex], 16)
             var select = selected * 2
             var locp = loc + select
-            c[locp] = pointertext.value.substr(0, 2)
-            c[locp+1] = pointertext.value.substr(2, 4)
+            byteArray[locp] = pointertext.value.substr(0, 2)
+            byteArray[locp+1] = pointertext.value.substr(2, 4)
             pointers[selected] = pointertext.value
             console.log("changed chunk pointer at "+locp.toString(16)+" to "+pointertext.value+"")
         }
@@ -328,15 +356,15 @@ var renderbank = function(added){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("300", 16)
             var select = selected * 2
             var locp = loc + select
-            c[locp] = transtext.value.substr(0, 2)
-            c[locp+1] = transtext.value.substr(2, 4)
+            byteArray[locp] = transtext.value.substr(0, 2)
+            byteArray[locp+1] = transtext.value.substr(2, 4)
             room_transitions[selected] = transtext.value
             console.log("changed room transition at "+locp.toString(16)+" to "+transtext.value+"")
         }
         scrolltext.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
             var locp = loc + selected
-            c[locp] = scrolltext.value
+            byteArray[locp] = scrolltext.value
             scroll[selected] = scrolltext.value
             console.log("changed scroll data at "+locp.toString(16)+" to "+scrolltext.value+"")
         }
@@ -345,18 +373,18 @@ var renderbank = function(added){
             var loc = parseInt("C2E0", 16)+selection
             var locp = loc + selected
             epointers[selected] = epointertext.value
-            c[loc] = epointertext.value
+            byteArray[loc] = epointertext.value
              console.log("changed object pointer at "+locp.toString(16)+" to "+epointertext.value+"")
             }
 /*            var e = ""+epointer1+""+epointer2+""
             var f = parseInt(e, 16)
             var i = 0
             var enemies = []
-            while(c[f] != "ff"){
-                var ID = c[parseInt(""+epointer1+"", 16)]
-                var type = c[parseInt(""+epointer1+"", 16) + 1]
-                var xpos = c[parseInt(""+epointer1+"", 16) + 2]
-                var ypos = c[parseInt(""+epointer1+"", 16) + 3]
+            while(byteArray[f] != "ff"){
+                var ID = byteArray[parseInt(""+epointer1+"", 16)]
+                var type = byteArray[parseInt(""+epointer1+"", 16) + 1]
+                var xpos = byteArray[parseInt(""+epointer1+"", 16) + 2]
+                var ypos = byteArray[parseInt(""+epointer1+"", 16) + 3]
                 f += 4
                 eneimies[e] = [ID, type, xpos, ypos]
                 i += 1
@@ -364,39 +392,17 @@ var renderbank = function(added){
             console.log(enemies.length)*/
         renderroom()
     })}}
-    var drawgrid = function(ctx, style){
-        if(style != undefined||style != null){
-           ctx.fillStyle = style;
-        }
-        var x = 0
-        while(x != 272){
-            ctx.beginPath();
-            ctx.moveTo(0,x);
-            ctx.lineTo(256,x);
-            ctx.stroke();
-            x += 16
-        }
-        x = 0
-        while(x != 272){
-            ctx.beginPath();
-            ctx.moveTo(x,0);
-            ctx.lineTo(x,256);
-            ctx.stroke();
-            x += 16
-        }
-    }
+    
     drawgrid(ctx)
     drawgrid(ctx)
     loadtileset()    
-    var tilectx = document.getElementById("tilesetimage").getContext("2d")
-    drawgrid(tilectx)
     drawgrid(tilectx)
     var point = 0
     while(point != 256){
         var loc = parseInt(startbank[input.selectedIndex], 16)
         var p = point *2
         var locp = loc + p
-        pointers[point] = ""+c[locp]+""+c[locp+1]+""
+        pointers[point] = ""+byteArray[locp]+""+byteArray[locp+1]+""
         point += 1
     }
     point = 0
@@ -404,14 +410,14 @@ var renderbank = function(added){
         var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("300", 16)
         var p = point *2
         var locp = loc + p
-        room_transitions[point] = ""+c[locp]+""+c[locp+1]+""
+        room_transitions[point] = ""+byteArray[locp]+""+byteArray[locp+1]+""
         point += 1
     }
     point = 0
     while(point != 256){
         var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
         var locp = loc + point
-        scroll[point] = c[locp]
+        scroll[point] = byteArray[locp]
         point += 1
     }
     point = 0
@@ -419,7 +425,7 @@ var renderbank = function(added){
         var selection = input.selectedIndex*512
         var loc = parseInt("C2E0", 16)+selection
         var locp = loc + point
-        epointers[point] = ""+c[locp]+""+c[locp+1]+""
+        epointers[point] = ""+byteArray[locp]+""+byteArray[locp+1]+""
         point += 2
         //add 8 to second byte to get actual enemy location(pointers are little-endian)
     }
@@ -429,7 +435,7 @@ var renderbank = function(added){
         var selection = input.selectedIndex*512
         var loc = parseInt("C2E0", 16)+selection
         var locp = loc + point
-        epointers[p] = ""+c[locp]+""+c[locp+1]+""
+        epointers[p] = ""+byteArray[locp]+""+byteArray[locp+1]+""
         point += 2
         p += 1
         //add 8 to second byte to get actual enemy location(pointers are little-endian)
@@ -449,7 +455,7 @@ var renderbank = function(added){
             pointer -= parseInt("4500", 16)
             loc += pointer
             var locp = loc + e
-            chunks[point].chunk[e] = c[locp]
+            chunks[point].chunk[e] = byteArray[locp]
             e += 1
         }
         point += 1
@@ -471,21 +477,21 @@ var renderbank = function(added){
             }
         }
     }
-    totalbanksadded = c.length/parseInt("4000", 16)
+    totalbanksadded = byteArray.length/parseInt("4000", 16)
 }
 /*set spawn template(need to implement the save editor first to get the pointer locations)*/
-var spawn = function(c, x, y){
+var spawn = function(byteArray, x, y){
     hex = selected.toString(16)
-    c[20068] = ""+y+""
-    c[20069] = "0"+hex.substr(0, 1)+""
-    c[20070] = ""+x+""
-    c[20071] = "0"+hex.substr(1, 2)+""
-    c[20072] = ""+y+""
-    c[20073] = "0"+hex.substr(0, 1)+""
-    c[20074] = ""+x+""
-    c[20075] = "0"+hex.substr(1, 2)+""
+    byteArray[20068] = ""+y+""
+    byteArray[20069] = "0"+hex.substr(0, 1)+""
+    byteArray[20070] = ""+x+""
+    byteArray[20071] = "0"+hex.substr(1, 2)+""
+    byteArray[20072] = ""+y+""
+    byteArray[20073] = "0"+hex.substr(0, 1)+""
+    byteArray[20074] = ""+x+""
+    byteArray[20075] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
-    c[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
+    byteArray[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
     //window.alert("warning: collision data might not be right, expect glitches.")
     
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
@@ -516,7 +522,7 @@ var spawn = function(c, x, y){
     metatiles0 = "80"
     collision1 = "42"//unknown
     collision0 = "80"
-    } else if(sel === "c"){
+    } else if(sel === "byteArray"){
     tilebank = "07"
     tiles1 = "60"
     tiles0 = "00"
@@ -533,20 +539,20 @@ var spawn = function(c, x, y){
     collision1 = "44"//unknown, might be ruins interior
     collision0 = "80"
     } else if(sel === "e"){
-    var c = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
-    if (c === 1){
+    var byteArray = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
+    if (byteArray === 1){
         tiles1 = "68"
         tiles0 = "00"
         metatiles1 = "56"
         metatiles0 = "A8"
         console.log("acid not lowered")
-    } else if(c === 2){
+    } else if(byteArray === 2){
         tiles1 = "6D"
         tiles0 = "30"
         metatiles1 = "54"
         metatiles0 = "80"
         console.log("acid lowered halfway")
-    } else if (c === 3){
+    } else if (byteArray === 3){
         tiles1 = "72"
         tiles0 = "60"
         metatiles1 = "55"
@@ -675,12 +681,13 @@ var viewdat = function(){
     e = 0
     d = 0
     //objnum
-    var objects = ""
+    var objects = []
+var rawObjects = []
     while(e != 4){
             var p = d*4
-            if(c[loc + p] != "ff"){
-                objects += "<p>Object "+d+"(raw):"+c[loc + p]+" "+c[loc + p + 1]+" "+c[loc + p + 2]+" "+c[loc + p + 3]+"</p>"
-                objects += "<p>Object "+d+" - ID:"+c[loc + p]+", Type:"+c[loc + p + 1]+", X:"+c[loc + p + 2]+", Y:"+c[loc + p + 3]+"</p>"
+            if(byteArray[loc + p] != "ff"){
+                rawObjects[d] = "<p>Object "+d+"(raw):"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + p + 2]+" "+byteArray[loc + p + 3]+"</p>"
+                objects[d] = "<p>Object "+d+" - ID:"+byteArray[loc + p]+", Type:"+byteArray[loc + p + 1]+", X:"+byteArray[loc + p + 2]+", Y:"+byteArray[loc + p + 3]+"</p>"
                 d += 1
             } else {
                 e = 4
@@ -689,7 +696,8 @@ var viewdat = function(){
                 }
             }
         }
-    document.getElementById("OBJData").innerHTML = objects
+    document.getElementById("OBJData").innerHTML = objects[document.getElementById("objselect").selectedIndex]
+    document.getElementById("OBJData").innerHTML += rawObjects[document.getElementById("objselect").selectedIndex]
 }
 var deleteobj = function(input){
     renderroom()
@@ -706,8 +714,8 @@ var deleteobj = function(input){
     var objects = []
     while(e != 4){
             var p = d*4
-            if(c[loc + p] != "ff"){
-                objects[d] = [""+c[loc + p]+"",""+c[loc + p + 1]+"",""+c[loc + p + 2]+"",""+c[loc + p + 3]+""]
+            if(byteArray[loc + p] != "ff"){
+                objects[d] = [""+byteArray[loc + p]+"",""+byteArray[loc + p + 1]+"",""+byteArray[loc + p + 2]+"",""+byteArray[loc + p + 3]+""]
                 d += 1
             } else {
                 e = 4
@@ -721,22 +729,22 @@ var deleteobj = function(input){
         var f = d-input
         console.log(""+f+" objects were orphaned")
         var g = d*4
-        c[loc + p] = c[loc + g]
-        c[loc + 1 + p] = c[loc + 1 + g]
-        c[loc + 2 + p] = c[loc + 2 + g]
-        c[loc + 3 + p] = c[loc + 3 + g]       
+        byteArray[loc + p] = byteArray[loc + g]
+        byteArray[loc + 1 + p] = byteArray[loc + 1 + g]
+        byteArray[loc + 2 + p] = byteArray[loc + 2 + g]
+        byteArray[loc + 3 + p] = byteArray[loc + 3 + g]       
             
-        c[loc + g] = "ff"
-        c[loc + 1 + g] = "ff"
-        c[loc + 2 + g] = "ff"
-        c[loc + 3 + g] = "ff"
+        byteArray[loc + g] = "ff"
+        byteArray[loc + 1 + g] = "ff"
+        byteArray[loc + 2 + g] = "ff"
+        byteArray[loc + 3 + g] = "ff"
         console.log("fixed all orphaned objects")
     } else {
         var g = d*4
-        c[loc + g] = "ff"
-        c[loc + 1 + g] = "ff"
-        c[loc + 2 + g] = "ff"
-        c[loc + 3 + g] = "ff"
+        byteArray[loc + g] = "ff"
+        byteArray[loc + 1 + g] = "ff"
+        byteArray[loc + 2 + g] = "ff"
+        byteArray[loc + 3 + g] = "ff"
     }
 }
 var deleted = function(){
@@ -746,24 +754,24 @@ var addbank = function(n){
 if (totalbanksadded <= 255){
 var e = 0
 var g = n*parseInt("4000", 16)
-var f = c.length
+var f = byteArray.length
     while(e <= 512){
 	var h = f + e
-	c[h] = "00"
-    c[h+1] = "45"
+	byteArray[h] = "00"
+    byteArray[h+1] = "45"
     e += 2
     }
     e = 0
     while(e != 256){
 	var h = f + e + 512
-	c[h] = "0f"
+	byteArray[h] = "0f"
     e += 1
     }
     e = 0
     while(e != g-256-512){
 	var h = f + e + 512 + 256
-	c[h] = "00"
-    c[h+1] = "00"
+	byteArray[h] = "00"
+    byteArray[h+1] = "00"
     e += 2
     }
 
@@ -792,8 +800,6 @@ var f = c.length
             }
         }
     }
-} else {
-    window.alert("it would be useles to add anymore banks, you wack job. What do you need more then 256 for?!! Aassuming samus is 2 meters tall, each tile would be 1 meter. there are 256 screens of 256 tiles in those 256 banks. There is no way you need about 256^3 (or 16777216, or 16777.216 kilometers, or about 65 square kilometers) meters worth of space(unless you are using those banks for something else...in which case, tell me what,and open your hex editor).")
 }
 }
 var frame = new CustomEvent('EnterFrame')
