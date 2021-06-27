@@ -201,7 +201,7 @@ var encode = function(){
 main();
 document.getElementById("sorter").addEventListener("click", function(e){
     if (e.button === 0){
-    button()}
+    decode()}
 })
 document.getElementById("encode").addEventListener("click", function(e){
     if (e.button === 0){
