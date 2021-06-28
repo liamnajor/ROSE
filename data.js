@@ -1,13 +1,13 @@
-var localstoragesupported = true
+//var localstoragesupported = true
 var startbank = []
-try {
+/*try {
   eval('localStorage.setItem("test", "test")')
 }
 catch(error) {
   console.error(error);
   localstoragesupported = false
 }
-console.log(localstoragesupported)
+console.log(localstoragesupported)*/
 var byteArray = []
 var hex = null
 var addresses = {
@@ -16,7 +16,7 @@ var addresses = {
     }
 var testhack = function(){
     //opens gameboy emulator in a new tab/window
-        localStorage.setItem("opened", "true")
+        //localStorage.setItem("opened", "true")
         window.open("GB_Emu/index.xhtml")
 }
 	var converter = function(input)
@@ -71,7 +71,7 @@ var testhack = function(){
 
 
 var decode = function(){
-    if(localstoragesupported === true){
+    /*if(localstoragesupported === true){
     var ROM = localStorage.getItem('ROM');
     if(ROM === null || ROM === undefined || hexout != ""){
         var bytes = hexout
@@ -81,11 +81,11 @@ var decode = function(){
         hexout = ROM
         var bytes = ROM
         console.log("loaded from local storage")
-    }} else {
+    }} else {*/
         var ROM = hexout
         var bytes = ROM
-        console.log("loaded from local file, local storage overridden/not supported")
-    }
+        //console.log("loaded from local file, local storage overridden/not supported")
+    //}
     var e = bytes.length
     var p = 0
     var i = e/2
@@ -212,4 +212,5 @@ document.getElementById("tileset").addEventListener("change", function() {
 })
 document.getElementById("bankselect").addEventListener("change", function() {
     renderbank(false)
+
 })

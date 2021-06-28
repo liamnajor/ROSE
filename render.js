@@ -1,5 +1,17 @@
-//var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
-
+var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
+var imageDatas = []
+var prevTileset
+var drawChunkImageData = function(ctx,imageDatas){
+var c = 0
+for (let y = 0; y != 16; y += 1) {
+for (let x = 0; x != 16; x += 1) {
+var data = new ImageData(imageDatas[parseInt(pointers[c],16)-parseInt("45",16)], 16)
+ctx.putImageData(data, x*16, y*16)
+c += 1
+}
+}
+}
+arrayGenerated = false
 var tilectx = document.getElementById("tilesetimage").getContext("2d")
 var drawgrid = function(ctx, style){
         if(style != undefined||style != null){
@@ -64,7 +76,7 @@ var k = 0
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
-    console.log("drew tileset")
+    //console.log("drew tileset")
 }
 var loadtileset = function(){
     var samusimg = new Image(16, 32);
@@ -151,8 +163,8 @@ var renderroom = function(){
             }
             if(e === 2){
                 ctx.drawImage(obj, parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16))
-                console.log("drew object number "+d+" at X:"+byteArray[loc + x]+" and Y:"+byteArray[loc + y]+"")
-                console.log("obj"+d+":"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + x]+" "+byteArray[loc + y]+" ")
+                //console.log("drew object number "+d+" at X:"+byteArray[loc + x]+" and Y:"+byteArray[loc + y]+"")
+                //console.log("obj"+d+":"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + x]+" "+byteArray[loc + y]+" ")
                 d += 1
                 e = 0
             }
@@ -187,6 +199,7 @@ var renderbank = function(added){
         ctx.stroke();      
             
     })} else if(added === false || added === null || added === undefined){
+arrayGenerated = input.selectedIndex
     }
     
     if(added === true){
@@ -316,6 +329,11 @@ var renderbank = function(added){
     })
     if(added === true){
     canvas.addEventListener("mousedown", function(e){
+	var simplePalette = [0,255,127]
+var array = []
+for(let e = 0; e!=256;e+=1){
+	array[e]=new Uint8ClampedArray(1024)}
+	generateArray(array, simplePalette,chunks)
         var pointertext = document.getElementById("pointers")
         var scrolltext = document.getElementById("scroll")
         var transtext = document.getElementById("rtransition")
@@ -329,6 +347,7 @@ var renderbank = function(added){
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
+	drawChunkImageData(ctx,imageDatas)//.putImageData(imageData, 0, 0)
         drawgrid(ctx)
         drawgrid(ctx)
         var x = Math.floor(e.offsetX/16)*16
@@ -447,6 +466,7 @@ var renderbank = function(added){
         chunks[point] = {}
         chunks[point].pointer = chunk.toString(16)
         chunks[point].chunk = []
+        chunks[point].collisions = []
         var e = 0
         while(e != 256){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("500", 16)
@@ -456,6 +476,7 @@ var renderbank = function(added){
             loc += pointer
             var locp = loc + e
             chunks[point].chunk[e] = byteArray[locp]
+            chunks[point].collisions[e] = collisionData[document.getElementById("tileset").selectedIndex][parseInt(byteArray[locp],16)]
             e += 1
         }
         point += 1
@@ -478,6 +499,31 @@ var renderbank = function(added){
         }
     }
     totalbanksadded = byteArray.length/parseInt("4000", 16)
+}
+var generateArray = function(array, simplePalette,chunks){
+
+for (let x = 0; x != 59; x += 1){
+
+for (let p = 0; p < 1024; p += 4) {
+  array[x][p] = simplePalette[chunks[x].collisions[Math.floor(p/4)]];// R value
+  array[x][p+1] = array[x][p];  // G value
+  array[x][p+2] = array[x][p] // B value
+  array[x][p+3] = 255;  // A value
+}
+}/*
+for (let x = 0; x != 16; x += 1) {
+for (let y = 0; y != 16; y += 1) {
+for (let p = 0; p < 1024; p += 4) {
+var e = x*y
+  array[e][p] = simplePalette[chunks[parseInt(pointers[e],16)-parseInt("45",16)].collisions[Math.floor(p/4)]];// R value
+  array[e][p+1] = array[p];  // G value
+  array[e][p+2] = array[p] // B value
+  array[e][p+3] = 255;  // A value
+
+}
+}
+}*/
+imageDatas=array
 }
 /*set spawn template(need to implement the save editor first to get the pointer locations)*/
 var spawn = function(byteArray, x, y){
@@ -522,7 +568,7 @@ var spawn = function(byteArray, x, y){
     metatiles0 = "80"
     collision1 = "42"//unknown
     collision0 = "80"
-    } else if(sel === "byteArray"){
+    } else if(sel === "c"){
     tilebank = "07"
     tiles1 = "60"
     tiles0 = "00"
@@ -539,20 +585,20 @@ var spawn = function(byteArray, x, y){
     collision1 = "44"//unknown, might be ruins interior
     collision0 = "80"
     } else if(sel === "e"){
-    var byteArray = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
+    var caveVariant = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
     if (byteArray === 1){
         tiles1 = "68"
         tiles0 = "00"
         metatiles1 = "56"
         metatiles0 = "A8"
         console.log("acid not lowered")
-    } else if(byteArray === 2){
+    } else if(caveVariant === 2){
         tiles1 = "6D"
         tiles0 = "30"
         metatiles1 = "54"
         metatiles0 = "80"
         console.log("acid lowered halfway")
-    } else if (byteArray === 3){
+    } else if (caveVariant === 3){
         tiles1 = "72"
         tiles0 = "60"
         metatiles1 = "55"
@@ -814,7 +860,19 @@ if(hexout !=""){
 if(fileChange === false){
 decode()
 fileChange = true}}
+})
+window.addEventListener("mousedown", function(){
+
         renderroom()
         changeTileset(imagetileset)
-    
+	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
+	drawgrid(document.getElementById("edit").getContext("2d"))
 })
+window.addEventListener("mouseup", function(){
+
+        renderroom()
+        changeTileset(imagetileset)
+	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
+	drawgrid(document.getElementById("edit").getContext("2d"))
+})
+
