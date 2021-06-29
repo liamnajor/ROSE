@@ -94,7 +94,11 @@ var decode = function(){
         var b = e - 2
         var res = bytes.substr(b, e)
         byteArray[counter] = res.substr(0, 2)
-        e = b
+        
+if(counter===parseInt("2800B",16) && byteArray[counter]==="00"){
+byteArray[counter] ="45"
+}
+e = b
     }
     var s = parseInt("24000", 16)
     var h = 0
