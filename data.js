@@ -186,11 +186,11 @@ var encode = function(){
         value += ""+byteArray[i]+""
         i += 1
     }
-    
+    /*
     if(localstoragesupported === true){
     localStorage.setItem("ROM", ""+value+"")
     console.log("saved output to local storage")
-    }
+    }*/
     var saver = Converter.stringHexadecimalToBytes(value)
     var m = 262143
     var w = []
