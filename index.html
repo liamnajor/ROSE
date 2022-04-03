@@ -21,7 +21,17 @@ body {
         <input type = "button" id = "encode" value = "encode">
         <input type = "button" id = "test" value = "play" onclick = "testhack()">
     </div>
-    <div style = "position: absolute; top: 330px; left: 50px; border: 1px solid #000000; width: 256px; height: 256px"><canvas id = "edit" width = 256 height = 256></canvas></div>
+    <div style = "position: absolute; top: 330px; left: 50px; border: 1px solid #000000; width: 256px; height: 256px">
+        
+    Bank:<select id = "bankselect">
+        <option>9</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+        <option>D</option>
+        <option>E</option>
+        <option>F</option>
+    </select><br><canvas id = "edit" width = 256 height = 256></canvas></div>
 <div style = "position:absolute; top: 330px; right: 50px;border: 1px solid #000000; width: 256px; height: 146px" >Tileset:<select id = "tileset">
         <option>9</option>
         <option>A</option>
@@ -32,15 +42,7 @@ body {
         <option>F</option>
     </select><br><canvas id = "tilesetimage" width = 256 height = 128></canvas></div>
 <div id = "world" style = "display: block;margin-left: auto;margin-right: auto;height: 120px border: 1px solid #000000; width: 256px; height: 274px">
-    Bank:<select id = "bankselect">
-        <option>9</option>
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
-        <option>D</option>
-        <option>E</option>
-        <option>F</option>
-    </select><br>
+    <br>
     <canvas width = "256" height = "256" id = "roomedit"></canvas>
     </div><div style = "position: absolute; right: 50px; top: 40px; border: 1px solid #000000; width: 286px; height: 276px">
     <br><b>Objects:</b><br>
