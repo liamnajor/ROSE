@@ -203,10 +203,6 @@ var encode = function(){
     save(w)
 }
 main();
-document.getElementById("sorter").addEventListener("click", function(e){
-    if (e.button === 0){
-    decode()}
-})
 document.getElementById("encode").addEventListener("click", function(e){
     if (e.button === 0){
     encode(true)}
