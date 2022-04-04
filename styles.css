@@ -1,9 +1,9 @@
 
 textarea {  
-  width: 20%;
-  height: 17px;
-  border: none;
+  width: 15%;
+  height: 13px;
+  border: 1px;
   background-color: #FFFFFF;
-  font-size: 16px;
+  font-size: 11px;
   resize: none;
 }
