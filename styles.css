@@ -1,6 +1,9 @@
 
-textarea {
+textarea {  
+  width: 10%;
+  height: 17px;
+  border: none;
+  background-color: #FFFFFF;
+  font-size: 16px;
   resize: none;
-  rows: 4;
-  cols: 2;
 }
