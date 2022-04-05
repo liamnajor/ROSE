@@ -1,3 +1,5 @@
+
+var FileLoad = null;
 var inFullscreen = false;
 var mainCanvas = null;
 var fullscreenCanvas = null;
@@ -40,14 +42,14 @@ function loadViaMozActivity () {
   };
 };
 
-function loadViaXHR () {
+function loadViaXHR () {/*
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "insert_relative_path_to_gb_rom_here");
   xhr.responseType = "blob";
   xhr.onload = function () {
     startGame(new Blob([this.response], { type: "text/plain" }));
   };
-  xhr.send();
+  xhr.send();*/
 };
 
 function shim (eles) {
@@ -100,10 +102,14 @@ function pickRandomColor () {
 };
 
 function windowingInitialize() {
-	cout("windowingInitialize() called.", 0);
+	cout("windowingInitialize() 1 called.", 0);
   pickRandomColor();
 	mainCanvas = document.getElementById("mainCanvas");
   registerTouchEventShim();
+  
+		//Hook the GUI controls.
+		registerGUIEvents();
+	
   window.onunload = autoSave;
   ("MozActivity" in window ? loadViaMozActivity : loadViaXHR)();
 }
@@ -112,7 +118,7 @@ var DEBUG_WINDOWING = false;
 window.addEventListener("DOMContentLoaded", windowingInitialize);
 function registerGUIEvents() {
 	cout("In registerGUIEvents() : Registering GUI Events.", -1);
-	addEvent("click", document.getElementById("terminal_clear_button"), clear_terminal);
+	/*addEvent("click", document.getElementById("terminal_clear_button"), clear_terminal);
 	addEvent("click", document.getElementById("local_storage_list_refresh_button"), refreshStorageListing);
 	addEvent("click", document.getElementById("terminal_close_button"), function () { windowStacks[1].hide() });
 	addEvent("click", document.getElementById("about_close_button"), function () { windowStacks[2].hide() });
@@ -127,7 +133,7 @@ function registerGUIEvents() {
 	addEvent("click", document.getElementById("GameBoy_settings_menu"), function () { windowStacks[3].show() });
 	addEvent("click", document.getElementById("local_storage_list_menu"), function () { refreshStorageListing(); windowStacks[7].show(); });
 	addEvent("click", document.getElementById("freeze_list_menu"), function () { refreshFreezeListing(); windowStacks[8].show(); });
-	addEvent("click", document.getElementById("view_importer"), function () { windowStacks[9].show() });
+	addEvent("click", document.getElementById("view_importer"), function () { windowStacks[9].show() });*/
 	addEvent("keydown", document, keyDown);
 	addEvent("keyup", document,  function (event) {
 		if (event.keyCode == 27) {
@@ -141,8 +147,8 @@ function registerGUIEvents() {
 	});
 	addEvent("MozOrientation", window, GameBoyGyroSignalHandler);
 	addEvent("deviceorientation", window, GameBoyGyroSignalHandler);
-	new popupMenu(document.getElementById("GameBoy_file_menu"), document.getElementById("GameBoy_file_popup"));
-	addEvent("click", document.getElementById("data_uri_clicker"), function () {
+	//new popupMenu(document.getElementById("GameBoy_file_menu"), document.getElementById("GameBoy_file_popup"));
+	/*addEvent("click", document.getElementById("data_uri_clicker"), function () {
 		var datauri = prompt("Please input the ROM image's Base 64 Encoded Text:", "");
 		if (datauri != null && datauri.length > 0) {
 			try {
@@ -379,7 +385,7 @@ function registerGUIEvents() {
 	addEvent("resize", window, initNewCanvasSize);
 	addEvent("unload", window, function () {
 		autoSave();
-	});
+	});*/
 }
 function keyDown(event) {
 	var keyCode = event.keyCode;
