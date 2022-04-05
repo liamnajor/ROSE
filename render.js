@@ -586,7 +586,7 @@ var spawn = function(byteArray, x, y){
     collision0 = "80"
     } else if(sel === "e"){
     var caveVariant = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
-    if (caveVarient === 1){
+    if (caveVariant === 1){
         tiles1 = "68"
         tiles0 = "00"
         metatiles1 = "56"
