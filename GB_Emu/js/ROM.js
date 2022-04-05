@@ -1,35 +1,38 @@
-var c = []
 var h = false
-var output
-var Converter = {}
+//var output
+var Con = {}
 var frames = 0
-var frame = new CustomEvent('EnterFrame')
+var tick = new CustomEvent('tick')
+
         setInterval(function(){
-        window.dispatchEvent(frame)
+        window.dispatchEvent(tick)
         frames += 1
-        }, 1000/10)
-window.addEventListener("EnterFrame", function(){
+        }, 1000/100)
+
+window.addEventListener("tick", function(){
     
     if(frames >= 5 && h === true){
         memory.write("FF9B", "c")
         h = false
     }
 })
+
 function blobToFile(theBlob, fileName){
     //A Blob() is almost a File() - it's just missing the two properties below which we will add
     theBlob.lastModifiedDate = new Date();
     theBlob.name = fileName;
     return theBlob;
 }
-Converter.stringHexadecimalToBytes = function(stringHexadecimal)
+
+Con.stringHexadecimalToBytes = function(string)
 	{
 		var returnValues = [];
 
 		var nibblesForByteCurrent = [];
 
-		for (i = 0; i < stringHexadecimal.length; i++)
+		for (i = 0; i < string.length; i++)
 		{
-			var charForNibble = stringHexadecimal[i];
+			var charForNibble = string[i];
 			var nibbleAsInt = parseInt(charForNibble, 16);
 			if (isNaN(nibbleAsInt) == false)
 			{
@@ -47,6 +50,7 @@ Converter.stringHexadecimalToBytes = function(stringHexadecimal)
 
 		return returnValues;
 	}
+
     var save = function(bytes)
 	{
 		this.bytes = bytes
@@ -59,20 +63,13 @@ Converter.stringHexadecimalToBytes = function(stringHexadecimal)
     	var dataAsBlob = new Blob([dataAsArrayBuffer], {type:'bytes'});
         return dataAsBlob
         }
+
     var stringload = function(e){
-    var ROM = localStorage.getItem('ROM');
-    var saver = Converter.stringHexadecimalToBytes(ROM)
-    var m = 262143
-    var w = []
-    var v = 0
-    while(v <= m){
-        w[v] = saver[v]
-        v += 1
-    }
-    var blobby = blobToFile(save(w), "m2.gb")
-    FileLoad(blobby)
+    	
+    	var blobby = encode(false)
+    	FileLoad(blobby)
         h = true
-}
+    }
  var memory = {
         write:function(address, valstring){
 	gameboy.memoryWriter[parseInt(""+address+"", 16)](gameboy, parseInt(""+address+"", 16), parseInt(""+valstring+"", 16))},
