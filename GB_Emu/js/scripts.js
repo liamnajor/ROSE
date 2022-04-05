@@ -1,9 +1,9 @@
 var el = document.getElementById("dummy")
 window.addEventListener("keydown", function(e){
-    if(e.key === "a"){
+    if(e.key === "s"){
         memory.write("FF9B", "09")
     }
-    if(e.key === "s"){
+    if(e.key === "a"){
         memory.write("D050", "05")
         memory.write("D051", "FF")
         memory.write("D052", "05")
