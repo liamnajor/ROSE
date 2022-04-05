@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>ROSE</title></head>
+        <title>ROSE</title>
         <link rel="shortcut icon" href="icon.png">
         <link rel="stylesheet" href="styles.css">
 <style>
@@ -11,7 +11,10 @@ body {
   background-repeat: repeat;
 }</style>
 <script src="psuedoCollisions.js"></script>
-<body>
+  <link rel="stylesheet" href="GB_Emu/css/mobile.css"/>
+  </head>
+  <body>
+
     <a href="https://liamnajor.github.io/ROSE-how-to"><img src="ROSE.png" id="icon" style="display: block;margin-left: auto;margin-right: auto;height: 70px"></a>
     <div id = "file manager" style = "position: absolute; top: 40px; left: 50px; border: 1px solid #000000; width: 329px; height: 276px;">
         <h2>File:</h2>
@@ -44,7 +47,75 @@ body {
 <div id = "world" style = "display: block;margin-left: auto;margin-right: auto;height: 120px border: 1px solid #000000; width: 256px; height: 274px">
     <br>
     <canvas width = "256" height = "256" id = "roomedit"></canvas>
-    </div><div style = "position: absolute; right: 50px; top: 40px; border: 1px solid #000000; width: 286px; height: 276px">
+    </div>
+    
+    
+        <!--reference: http://upload.wikimedia.org/wikipedia/commons/9/93/Game_boy_pocket.png--><input type="button" id="showEmulator" value="Show Emulator" style="diplay:block; margin:auto" onclick = "showEmu()"></input>
+      
+    <div id="gameboy_shell">
+        <input type="button" value="Hide Emulator" style="margin:auto;" onclick = "hideEmu()"></input>
+      <span id="on_off">OFF ! ! ON</span>
+      
+      <input type="button" value="s" id="show" onclick="enableOnScreenButtons()" style="float: right; text-align: center;"><input type="button" value="h" id="hide" onclick="disableOnScreenButtons()" style="float: left; text-align: center;">
+      <div id="screen_cover">
+        <div id="canvas_container">
+          <canvas id="mainCanvas">No Canvas Support</canvas>
+        </div>
+        <div>
+          GameBoy <span id="pocket">Pocket</span>
+        </div>
+      </div>
+      <div id="nintendo">Nintendo</div>
+      <div id="d_pad">
+        <div id="d_pad_up">
+          <div id="arrow_up" data-key-zone="up"></div>
+        </div>
+        <div id="d_pad_left_right">
+          <div id="d_pad_left">
+            <div id="arrow_left" data-key-zone="left"></div>
+          </div>
+          <div id="d_pad_right">
+            <div id="arrow_right" data-key-zone="right"></div>
+          </div>
+          <div id="d_pad_center"></div>
+        </div>
+        <div id="d_pad_down">
+          <div id="arrow_down" data-key-zone="down"></div>
+        </div>
+      </div>
+      <div id="a_button_group" class="button_group" data-key-zone="a">
+        <div class="round_button"></div>
+        A
+      </div>
+      <div id="b_button_group" class="button_group" data-key-zone="b">
+        <div class="round_button"></div>
+        B
+      </div>
+      
+      <div id="select_button_group" class="button_group" data-key-zone="select">
+        <div class="flat_button"></div>
+        SELECT
+      </div>
+      <div id="start_button_group" class="button_group" data-key-zone="start">
+        <div class="flat_button"></div>
+        START
+      </div>
+    
+    <script src="GB_Emu/js/other/mobile.js"></script>
+    <script src="GB_Emu/js/other/base64.js"></script>
+    <script src="GB_Emu/js/other/json2.js"></script>
+    <script src="GB_Emu/js/other/swfobject.js"></script>
+    <script src="GB_Emu/js/other/resampler.js"></script>
+    <script src="GB_Emu/js/other/XAudioServer.js"></script>
+    <script src="GB_Emu/js/other/resize.js"></script>
+    <script src="GB_Emu/js/GameBoyCore.js"></script>
+    <script src="GB_Emu/js/GameBoyIO.js"></script>
+        <script src="GB_Emu/js/ROM.js"></script>
+        <script src="GB_Emu/js/scripts.js"></script>
+   </div>
+    
+    
+    <div style = "position: absolute; right: 50px; top: 40px; border: 1px solid #000000; width: 286px; height: 276px">
     <br><b>Objects:</b><br>
     Pointer: <textarea id = "pointers"></textarea><br>
     Scroll: <textarea id = "scroll"></textarea><br>
@@ -59,7 +130,7 @@ body {
     <option>Tile</option>
     <option>Object</option>
     <option>Samus</option>
-    </select><br>OBJ Type:<textarea id="OBJType">00</textarea><br>OBJ ID:<textarea id="OBJID">00</textarea>
+    </select><br>OBJ Type:<textarea id="OBJType">00</textarea><br>OBJ ID:<textarea id="OBJID" rows="1" cols="2">00</textarea>
     </div>
     </div>
 <script type="text/javascript" src = "hex.js">
@@ -70,7 +141,3 @@ body {
     </script>
 </body>
 </html>
-<!--
-
-
---> 

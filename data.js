@@ -15,9 +15,15 @@ var addresses = {
         graphics:[["14725","14DE2","150B2","1510C","15255","15531"],["14743","14759","15072","150D3","1520E","1527A","153BC","15525","1552F"],["15095","150BB","15529"],["14C22","150B4","150C2","15199","15527","1552B"],"15132",["150A6","15533"],"15084",["154FE","15500","15523"],["14804","1498F","15026","15521","1552D"],["14C0C","15047"]]
     }
 var testhack = function(){
-    //opens gameboy emulator in a new tab/window
+    /*/opens gameboy emulator in a new tab/window
         //localStorage.setItem("opened", "true")
-        window.open("GB_Emu/index.xhtml")
+        window.open("GB_Emu/index.xhtml")*/
+        windowingInitialize()
+        startGame(encode(false))
+setTimeout(function(){        
+gameboy.canvas.height = 144
+gameboy.canvas.width = 160
+gameboy.recomputeDimension()}, 100)
 }
 	var converter = function(input)
 	{
@@ -47,7 +53,7 @@ var testhack = function(){
 		return returnValues;
 	}	
 
-	var save = function(bytes)
+	var save = function(bytes, output)
 	{
         this.bytes = bytes
 		var dataAsArrayBuffer = new ArrayBuffer(this.bytes.length);
@@ -57,7 +63,7 @@ var testhack = function(){
 			dataAsArrayUnsigned[i] = this.bytes[i];
 		}
     	var dataAsBlob = new Blob([dataAsArrayBuffer], {type:'bytes'});
-
+if(output === true){
 		var link = document.createElement("a");
 		link.href = window.URL.createObjectURL(dataAsBlob);
         if (document.getElementById("filename").value === ""){
@@ -65,11 +71,63 @@ var testhack = function(){
         } else {
             link.download = document.getElementById("filename").value
         }
-		link.click();
+		link.click();}
         return dataAsBlob
     }
 
+var hideEmu = function(){
+    document.getElementById("gameboy_shell").style.display = "none"
+    document.getElementById("showEmulator").style.display = "block"
+}
+var showEmu = function(){
+    document.getElementById("gameboy_shell").style.display = "block"
+    document.getElementById("showEmulator").style.display = "none"
+}
+var enableOnScreenButtons = function(){
 
+    document.getElementById("show").style.display = "none"
+    document.getElementById("hide").style.display = ""
+    document.getElementById("d_pad").style.display = ""
+    document.getElementById("d_pad_up").style.display = ""
+    document.getElementById("arrow_up").style.display = ""
+    document.getElementById("d_pad_left_right").style.display = ""
+    document.getElementById("d_pad_left").style.display = ""
+    document.getElementById("arrow_left").style.display = ""
+    document.getElementById("d_pad_right").style.display = ""
+    document.getElementById("arrow_right").style.display = ""
+    document.getElementById("d_pad_center").style.display = ""
+    document.getElementById("d_pad_down").style.display = ""
+    document.getElementById("arrow_down").style.display = ""
+    document.getElementById("a_button_group").style.display = ""
+    document.getElementById("b_button_group").style.display = ""
+    document.getElementById("select_button_group" ).style.display = ""
+    document.getElementById("start_button_group").style.display = ""
+    
+    document.getElementById("gameboy_shell").style.height = "275px"
+}
+var disableOnScreenButtons = function(){
+    document.getElementById("show").style.display = ""
+    document.getElementById("hide").style.display = "none"
+    document.getElementById("d_pad").style.display = "none"
+    document.getElementById("d_pad_up").style.display = "none"
+    document.getElementById("arrow_up").style.display = "none"
+    document.getElementById("d_pad_left_right").style.display = "none"
+    document.getElementById("d_pad_left").style.display = "none"
+    document.getElementById("arrow_left").style.display = "none"
+    document.getElementById("d_pad_right").style.display = "none"
+    document.getElementById("arrow_right").style.display = "none"
+    document.getElementById("d_pad_center").style.display = "none"
+    document.getElementById("d_pad_down").style.display = "none"
+    document.getElementById("arrow_down").style.display = "none"
+    document.getElementById("a_button_group").style.display = "none"
+    document.getElementById("b_button_group").style.display = "none"
+    document.getElementById("select_button_group" ).style.display = "none"
+    document.getElementById("start_button_group").style.display = "none"
+    document.getElementById("gameboy_shell").style.height = "110px"
+}
+
+    document.getElementById("show").style.display = "none"
+    hideEmu()
 var decode = function(){
     /*if(localstoragesupported === true){
     var ROM = localStorage.getItem('ROM');
@@ -115,7 +173,7 @@ e = b
     }
     renderbank(true)
 }
-var encode = function(){
+var encode = function(output){
     var value = ""
     var bytes = hexout
     //byteArray[parseInt({address in hexidecimal}, 16) OR {address in base-10] = {replacement}
@@ -200,7 +258,10 @@ var encode = function(){
         v += 1
     }
     console.log("encoding complete")
-    save(w)
+    if(output === true){
+    save(w, true)} else if(output === false){
+    return save(w)
+    }
 }
 main();
 document.getElementById("encode").addEventListener("click", function(e){

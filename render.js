@@ -135,7 +135,7 @@ var renderroom = function(){
                     var x = parseInt(byteArray[20074], 16)
                     var y = parseInt(byteArray[20072], 16)
                     var ctx = roomedit.getContext("2d")
-                    ctx.drawImage(samus, x, y+10)
+                    ctx.drawImage(samus, x-1, y-11)
                     //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
                 }
             }
@@ -586,7 +586,7 @@ var spawn = function(byteArray, x, y){
     collision0 = "80"
     } else if(sel === "e"){
     var caveVariant = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
-    if (byteArray === 1){
+    if (caveVarient === 1){
         tiles1 = "68"
         tiles0 = "00"
         metatiles1 = "56"
@@ -617,7 +617,7 @@ var spawn = function(byteArray, x, y){
     collision1 = "47"//correct, I think...
     collision0 = "80"
     } else {
-        window.alert("INVALID TILESET(this should be impossable to trigger, please tell me how you did it)")
+        window.alert("INVALID TILESET")
     }
     //(base values) 4E6F	$6000	graphics
 
