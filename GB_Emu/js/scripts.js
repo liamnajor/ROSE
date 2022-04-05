@@ -1,6 +1,5 @@
 var el = document.getElementById("dummy")
 window.addEventListener("keydown", function(e){
-    console.log(e)
     if(e.key === "a"){
         memory.write("FF9B", "09")
     }
