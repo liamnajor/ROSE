@@ -1,5 +1,4 @@
 var objectList = [
-"
 [4,'Skreek spawner'],
 
 [9,'Drivel'],
