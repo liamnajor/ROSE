@@ -1,105 +1,106 @@
 var objectList = [
-[4,'Skreek spawner'],
+[4,' Skreek spawner'],
 
-[9,'Drivel'],
+[9,' Drivel'],
 
-[24,'Yumbo'],
+[18,' Yumbo'],
 
-[39,'Chute Leech'],
+[27,' Chute Leech'],
 
-[72,'vertical(?) moheek'],
+[48,' vertical(?) moheek'],
 
-[73,'horizontal(?) moheek'],
+[49,' horizontal(?) moheek'],
 
-[116,'Wallfire'],
+[74,' Wallfire'],
 
-[257,'Septogg'],
+[101,' Septogg'],
 
-[260,'Moto'],
+[104,' Moto'],
 
-[262,'Halzyn'],
+[106,' Halzyn'],
 
-[263,'Ramulken'],
+[107,' Ramulken'],
 
-[296,'Plasma Beam in Orb'],
+[128,' Plasma Beam in Orb'],
 
-[297,'Plasma Beam'],
+[129,' Plasma Beam'],
 
-[304,'Ice Beam in Orb'],
+[130,' Ice Beam in Orb'],
 
-[305,'Ice Beam'],
+[131,' Ice Beam'],
 
-[306,'Wave Beam in Orb'],
+[132,' Wave Beam in Orb'],
 
-[307,'Wave Beam'],
+[133,' Wave Beam'],
 
-[308,'Spazer in Orb'],
+[134,' Spazer in Orb'],
 
-[309,'Spazer'],
+[135,' Spazer'],
 
-[310,'Morph Ball Bombs in Orb'],
+[136,' Morph Ball Bombs in Orb'],
 
-[311,'Morph Ball bombs'],
+[137,' Morph Ball bombs'],
 
-[312,'Screw Attack in Orb'],
+[138,' Screw Attack in Orb'],
 
-[313,'Screw Attack'],
+[139,' Screw Attack'],
 
-[320,'Varia Suit in Orb'],
+[140,' Varia Suit in Orb'],
 
-[321,'Varia Suit'],
+[141,' Varia Suit'],
 
-[322,'High Jump in Orb'],
+[142,' High Jump in Orb'],
 
-[323,'High Jump'],
+[143,' High Jump'],
 
-[324,'Space Jump in Orb'],
+[144,' Space Jump in Orb'],
 
-[325,'Space Jump'],
+[145,' Space Jump'],
 
-[326,'Spider Ball in Orb'],
+[146,' Spider Ball in Orb'],
 
-[327,'Spider Ball'],
+[147,' Spider Ball'],
 
-[328,'Spring Ball in Orb'],
+[148,' Spring Ball in Orb'],
 
-[329,'Spring Ball'],
+[149,' Spring Ball'],
 
-[336,'Energy Tank in Orb'],
+[150,' Energy Tank in Orb'],
 
-[337,'Energy Tank'],
+[151,' Energy Tank'],
 
-[338,'Missile Tank in Orb'],
+[152,' Missile Tank in Orb'],
 
-[339,'Missile Tank'],
+[153,' Missile Tank'],
 
-[340,'Blob Thrower'],
+[154,' Blob Thrower'],
 
-[341,'Energy Restore Orb'],
+[155,' Energy Restore Orb'],
 
-[342,'Arachnus'],
+[156,' Arachnus'],
 
-[343,'Missile Restore'],
+[157,' Missile Restore'],
 
-[352,'Alpha Metroid, pre shed'],
+[160,' Alpha Metroid, pre shed'],
 
-[354,'Metroid Egg'],
+[161,' Empty'],
 
-[355,'Gamma Metroid'],
+[162,' Metroid Egg'],
 
-[356,'Alpha Metroid, post shed'],
+[163,' Gamma Metroid'],
 
-[358,'Metroid Egg Clone'],
+[164,' Alpha Metroid, post shed'],
 
-[371,'Zeta Metroid, pre shed'],
+[166,' Metroid Egg Clone'],
 
-[377,'Omega Metroid'],
+[173,' Zeta Metroid, pre shed'],
 
-[518,'Larva Metroid'],
+[179,' Omega Metroid'],
 
-[520,'Flitt'],
+[206,' Larva Metroid'],
 
-[521,'Meboid(?)'],
+[208,' Flitt'],
 
-[534,'Gullugg']
-]
+[209,' Meboid(?)'],
+
+[216,' Gullugg']]
