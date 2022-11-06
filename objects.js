@@ -104,6 +104,8 @@ var objectList = [
 
 [209,' Meboid(?)'],
 
+[211,'Gravitt'],
+
 [216,' Gullugg']]
 //convert to logical array, add entries above if needed. TODO: load from a JSON file for configuration with custom hacks
 var logObjectList = []
