@@ -109,7 +109,7 @@ var tempObjectList = []
 var counter = 0
 while (counter!=216){
     tempObjectList[counter]=[]
-    f+=1
+    counter+=1
 }
 counter = 0
 while (counter !=tempObjectList.length){
