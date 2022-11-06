@@ -6,6 +6,9 @@ var objectList = [
 [18,' Yumbo'],
 
 [27,' Chute Leech'],
+    
+[32, 'Horizontal Needler'],
+[33, 'Vertical Needler'],
 
 [48,' vertical(?) moheek'],
 
