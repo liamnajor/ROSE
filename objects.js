@@ -104,3 +104,15 @@ var objectList = [
 [209,' Meboid(?)'],
 
 [216,' Gullugg']]
+
+var tempObjectList = []
+var counter = 0
+while (counter!=216){
+    tempObjectList[counter]=[]
+    f+=1
+}
+counter = 0
+while (counter !=tempObjectList.length){
+    tempObjectList[objectList[counter][0]-1]=objectList[counter]
+    counter+=1
+}
