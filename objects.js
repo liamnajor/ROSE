@@ -83,8 +83,6 @@ var objectList = [
 
 [160,' Alpha Metroid, pre shed'],
 
-[161,' Empty'],
-
 [162,' Metroid Egg'],
 
 [163,' Gamma Metroid'],
