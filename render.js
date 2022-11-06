@@ -742,8 +742,8 @@ var rawObjects = []
     while(e != 4){
             var p = d*4
             if(byteArray[loc + p] != "ff"){
-                rawObjects[d] = "<p>Object "+d+"(raw):"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + p + 2]+" "+byteArray[loc + p + 3]+"</p>"
-                objects[d] = "<p>Object "+d+" - ID:"+byteArray[loc + p]+", Type:"+byteArray[loc + p + 1]+", X:"+byteArray[loc + p + 2]+", Y:"+byteArray[loc + p + 3]+"</p>"
+                rawObjects[d] = "<p>Object "+d+"(raw):"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + p + 2]+" "+byteArray[loc + p + 3]+"</br>"
+                objects[d] = "Object "+d+" - ID:"+byteArray[loc + p]+", Type:"+byteArray[loc + p + 1]+", X:"+byteArray[loc + p + 2]+", Y:"+byteArray[loc + p + 3]+"</p>"
                 d += 1
             } else {
                 e = 4
