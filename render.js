@@ -1,3 +1,13 @@
+var drawObj=function(ctx,x,y,type){
+ctx.beginPath()
+ctx.lineWidth = 3;
+ctx.strokeStyle = 'red';
+ctx.rect(x,y,16,16)
+ctx.font = "11px Arial";
+ctx.fillStyle = 'green';
+ctx.fillText(""+type+"", x, y);
+ctx.stroke()
+}
 var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
 var imageDatas = []
 var prevTileset
@@ -162,7 +172,7 @@ var renderroom = function(){
                 }
             }
             if(e === 2){
-                ctx.drawImage(obj, parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16))
+                drawObj(ctx,parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16), objectList[document.getElementById("OBJType").selectedIndex][0])
                 //console.log("drew object number "+d+" at X:"+byteArray[loc + x]+" and Y:"+byteArray[loc + y]+"")
                 //console.log("obj"+d+":"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + x]+" "+byteArray[loc + y]+" ")
                 d += 1
@@ -230,7 +240,7 @@ arrayGenerated = input.selectedIndex
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderroom()
     }
-    //for some wacko reason, 2 objects were being placed at once. K fixes this.
+
     if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
         placeblock(ctx)
@@ -241,7 +251,7 @@ arrayGenerated = input.selectedIndex
         var y = Math.floor(e.offsetY/16)
         var sy = y*16
         var sx = x*16
-        var type = objectList[document.getElementById("OBJType").selectedIndex][1]
+        var type = objectList[document.getElementById("OBJType").selectedIndex][0]
         var loc = document.getElementById("enemy-dat").value
         var e = loc.substr(2, 4)
         var d = parseInt(e, 16)
@@ -250,7 +260,7 @@ arrayGenerated = input.selectedIndex
         loc = parseInt(""+d.toString(16)+""+e+"", 16)
         
         if(objnum <= 15){
-            ctx.drawImage(obj, sx, sy)
+            drawObj(ctx,sx, sy, type)
         var num = objnum*4
         if(sy.toString(16) === "0"){
             sy = "00"
@@ -274,7 +284,7 @@ arrayGenerated = input.selectedIndex
         } else {
             window.alert("16 is the object limit per screen")
         }
-        //ctx.drawImage(objects[(parseInt(type, 16)][2],objects[(parseInt(type, 16)][0],objects[(parseInt(type, 16)][1])
+        
     } else if(document.getElementById("mode").selectedIndex === 2){
         var x = Math.floor(e.offsetX/16)
         var y = Math.floor(e.offsetY/16)
