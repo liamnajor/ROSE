@@ -111,5 +111,6 @@ var counter = 0
 //generate log(ical)ObjectList
 while (counter!=objectList.length){
     logObjectList[objectList[counter][0]]=objectList[counter][1]
+    document.getElementById("OBJType").innerHTML += "<option>"+objectList[counter][1]+"</option>"
   counter+=1
 }
