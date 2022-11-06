@@ -104,14 +104,16 @@ var objectList = [
 [209,' Meboid(?)'],
 
 [216,' Gullugg']]
-
+//convert to logical array, add entries above if needed. TODO: move to a JSON file for configuration with custom hacks
 var tempObjectList = []
 var counter = 0
-while (counter!=216){
+//assumes final numarical ID is correct, and generates an empty array of that length.
+while (counter!=objectlist[objectList.lenght][0]){
     tempObjectList[counter]=[]
     counter+=1
 }
 counter = 0
+//adds entries from above (for now) list
 while (counter !=tempObjectList.length){
     tempObjectList[objectList[counter][0]-1]=objectList[counter]
     counter+=1
