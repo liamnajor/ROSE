@@ -5,7 +5,7 @@ ctx.strokeStyle = 'red';
 ctx.rect(x,y,16,16)
 ctx.font = "12px Arial";
 ctx.fillStyle = 'orange';
-ctx.fillText(""+type+"", x+2, y+12);
+ctx.fillText(""+type+"", x+1, y+12);
 ctx.stroke()
 }
 var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
