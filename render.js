@@ -4,8 +4,8 @@ ctx.lineWidth = 3;
 ctx.strokeStyle = 'red';
 ctx.rect(x,y,16,16)
 ctx.font = "11px Arial";
-ctx.fillStyle = 'green';
-ctx.fillText(""+type+"", x, y);
+ctx.fillStyle = 'orange';
+ctx.fillText(""+type+"", x+2, y+14);
 ctx.stroke()
 }
 var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
@@ -172,7 +172,7 @@ var renderroom = function(){
                 }
             }
             if(e === 2){
-                drawObj(ctx,parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16), objectList[document.getElementById("OBJType").selectedIndex][0])
+                drawObj(ctx,parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16), byteArray[loc + p])
                 //console.log("drew object number "+d+" at X:"+byteArray[loc + x]+" and Y:"+byteArray[loc + y]+"")
                 //console.log("obj"+d+":"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + x]+" "+byteArray[loc + y]+" ")
                 d += 1
@@ -260,7 +260,7 @@ arrayGenerated = input.selectedIndex
         loc = parseInt(""+d.toString(16)+""+e+"", 16)
         
         if(objnum <= 15){
-            drawObj(ctx,sx, sy, type)
+            //drawObj(ctx,sx, sy, type)
         var num = objnum*4
         if(sy.toString(16) === "0"){
             sy = "00"
