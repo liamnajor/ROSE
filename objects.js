@@ -108,7 +108,7 @@ var objectList = [
 var tempObjectList = []
 var counter = 0
 //assumes final numarical ID is correct, and generates an empty array of that length.
-while (counter!=objectlist[objectList.lenght][0]){
+while (counter!=objectList[objectList.lenght][0]){
     tempObjectList[counter]=[]
     counter+=1
 }
