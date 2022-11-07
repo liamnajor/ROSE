@@ -24,7 +24,7 @@ var objectList = [
 
 [107,' Ramulken'],
 
-[110,' Proboscum],
+[110,' Proboscum'],
 
 [128,' Plasma Beam in Orb'],
 
