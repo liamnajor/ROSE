@@ -508,7 +508,7 @@ for(let e = 0; e!=256;e+=1){
             }
         }
     }
-    totalbanksadded = byteArray.length/parseInt("4000", 16)
+    totalbanksadded = Math.floor(byteArray.length/parseInt("4000", 16))
 }
 var generateArray = function(array, simplePalette,chunks){
 

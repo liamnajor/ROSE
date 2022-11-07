@@ -166,16 +166,22 @@ e = b
         startbank[h] = s.toString(16)
         s += parseInt("4000", 16)
         h += 1
-        console.log(s.toString(16))
-        //if(s >= parseInt("40000")){
-            //document.getElementById("bankselect")[s/parseInt("4000")]="<option>"+(h).toString(16)+"</option>"
-//console.log("bleep")
-        //}
         if(h >= 256){
             break
         }
     }
     renderbank(true)
+    if(byteArray.length > parseInt(0x40000)){
+var counter = byteArray.length-parseInt(0x40000)
+var c= 0
+		while(counter >= parseInt(0x4000)){
+           document.getElementById("bankselect").innerHTML +="<option>"+(c+16).toString(16)+"</option>"
+console.log("bleep")
+counter -= parseInt(0x4000)
+c+=1
+        }
+
+}
 }
 var encode = function(output){
     var value = ""
@@ -254,7 +260,7 @@ var encode = function(output){
     console.log("saved output to local storage")
     }*/
     var saver = Converter.stringHexadecimalToBytes(value)
-    var m = 262143
+    var m = byteArray.length
     var w = []
     var v = 0
     while(v <= m){
