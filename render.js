@@ -75,9 +75,9 @@ var k = 0
         
         while(e != startbank.length - 7){
             var g = 16 + e
-            var select = document.createElement("option")
-            select.innerHTML = g.toString(16)
-            parent.appendChild(select)
+            //var select = document.createElement("option")
+            //select.innerHTML = g.toString(16)
+            //parent.appendChild(select)
             e += 1
         }
     }
@@ -498,9 +498,9 @@ for(let e = 0; e!=256;e+=1){
         while(e != startbank.length - 7){
             if(parent.childNodes.length <= 254){
                 var g = 16 + e
-                var select = document.createElement("option")
-                select.innerHTML = g.toString(16)
-                parent.appendChild(select)
+                //var select = document.createElement("option")
+                //select.innerHTML = g.toString(16)
+                //parent.appendChild(select)
                 e += 1
             } else {
                 window.alert("TOO MANY BANKS! The Great Depression will plague your hack...")
@@ -845,10 +845,8 @@ var f = byteArray.length
         var parent = document.getElementById("bankselect")
         while(e != startbank.length - 7){
             if(parent.childNodes.length <= 254){
-                var g = 16 + e
-                var select = document.createElement("option")
-                select.innerHTML = g.toString(16)
-                parent.appendChild(select)
+                var g = 7 + e
+                //parent[g] = "<option>"+(e+16).toString(16)+"</option>"
                 e += 1
             } else {
                 window.alert("TOO MANY BANKS! The Great Depression will plague your hack...")

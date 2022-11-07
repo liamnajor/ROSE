@@ -167,6 +167,10 @@ e = b
         s += parseInt("4000", 16)
         h += 1
         console.log(s.toString(16))
+        //if(s >= parseInt("40000")){
+            //document.getElementById("bankselect")[s/parseInt("4000")]="<option>"+(h).toString(16)+"</option>"
+//console.log("bleep")
+        //}
         if(h >= 256){
             break
         }
