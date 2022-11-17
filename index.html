@@ -21,6 +21,7 @@ body {
 <div id="divMain">
 </div><br>
         <input type = "button" id = "encode" value = "encode">
+        <input type = "button" id = "decode" value = "decode" onclick = "decode()">        
         <input type = "button" id = "test" value = "play" onclick = "testhack()">
     </div>
     <div style = "position: absolute; top: 330px; left: 50px; border: 1px solid #000000; width: 256px; height: 275px">
@@ -33,7 +34,7 @@ body {
         <option>D</option>
         <option>E</option>
         <option>F</option>
-    </select><input type = "button" onClick="addbank(1)" value="+"></input><br><canvas id = "edit" width = 256 height = 256></canvas></div>
+    </select><input type = "button" onClick="expandROM()" value="+"></input><br><canvas id = "edit" width = 256 height = 256></canvas></div>
 <div style = "position:absolute; top: 330px; right: 50px;border: 1px solid #000000; width: 256px; height: 146px" >Tileset:<select id = "tileset">
         <option>9</option>
         <option>A</option>
@@ -106,7 +107,7 @@ body {
     <br><b>Objects:</b><br>
     Pointer: <textarea id = "pointers"></textarea><br>
     Scroll: <textarea id = "scroll"></textarea><br>
-    Room Transition: <textarea id = "rtransition"></textarea> - ADVANCED
+    Room Transition: <textarea id = "rtransition"></textarea>
     <br>
     enemy data pointer:<textarea id = "enemy-dat"></textarea><br>
     <input type = "button" value = "delete object:" onclick="deleted()"><select id = "objselect">
