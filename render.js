@@ -1,3 +1,57 @@
+var addBytes = function(bytes, start){
+var counter = 0
+var bytesString = bytes
+bytes = bytesString.split(" ")
+console.log(bytes)
+while(counter != bytes.length){
+byteArray[parseInt(start)]=bytes[counter]
+counter += 1
+}
+}
+var expandedROM = false
+var expandROM = function(){
+if(expandedROM === false){
+/*
+
+Moehr code begin
+
+
+//Edit @0148:
+//a hex edit to the header cart size 04 (512) to accomodate the extra banks
+addBytes("04",0x148)
+
+//;hijack @3DE2:
+addBytes("CD 60 3F C9 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",0x3D02)
+
+//;new code @3F60
+//;table:
+//;must have as many entries as you have level data banks
+//;or will allow loading of bad data from random opcode values
+addBytes("10 11 12 13 14 15 16",0x3F60)
+//;opcodes for code below
+addBytes("FA 58 D0 D6 09 5F 16 00 21 7f 3f 19 7E EA 4E D0 EA 00 21 CD 00 40 3E 02 EA 4E D0 EA 00 21 C9",0x3F67)
+
+//;then lastly, paste all of bank 3 to bank 10, 11, 12, 13, 14, 15, 16
+//quick and dirty. REALLY dirty.
+addbank(1,2)//10
+addbank(1,2)//11
+addbank(1,2)//12
+addbank(1,2)//13
+addbank(1,2)//14
+addbank(1,2)//15
+addbank(1,2)//16
+addbank(1,15)//17
+addbank(1,15)//18
+addbank(1,15)//19
+addbank(1,15)//1A
+addbank(1,15)//1B
+addbank(1,15)//1C
+addbank(1,15)//1D
+addbank(1,15)//1E*/
+addbank(1)//1F
+expandedROM === true
+} else {
+addbank(1)}}
 /*var blankBank = [//the blank bank is simply a bytearray containing the boilerplate data
 "00","46","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","47","00","48",//chunk pointers
 "00","49","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4A","00","4B",
@@ -273,21 +327,6 @@ var samus
 var obj
 var objnum
 var k = 0
-    var addbankelement = function(){
-    if(startbank.length >= 8){
-        var e = 0
-        var parent = document.getElementById("bankselect")
-        
-        while(e != startbank.length - 7){
-            var g = 16 + e
-            //var select = document.createElement("option")
-            //select.innerHTML = g.toString(16)
-            //parent.appendChild(select)
-            e += 1
-        }
-    }
-    totalbanksadded = byteArray.length/parseInt("4000", 16)
-    }
 var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
@@ -344,6 +383,7 @@ var renderroom = function(){
         }
         var pos = selected.toString(16)
         var bank = document.getElementById("bankselect").selectedIndex + 9
+       
         if(byteArray[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
             if(byteArray[20073] === "0"+pos.substr(0, 1)+""){
                 if(byteArray[20075] === "0"+pos.substr(1, 2)+""){
@@ -1012,29 +1052,67 @@ var deleteobj = function(input){
 var deleted = function(){
     deleteobj(document.getElementById("objselect").selectedIndex)
 }
-var addbank = function(n){
+/*var addbank = function(n, s){
 if (totalbanksadded <= 255){
 var e = 0
 var g = n*parseInt("4000", 16)
 var f = byteArray.length
+if(s===undefined){
 var bank = document.getElementById("bankselect").selectedIndex
+} else {
+var bank = s
+}
     while(e != parseInt(0x4000)){
 	var h = f + e
+	if(s===undefined){
 	byteArray[h] = byteArray[parseInt(startbank[bank],16)+e]
-    e += 1
+      } else {
+	byteArray[h] = byteArray[s*parseInt(0x4000)+e]
+      }
+	e += 1
     }
     var bankPointers = n+16
     while(startbank[bankPointers-9] === undefined){
 var h = parseInt(0x4000)*bankPointers
 startbank[bankPointers-9] = h.toString(16)
 bankPointers -= 1
+}*/
+
+var addbank = function(n, s){
+if (totalbanksadded <= 255){
+var e = 0
+var g = n*parseInt("4000", 16)
+var f = byteArray.length
+var bank = document.getElementById("bankselect").selectedIndex
+if(s != undefined){
+bank = s-9
 }
+counter = 0
+    while(e != parseInt(0x4000)){
+	var h = f + e
+if (s < 0) {
+	byteArray[h] = byteArray[(parseInt(0x4000)*s)+e]
+    e += 1
+} else {
+	byteArray[h] = byteArray[parseInt(startbank[bank],16)+e]
+    e += 1}
+    }
+
+    var bankPointers = n+16
+    while(startbank[bankPointers-9] === undefined){
+var h = parseInt(0x4000)*bankPointers
+startbank[bankPointers-9] = h.toString(16)
+bankPointers -= 1
+}
+
     if(n === 1){
     console.log("added 1 bank")
     } else {
     console.log("added "+n+" banks("+totalbanksadded+" total)")
     }
-    document.getElementById("bankselect").innerHTML +="<option>"+totalbanksadded.toString(16)+"</option>"
+var byteLength = byteArray.length/parseInt(0x4000)
+byteLength -= 1
+    document.getElementById("bankselect").innerHTML +="<option>"+byteLength.toString(16)+"</option>"
     totalbanksadded += n
     console.log(totalbanksadded)
     if(startbank.length >= 8){
@@ -1045,7 +1123,7 @@ bankPointers -= 1
                 var g = 7 + e
                 //parent[g] = "<option>"+(e+16).toString(16)+"</option>"
                 e += 1
-            } else {
+            } else if(parent.childNodes.length >= 254 && s === undefined){
                 window.alert("TOO MANY BANKS! The Great Depression will plague your hack...")
                 e += 1
                 break
