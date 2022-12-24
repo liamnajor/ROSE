@@ -5,7 +5,7 @@ var objectList = [
 
 [9, 'Drivel'],
 
-[18, 'Yumbo'],
+[parseInt(0x12), 'Yumbo'],
     
 [parseInt(0x14), 'Hornoad'],
 
