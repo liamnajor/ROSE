@@ -987,7 +987,11 @@ var rawObjects = []
     while(e != 4){
             var p = d*4
             if(byteArray[loc + p] != "ff"){
-                objects[d] = "Object "+d+" - ID:"+byteArray[loc + p]+", Type:"+logObjectList[parseInt(byteArray[loc + p + 1],16)]+":"+byteArray[loc + p + 1]+", X:"+byteArray[loc + p + 2]+", Y:"+byteArray[loc + p + 3]+"</p>"
+		    var type = byteArray[loc + p + 1]
+		    if(logObjectList[type] != undefined){
+		    type = logObjectList[parseInt(type,16)]
+		    }
+                objects[d] = "Object "+d+" - ID:"+byteArray[loc + p]+", Type:"+type+":"+byteArray[loc + p + 1]+", X:"+byteArray[loc + p + 2]+", Y:"+byteArray[loc + p + 3]+"</p>"
                 d += 1
             } else {
                 e = 4
