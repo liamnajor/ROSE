@@ -783,7 +783,7 @@ var rawObjects = []
             var p = d*4
             if(byteArray[loc + p] != "ff"){
 		    var type = byteArray[loc + p + 1]
-		    if(logObjectList[type] != undefined){
+		    if(logObjectList[parseInt(type, 16)] != undefined){
 		    type = logObjectList[parseInt(type,16)]
 		    }
                 objects[d] = "Object "+d+" - ID:"+byteArray[loc + p]+", Type:"+type+", X:"+byteArray[loc + p + 2]+", Y:"+byteArray[loc + p + 3]+"</p>"
