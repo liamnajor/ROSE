@@ -1,5 +1,5 @@
 var objectList = [
-[parseInt(0x01), 'Tsumuri'],    
+[parseInt(0x00), 'Tsumuri'],    
 
 [4, 'Skreek spawner'],
 
