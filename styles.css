@@ -1,9 +1,67 @@
+.button {  
+  color: #FFFFFF;
+  background-color: #525E59;
+border-radius: 14px;
+  text-align: center;
+  margin: 12px auto 0 auto;
+  padding: 0px;
+}
+#File {  
+  color: #FFFFFF;
+  background-color: #525E59;
+border-radius: 14px;
+  text-align: center;
+  margin: 12px auto 0 auto;
+  padding: 0px;
+}
+input[type=file]::file-selector-button {
+  color: #FFFFFF;
+  background-color: #525E59;
 
+}
+select {
+  color: #FFFFFF;
+  background-color: #525E59;
+border-radius: 14px;
+  text-align: center;
+  margin: 12px auto 0 auto;
+  padding: 0px;
+}
 textarea {  
   width: 15%;
   height: 13px;
-  border: 1px;
-  background-color: #FFFFFF;
+  border-color:#000000;
+  border: 2px;
+  background-color: #525E59;
+  color: #FFFFFF;
   font-size: 11px;
   resize: none;
+  top:0px;
+  border-radius: 14px;
+  text-align: center;
+  margin: 12px auto 0 auto;
+  padding: 0px;
+  text-shadow: 0px 0px 2px #000;
+  box-shadow: 0px 0px 2px #000, inset 0px 0px 2px #000;
+}
+canvas {
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
+.div {
+  border-color:#000000;
+  border: 2px;
+  background-color: #AA0000;
+  color: #FFFFFF;
+  top:0px;
+  border-radius: 14px;
+  margin: 12px auto 0 auto;
+  padding: 0px;
+  text-shadow: 0px 0px 2px #000;
+  box-shadow: 0px 0px 2px #000, inset 0px 0px 2px #000;
+
+}
+#roomedit {
+top:15px
 }

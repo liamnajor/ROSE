@@ -385,7 +385,7 @@ for(let e = 0; e!=256;e+=1){
 	array[e]=new Uint8ClampedArray(1024)}
 	generateArray(array, simplePalette,chunks)
         var pointertext = document.getElementById("pointers")
-        var scrolltext = document.getElementById("scroll")
+        var scrollSelect = document.querySelector("#scroll")
         var transtext = document.getElementById("rtransition")
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         var epointertext = document.getElementById("enemy-dat")
@@ -393,7 +393,11 @@ for(let e = 0; e!=256;e+=1){
         console.log(""+bank+","+selected+"")
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
-        scrolltext.value = scroll[selected]
+console.log(scroll[selected])
+        scrollSelect.value = scroll[selected]
+console.log(scrollSelect)
+console.log(scrollSelect.value)
+console.log(scrollSelect[selected])
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
@@ -430,12 +434,12 @@ for(let e = 0; e!=256;e+=1){
             room_transitions[selected] = transtext.value
             console.log("changed room transition at "+locp.toString(16)+" to "+transtext.value+"")
         }
-        scrolltext.onchange=function(){
+        scrollSelect.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
             var locp = loc + selected
-            byteArray[locp] = scrolltext.value
-            scroll[selected] = scrolltext.value
-            console.log("changed scroll data at "+locp.toString(16)+" to "+scrolltext.value+"")
+            byteArray[locp] = scrollSelect.selectedIndex.toString(16)
+            scroll[selected] = scroll.selectedIndex.toString(16)
+            console.log("changed scroll data at "+locp.toString(16)+" to "+scroll.selectedIndex.toString(16)+"")
         }
          epointertext.onchange=function(){
             var selection = input.selectedIndex*512
@@ -593,8 +597,8 @@ var spawn = function(byteArray, x, y){
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
     //TODO: set metatiles, graphics properly
     var tileset = document.getElementById("tileset").selectedIndex + 9
-    var sel = tileset.toString(16)
-    if(sel === "9"){
+    var sel = document.getElementById("tileset").selectedIndex
+    if(sel === 0){
     tilebank = "07"
     tiles1 = "40"
     tiles0 = "00"
@@ -602,7 +606,7 @@ var spawn = function(byteArray, x, y){
     metatiles0 = "80"
     collision1 = "41"//correct
     collision0 = "80"
-    } else if(sel === "a"){
+    } else if(sel === 1){
     tilebank = "07"
     tiles1 = "48"
     tiles0 = "00"
@@ -610,7 +614,7 @@ var spawn = function(byteArray, x, y){
     metatiles0 = "80"
     collision1 = "42"//unknown
     collision0 = "80"
-    } else if(sel === "b"){
+    } else if(sel === 2){
     tiles1 = "71"
     tiles0 = "BC"
     tilebank = "08"
@@ -618,7 +622,7 @@ var spawn = function(byteArray, x, y){
     metatiles0 = "80"
     collision1 = "42"//unknown
     collision0 = "80"
-    } else if(sel === "c"){
+    } else if(sel === 3){
     tilebank = "07"
     tiles1 = "60"
     tiles0 = "00"
@@ -626,7 +630,7 @@ var spawn = function(byteArray, x, y){
     metatiles0 = "80"
     collision1 = "45"//correct
     collision0 = "80"
-    } else if(sel === "d"){
+    } else if(sel === 4){
     tilebank = "07"
     tiles1 = "58"
     tiles0 = "00"
@@ -634,7 +638,7 @@ var spawn = function(byteArray, x, y){
     metatiles0 = "80"
     collision1 = "44"//unknown, might be ruins interior
     collision0 = "80"
-    } else if(sel === "e"){
+    } else if(sel === 5){
     var caveVariant = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
     if (caveVariant === 1){
         tiles1 = "68"
@@ -658,7 +662,7 @@ var spawn = function(byteArray, x, y){
     tilebank = "07"
     collision1 = "46" //correct, but glitchy
     collision0 = "80"
-    } else if(sel === "f"){
+    } else if(sel === 6){
     tiles1 = "69"
     tiles0 = "BC"
     tilebank = "08"
