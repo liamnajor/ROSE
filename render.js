@@ -1,3 +1,26 @@
+var placeBlock = function(ctx, x, y, tile){
+        
+        var edittile = true
+        var x = Math.floor(x/16)
+        var y = Math.floor(y/16)
+        var pos = parseInt(""+y.toString(16)+""+x.toString(16)+"", 16)
+        var posb = ""+parseInt(chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].pointer+"00", 16)
+        posb -= parseInt("4000", 16)
+        posb += parseInt(startbank[document.getElementById("bankselect").selectedIndex], 16)
+        posb += pos
+        if(edittile === true){
+            byteArray[posb] = tile
+            chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
+        } else {
+            console.error("exception: tile not selected")
+            console.log("edits not applied")
+        }
+        var xpos = parseInt(tile.substr(1, 2), 16)*16
+        var ypos = parseInt(tile.substr(0, 1), 16)*16
+        var xclear = x*16
+        var yclear = y*16
+        ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
+    }
 var addBytes = function(bytes, start){
 var counter = 0
 var bytesString = bytes
@@ -141,23 +164,21 @@ var loadtileset = function(){
     imagetileset =  tileset
     drawgrid(tilectx)
 }
-var renderroom = function(){
-        var d = 0
-        while(d != 256){
-        var xpos = d
+var renderCurrentScreen = function(){
+        var i = 0
+//start drawing loop, for 256 tiles
+        while(i != 256){
+//xpos and ypos are the tiles position on the coordinate plane, which can be determined with simple iterative subtraction
+        var xpos = i
         var ypos = 0
         while(xpos >= 16){
             xpos -= 16
             ypos += 1
         }
-        var currentbyte = chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[d]
+//select current tile within the chunk
+var currentTile = chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[i]
         //0 = 7f
-        var tilex = parseInt(currentbyte, 16)
-        var tiley = 0
-        while(tilex > 16){
-            tilex -= 16
-            tiley += 1
-        }
+//grab rendering context and add offsets for future edit canvas expansion
         var renderer = roomedit.getContext("2d")
         var xOffset = 0
         var yOffset = 0
@@ -173,8 +194,10 @@ var renderroom = function(){
         } 
         xpos += xOffset
         ypos += yOffset
-        renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
-        d += 1
+//draw the processed tile at the processed position
+placeBlock(renderer,xpos*16,ypos*16, currentTile)
+        //renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
+        i += 1
         }
         var pos = selected.toString(16)
         var bank = document.getElementById("bankselect").selectedIndex + 9
@@ -233,7 +256,7 @@ var renderbank = function(added){
 	ctx.fillStyle = "white";
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         tile = bank
-        //console.log(""+bank+","+tile+"")
+        console.log(""+bank+","+tile+"")
         ctx.clearRect(0, 0, 256, 256);
         changeTileset(imagetileset)
         drawgrid(ctx, "white")
@@ -254,7 +277,7 @@ arrayGenerated = input.selectedIndex
     
     if(added === true){
     roomedit.addEventListener("mousedown", function(e){
-    var placeblock = function(ctx){
+    /*var placeblock = function(ctx){
         var edittile = true
         if(tile === null || tile === undefined){
             edittile = false
@@ -278,12 +301,12 @@ arrayGenerated = input.selectedIndex
         var xclear = x*16
         var yclear = y*16
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
-        renderroom()
-    }
+        renderCurrentScreen()
+    }*/
 
     if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
-        placeblock(ctx)
+        placeBlock(ctx,e.offsetX,e.offsetY)
     } else if(document.getElementById("mode").selectedIndex === 1){
         var ctx = this.getContext("2d")
         var ID = document.getElementById("OBJID").value
@@ -335,7 +358,7 @@ arrayGenerated = input.selectedIndex
         //ctx.drawImage(imagetileset,0,0,16,16,x*16,y*16,16,16)
         //ctx.drawImage(samus, sx, sy-7)
         spawn(byteArray, sx.toString(16), sy.toString(16))
-        renderroom()
+        renderCurrentScreen()
     } else {
         console.log("unimplemented")
     }
@@ -343,7 +366,7 @@ arrayGenerated = input.selectedIndex
     if(added === true){
     roomedit.addEventListener("mousemove", function(e){
     if(document.getElementById("mode").selectedIndex === 0){
-    var placeblock = function(ctx){
+    var placeBlock = function(ctx){
         var edittile = true
         if(tile === null || tile === undefined){
             edittile = false
@@ -367,11 +390,11 @@ arrayGenerated = input.selectedIndex
         var xclear = x*16
         var yclear = y*16
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
-        renderroom()
+        renderCurrentScreen()
     }
         var ctx = this.getContext("2d")
         if(e.buttons === 1){
-            placeblock(ctx)
+            placeBlock(ctx)
         }
     } else {
         console.log("only placing one at a time for your sanity")
@@ -415,7 +438,7 @@ console.log(scrollSelect[selected])
         ctx.stroke();
         
     setInterval(function(){window.dispatchEvent(frame)}, 1000/10)
-        //renderroom()
+        //renderCurrentScreen()
         pointertext.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)
             var select = selected * 2
@@ -463,7 +486,7 @@ console.log(scrollSelect[selected])
                 i += 1
             }
             console.log(enemies.length)*/
-        renderroom()
+        renderCurrentScreen()
     })}}
     
     drawgrid(ctx)
@@ -805,7 +828,7 @@ document.getElementById("OBJData").innerHTML = "Invalid object. It doesn't exist
 }
 }
 var deleteobj = function(input){
-    renderroom()
+    renderCurrentScreen()
     var loc = epointers[selected]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
@@ -947,14 +970,14 @@ fileChange = true}}
 })
 window.addEventListener("mousedown", function(){
 
-        renderroom()
+        renderCurrentScreen()
         changeTileset(imagetileset)
 	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
 	drawgrid(document.getElementById("edit").getContext("2d"))
 })
 window.addEventListener("mouseup", function(){
 
-        renderroom()
+        renderCurrentScreen()
         changeTileset(imagetileset)
 	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
 	drawgrid(document.getElementById("edit").getContext("2d"))
