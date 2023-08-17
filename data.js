@@ -129,6 +129,7 @@ var disableOnScreenButtons = function(){
     document.getElementById("show").style.display = "none"
     hideEmu()
 var decode = function(){
+document.getElementById("filename").innerHTML= document.getElementById("File").files[0].name
     /*if(localstoragesupported === true){
     var ROM = localStorage.getItem('ROM');
     if(ROM === null || ROM === undefined || hexout != ""){
@@ -182,6 +183,15 @@ c+=1
         }
 
 }
+    tiles0=byteArray[parseInt("4E6F", 16)]
+    tiles1=byteArray[parseInt("4E70", 16)]
+
+    metatiles0=byteArray[parseInt("4E71", 16)] 
+    metatiles1=byteArray[parseInt("4E72", 16)] 
+
+    collision0=byteArray[parseInt("4E73", 16)] 
+    collision1= byteArray[parseInt("4E74", 16)]	
+    tilebank=byteArray[parseInt("4E6E", 16)]
 }
 var encode = function(output){
     var value = ""
