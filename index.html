@@ -15,8 +15,9 @@ body {
   <body>
 
     <a href="https://liamnajor.github.io/ROSE-how-to"><img src="ROSE.png" id="icon" style="display: block;margin-left: auto;margin-right: auto;height: 70px"></a>
-    <div id = "file manager" class="div" style = "position: absolute; top: 40px; left: 50px; border: 1px solid #000000; width: 329px; height: 276px;">
-        <h2>File:</h2>
+    <div id = "file manager" class="div" style = "position: absolute; top: 40px; left: 50px; border: 1px solid #000000; width: 329px; height: 220px;">
+        <input type = "button" class="button" id="closeFilePane" onclick="closeFilePane()" value="File:"></input><br>
+        
         FileName:<textarea id = "filename" rows="1" cols="40"></textarea><br><br>Data
 <div id="divMain">
 </div><br>
@@ -24,25 +25,10 @@ body {
         <input class="button" type = "button" id = "decode" value = "decode" onclick = "decode()">        
         <input class="button" type = "button" id = "test" value = "play" onclick = "testhack()">
     </div>
-    <div class="div" style = "position: absolute; top: 335px; left: 50px; border: 1px solid #000000; width: 260px; height: 290px">
-    Bank:<select id = "bankselect">
-        <option>9</option>
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
-        <option>D</option>
-        <option>E</option>
-        <option>F</option>
-    </select><input class="button" type = "button" onClick="expandROM()" value="+"></input><br><canvas id = "edit" width = 256 height = 256></canvas></div>
 
-<div id = "world" class="div" style = "display: block;margin-left: auto;margin-right: auto;border: 1px solid #000000; width: 260px; height: 295px">
-<br>    
-<canvas width = "256" height = "256" id = "roomedit"></canvas>
-    </div>
-
- 
-    <div class="div" style = "position: absolute; right: 50px; top: 40px; border: 1px solid #000000; width: 286px; height: 350px">
-    <br>
+<input type = "button" class="button" id="openFilePane" onclick="openFilePane()" style="display:none" value="File"></input>    
+    <div id="object manager" class="div" style = "position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 350px">
+    <input type = "button" class="button" id="closeObjectPane" onclick="closeObjectPane()" value="Objects:"></input><br>        
     Pointer: <textarea id = "pointers" cols="4"></textarea><br>
     Scroll: <select id="scroll">
 <option value="00">Free Scroll</option>
@@ -62,7 +48,7 @@ body {
 <option value="0e">Hallway End Left</option>
 <option value="0f">No Scroll</option></select><br>
     Room Transition: <textarea id = "rtransition" cols="4"></textarea>
-    <br><br><b>Objects:</b><br>
+    <br>
     enemy data pointer:<textarea id = "enemy-dat" cols="4"></textarea><br>
     <input class = "buttonRight" type = "button" value = "delete object:" onclick="deleted()"><select id = "objselect">
 <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><!--<option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option><option>32</option>-->
@@ -75,8 +61,14 @@ body {
     </select><br>OBJ Type:<select id="OBJType"></select><br>OBJ ID:<textarea id="OBJID" rows="1" cols="2">00</textarea>
     </div>
     </div>
+<input type = "button" class="button" id="openObjectPane" onclick="openObjectPane()" style="display:none" value="Objects"></input>
+<div id = "world" class="div" style = "display: block;margin-left: auto;margin-right: auto;border: 1px solid #000000; width: 260px; height: 295px">
+<br>    
+<canvas width = "256" height = "256" id = "roomedit"></canvas>
+    </div>
 
-<div class="div" style = "position:absolute; top: 410px; right: 50px;border: 1px solid #000000; width: 260px; height: 170px" >Tileset:<select id = "tileset">
+<div id="tileset manager" class="div" style = "position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 465px" ><input type = "button" class="buttonRight" id="closeTilesetPane" onclick="closeTilesetPane()" value="Tileset:"></input>
+<select id = "tileset">
         <option>9</option>
         <option>A</option>
         <option>B</option>
@@ -84,8 +76,18 @@ body {
         <option>D</option>
         <option>E</option>
         <option>F</option>
-    </select><br><canvas id = "tilesetimage" width = 256 height = 128></canvas></div> 
-    
+    </select><br><canvas id = "tilesetimage" width = 256 height = 128></canvas> 
+    <!--<div class="div" style = "position: absolute; top: 335px; right: 50px; border: 1px solid #000000; width: 260px; height: 290px">-->
+    Bank:<select id = "bankselect">
+        <option>9</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+        <option>D</option>
+        <option>E</option>
+        <option>F</option>
+    </select><input class="button" type = "button" onClick="expandROM()" value="+"></input><br><canvas id = "edit" width = 256 height = 256></canvas></div>
+<input type = "button" class="buttonRight" id="openTilesetPane" onclick="openTilesetPane()" style="display:none" value="Tileset:"></input>
         <!--reference: http://upload.wikimedia.org/wikipedia/commons/9/93/Game_boy_pocket.png--><input class="button" type="button" id="showEmulator" value="Show Emulator" style="diplay:block; margin:auto" onclick = "showEmu()"></input>
       
     <div id="gameboy_shell">

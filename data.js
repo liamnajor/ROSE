@@ -1,4 +1,5 @@
 //var localstoragesupported = true
+
 var startbank = []
 /*try {
   eval('localStorage.setItem("test", "test")')
@@ -75,37 +76,65 @@ if(output === true){
         return dataAsBlob
     }
 
+//only enables elements disabled with the same method as disableElement below
+var enableElement = function(element, style){
+document.getElementById(element).style = style
+}
+var disableElement = function(element){
+document.getElementById(element).style = "display:none;"
+}
+
 var hideEmu = function(){
-    document.getElementById("gameboy_shell").style.display = "none"
-    document.getElementById("showEmulator").style.display = "block"
+    disableElement("gameboy_shell")
+    enableElement("showEmulator","display:block")
 }
 var showEmu = function(){
-    document.getElementById("gameboy_shell").style.display = "block"
-    document.getElementById("showEmulator").style.display = "none"
+    enableElement("gameboy_shell","display:block;background-color:#FFFFFF")
+    disableElement("showEmulator")
 }
 var enableOnScreenButtons = function(){
 
-    document.getElementById("show").style.display = "none"
-    document.getElementById("hide").style.display = ""
-    document.getElementById("d_pad").style.display = ""
-    document.getElementById("d_pad_up").style.display = ""
-    document.getElementById("arrow_up").style.display = ""
-    document.getElementById("d_pad_left_right").style.display = ""
-    document.getElementById("d_pad_left").style.display = ""
-    document.getElementById("arrow_left").style.display = ""
-    document.getElementById("d_pad_right").style.display = ""
-    document.getElementById("arrow_right").style.display = ""
-    document.getElementById("d_pad_center").style.display = ""
-    document.getElementById("d_pad_down").style.display = ""
-    document.getElementById("arrow_down").style.display = ""
-    document.getElementById("a_button_group").style.display = ""
-    document.getElementById("b_button_group").style.display = ""
-    document.getElementById("select_button_group" ).style.display = ""
-    document.getElementById("start_button_group").style.display = ""
+    disableElement("show")
+    enableElement("hide")
+    enableElement("d_pad")
+    enableElement("d_pad_up")
+    enableElement("arrow_up")
+    enableElement("d_pad_left_right")
+    enableElement("d_pad_left")
+    enableElement("arrow_left")
+    enableElement("d_pad_right")
+    enableElement("arrow_right")
+    enableElement("d_pad_center")
+    enableElement("d_pad_down")
+    enableElement("arrow_down")
+    enableElement("a_button_group")
+    enableElement("b_button_group")
+    enableElement("select_button_group")
+    enableElement("start_button_group")
     
     document.getElementById("gameboy_shell").style.height = "275px"
 }
 var disableOnScreenButtons = function(){
+
+    enableElement("show")
+    disableElement("hide")
+    disableElement("d_pad")
+    disableElement("d_pad_up")
+    disableElement("arrow_up")
+    disableElement("d_pad_left_right")
+    disableElement("d_pad_left")
+    disableElement("arrow_left")
+    disableElement("d_pad_right")
+    disableElement("arrow_right")
+    disableElement("d_pad_center")
+    disableElement("d_pad_down")
+    disableElement("arrow_down")
+    disableElement("a_button_group")
+    disableElement("b_button_group")
+    disableElement("select_button_group")
+    disableElement("start_button_group")
+    
+/*
     document.getElementById("show").style.display = ""
     document.getElementById("hide").style.display = "none"
     document.getElementById("d_pad").style.display = "none"
@@ -122,7 +151,7 @@ var disableOnScreenButtons = function(){
     document.getElementById("a_button_group").style.display = "none"
     document.getElementById("b_button_group").style.display = "none"
     document.getElementById("select_button_group" ).style.display = "none"
-    document.getElementById("start_button_group").style.display = "none"
+    document.getElementById("start_button_group").style.display = "none"*/
     document.getElementById("gameboy_shell").style.height = "110px"
 }
 
@@ -295,3 +324,27 @@ document.getElementById("bankselect").addEventListener("change", function() {
     renderbank(false)
 
 })
+ var closeFilePane=function() {
+disableElement("file manager")
+enableElement("openFilePane","position: absolute; top: 40px; left: 50px;")
+}
+var openFilePane=function() {
+disableElement("openFilePane")
+enableElement("file manager", "position: absolute; top: 40px; left: 50px; border: 1px solid #000000; width: 329px; height: 220px;")
+}
+var closeObjectPane=function() {
+disableElement("object manager")
+enableElement("openObjectPane","position: absolute; left: 50px; top: 280px")
+}
+var openObjectPane=function() {
+disableElement("openObjectPane")
+enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 350px")
+}
+var closeTilesetPane=function() {
+disableElement("tileset manager")
+enableElement("openTilesetPane","position:absolute; top: 40px; right: 50px;")
+}
+var openTilesetPane=function() {
+disableElement("openTilesetPane")
+enableElement("tileset manager","position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 465px")
+}
