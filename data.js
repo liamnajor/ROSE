@@ -83,13 +83,13 @@ document.getElementById(element).style = style
 var disableElement = function(element){
 document.getElementById(element).style = "display:none;"
 }
-
+disableElement("OBJData")
 var hideEmu = function(){
     disableElement("gameboy_shell")
     enableElement("showEmulator","display:block")
 }
 var showEmu = function(){
-    enableElement("gameboy_shell","display:block;background-color:#FFFFFF")
+    enableElement("gameboy_shell","display:block;background-color: rgb(255, 0, 0)")
     disableElement("showEmulator")
 }
 var enableOnScreenButtons = function(){
@@ -335,6 +335,8 @@ enableElement("file manager", "position: absolute; top: 40px; left: 50px; border
 var closeObjectPane=function() {
 disableElement("object manager")
 enableElement("openObjectPane","position: absolute; left: 50px; top: 280px")
+disableElement("OBJData")
+enableElement("viewDat")
 }
 var openObjectPane=function() {
 disableElement("openObjectPane")
@@ -347,4 +349,11 @@ enableElement("openTilesetPane","position:absolute; top: 40px; right: 50px;")
 var openTilesetPane=function() {
 disableElement("openTilesetPane")
 enableElement("tileset manager","position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 465px")
+}
+document.getElementById("objselect").onchange = function(){
+disableElement("OBJData")
+enableElement("viewDat")
+disableElement("object manager")
+enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px")
+
 }

@@ -165,6 +165,10 @@ var loadtileset = function(){
     drawgrid(tilectx)
 }
 var renderCurrentScreen = function(){
+disableElement("OBJData")
+enableElement("viewDat")
+disableElement("object manager")
+enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 350px")
         var i = 0
 //start drawing loop, for 256 tiles
         while(i != 256){
@@ -366,7 +370,7 @@ arrayGenerated = input.selectedIndex
     if(added === true){
     roomedit.addEventListener("mousemove", function(e){
     if(document.getElementById("mode").selectedIndex === 0){
-    var placeBlock = function(ctx){
+    /*var placeblock = function(ctx){
         var edittile = true
         if(tile === null || tile === undefined){
             edittile = false
@@ -391,10 +395,10 @@ arrayGenerated = input.selectedIndex
         var yclear = y*16
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
         renderCurrentScreen()
-    }
+    }*/
         var ctx = this.getContext("2d")
         if(e.buttons === 1){
-            placeBlock(ctx)
+            placeBlock(ctx,e.offsetX,e.offsetY,tile)
         }
     } else {
         console.log("only placing one at a time for your sanity")
@@ -826,6 +830,10 @@ if(objects[document.getElementById("objselect").selectedIndex]!=undefined){
     document.getElementById("OBJData").innerHTML = objects[document.getElementById("objselect").selectedIndex]} else {
 document.getElementById("OBJData").innerHTML = "Invalid object. It doesn't exist."
 }
+enableElement("OBJData")
+disableElement("viewDat")
+disableElement("object manager")
+enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px")
 }
 var deleteobj = function(input){
     renderCurrentScreen()

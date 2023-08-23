@@ -51,10 +51,10 @@ body {
     <br>
     enemy data pointer:<textarea id = "enemy-dat" cols="4"></textarea><br>
     <input class = "buttonRight" type = "button" value = "delete object:" onclick="deleted()"><select id = "objselect">
-<option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><!--<option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option><option>32</option>-->
+<option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
     </select><br><br>
-    <input class="buttonRight" type = "button" value = "View Object data" onclick="viewdat()">^<br>Mode: <div id="OBJData" style = "position: absolute; right: 0px; top: 220px; width: 200px; height: 64px">
-    </div><select id = "mode">
+    <input class="buttonRight" type = "button" value = "View Object data" id="viewDat" onclick="viewdat()">^<div id="OBJData" class="div">
+    </div><br>Mode: <select id = "mode">
     <option>Tile</option>
     <option>Object</option>
     <option>Samus</option>
@@ -86,7 +86,7 @@ body {
         <option>D</option>
         <option>E</option>
         <option>F</option>
-    </select><input class="button" type = "button" onClick="expandROM()" value="+"></input><br><canvas id = "edit" width = 256 height = 256></canvas></div>
+    </select><input class="buttonRight" type = "button" onClick="expandROM()" value="+"></input><br><canvas id = "edit" width = 256 height = 256></canvas></div>
 <input type = "button" class="buttonRight" id="openTilesetPane" onclick="openTilesetPane()" style="display:none" value="Tileset:"></input>
         <!--reference: http://upload.wikimedia.org/wikipedia/commons/9/93/Game_boy_pocket.png--><input class="button" type="button" id="showEmulator" value="Show Emulator" style="diplay:block; margin:auto" onclick = "showEmu()"></input>
       
