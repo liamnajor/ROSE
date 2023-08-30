@@ -23,6 +23,7 @@ var placeBlock = function(ctx, x, y, tile){
         } else {
             console.error("exception: tile not selected")
         }
+
         }
 var addBytes = function(bytes, start){
 var counter = 0
@@ -455,6 +456,7 @@ renderCurrentScreen()
             byteArray[locp+1] = pointertext.value.substr(2, 4)
             pointers[selected] = pointertext.value
             console.log("changed chunk pointer at "+locp.toString(16)+" to "+pointertext.value+"")
+renderCurrentScreen()
         }
         transtext.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("300", 16)
