@@ -1,6 +1,9 @@
+var added = false
+var placedBlocks = []
 var placeBlock = function(ctx, x, y, tile){
-        
         var edittile = true
+        if(tile === undefined){
+        edittile = false}
         var x = Math.floor(x/16)
         var y = Math.floor(y/16)
         var pos = parseInt(""+y.toString(16)+""+x.toString(16)+"", 16)
@@ -11,16 +14,16 @@ var placeBlock = function(ctx, x, y, tile){
         if(edittile === true){
             byteArray[posb] = tile
             chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
-        } else {
-            console.error("exception: tile not selected")
-            console.log("edits not applied")
-        }
         var xpos = parseInt(tile.substr(1, 2), 16)*16
         var ypos = parseInt(tile.substr(0, 1), 16)*16
         var xclear = x*16
         var yclear = y*16
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
-    }
+    
+        } else {
+            console.error("exception: tile not selected")
+        }
+        }
 var addBytes = function(bytes, start){
 var counter = 0
 var bytesString = bytes
@@ -97,6 +100,7 @@ ctx.putImageData(data, x*16, y*16)
 c += 1
 }
 }
+drawgrid(document.getElementById("edit").getContext("2d"))
 }
 arrayGenerated = false
 var tilectx = document.getElementById("tilesetimage").getContext("2d")
@@ -149,6 +153,7 @@ var changeTileset = function(tile){
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     ctx.drawImage(tile, 0, 0)
     //console.log("drew tileset")
+drawgrid(ctx)
 }
 var loadtileset = function(){
     var samusimg = new Image(16, 32);
@@ -164,14 +169,14 @@ var loadtileset = function(){
     imagetileset =  tileset
     drawgrid(tilectx)
 }
-var renderCurrentScreen = function(){
+var renderCurrentScreen = function(xOffset,yOffset,xsize,ysize){
 disableElement("OBJData")
 enableElement("viewDat")
 disableElement("object manager")
 enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 350px")
         var i = 0
 //start drawing loop, for 256 tiles
-        while(i != 256){
+        while(i < 256){
 //xpos and ypos are the tiles position on the coordinate plane, which can be determined with simple iterative subtraction
         var xpos = i
         var ypos = 0
@@ -184,8 +189,11 @@ var currentTile = chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].ch
         //0 = 7f
 //grab rendering context and add offsets for future edit canvas expansion
         var renderer = roomedit.getContext("2d")
-        var xOffset = 0
-        var yOffset = 0
+
+        //pre implimentation zero out
+        xOffset = 0
+        yOffset = 0
+
         if(x != undefined ||x != null){
         if(xOffset >= 0){
             roomedit.width += xOffset
@@ -200,7 +208,8 @@ var currentTile = chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].ch
         ypos += yOffset
 //draw the processed tile at the processed position
 placeBlock(renderer,xpos*16,ypos*16, currentTile)
-        //renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
+
+//renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
         i += 1
         }
         var pos = selected.toString(16)
@@ -248,13 +257,14 @@ placeBlock(renderer,xpos*16,ypos*16, currentTile)
         }
         objnum = d
     }
-var renderbank = function(added){
+var renderbank = function(){
     var input = document.getElementById("bankselect") //select element, loads a bank
     var canvas = document.getElementById("edit")
     var ctx = canvas.getContext("2d")
     var roomedit = document.getElementById("roomedit")
     var tileset = document.getElementById("tilesetimage")
-    if(added === true){
+    if(added != true){
+added = true
         tileset.addEventListener("mousedown", function(e){
         var ctx = this.getContext("2d")
 	ctx.fillStyle = "white";
@@ -275,11 +285,7 @@ var renderbank = function(added){
         ctx.lineTo(x-1,y-1);
         ctx.stroke();      
             
-    })} else if(added === false || added === null || added === undefined){
-arrayGenerated = input.selectedIndex
-    }
-    
-    if(added === true){
+    })
     roomedit.addEventListener("mousedown", function(e){
     /*var placeblock = function(ctx){
         var edittile = true
@@ -310,8 +316,8 @@ arrayGenerated = input.selectedIndex
 
     if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
-        placeBlock(ctx,e.offsetX,e.offsetY)
-    } else if(document.getElementById("mode").selectedIndex === 1){
+	placeBlock(ctx,e.offsetX,e.offsetY,tile)
+        } else if(document.getElementById("mode").selectedIndex === 1){
         var ctx = this.getContext("2d")
         var ID = document.getElementById("OBJID").value
         var x = Math.floor(e.offsetX/16)
@@ -366,9 +372,9 @@ arrayGenerated = input.selectedIndex
     } else {
         console.log("unimplemented")
     }
-    })}
-    if(added === true){
+    })
     roomedit.addEventListener("mousemove", function(e){
+
     if(document.getElementById("mode").selectedIndex === 0){
     /*var placeblock = function(ctx){
         var edittile = true
@@ -401,10 +407,9 @@ arrayGenerated = input.selectedIndex
             placeBlock(ctx,e.offsetX,e.offsetY,tile)
         }
     } else {
-        console.log("only placing one at a time for your sanity")
+        
     }
     })
-    if(added === true){
     canvas.addEventListener("mousedown", function(e){
 	var simplePalette = [0,255,127]
 var array = []
@@ -440,9 +445,8 @@ console.log(scrollSelect[selected])
         ctx.lineTo(x+17,y-1);
         ctx.lineTo(x-1,y-1);
         ctx.stroke();
-        
+renderCurrentScreen()
     setInterval(function(){window.dispatchEvent(frame)}, 1000/10)
-        //renderCurrentScreen()
         pointertext.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)
             var select = selected * 2
@@ -490,10 +494,9 @@ console.log(scrollSelect[selected])
                 i += 1
             }
             console.log(enemies.length)*/
-        renderCurrentScreen()
-    })}}
+    })}
     
-    drawgrid(ctx)
+    
     drawgrid(ctx)
     loadtileset()    
     drawgrid(tilectx)
@@ -976,18 +979,13 @@ if(fileChange === false){
 decode()
 fileChange = true}}
 })
-window.addEventListener("mousedown", function(){
-
+/*document.getElementById("tileset manager").addEventListener("mousedown", function(){
+        changeTileset(imagetileset)
+	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
+})*/
+/*window.addEventListener("mouseup", function(){
         renderCurrentScreen()
         changeTileset(imagetileset)
 	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
-	drawgrid(document.getElementById("edit").getContext("2d"))
-})
-window.addEventListener("mouseup", function(){
-
-        renderCurrentScreen()
-        changeTileset(imagetileset)
-	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
-	drawgrid(document.getElementById("edit").getContext("2d"))
-})
+})*/
 
