@@ -1,5 +1,6 @@
 var added = false
 var placedBlocks = []
+var scrolls=["00","01","02","03","04","05","06","07","08","09","0a","0b","0c","0d","0e","0f",]
 var placeBlock = function(ctx, x, y, tile){
         var edittile = true
         if(tile === undefined){
@@ -467,11 +468,10 @@ renderCurrentScreen()
             console.log("changed room transition at "+locp.toString(16)+" to "+transtext.value+"")
         }
         scrollSelect.onchange=function(){
-	    var byteString= "0""+scrollSelect.selectedIndex.toString(16)+"
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
             var locp = loc + selected
-            byteArray[locp] = byteString
-            scroll[selected] = byteString
+            byteArray[locp] = scrolls[scrollSelect.selectedIndex]
+            scroll[selected] = scrolls[scrollSelect.selectedIndex]
             console.log("changed scroll data at "+locp.toString(16)+" to "+scroll[selected]+"")
         }
          epointertext.onchange=function(){
