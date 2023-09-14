@@ -356,8 +356,12 @@ added = true
         byteArray[loc+num+4] = "ff"
         objnum += 1
         k += 1
+renderCurrentScreen()
+    
         } else {
             window.alert("16 is the object limit per screen")
+renderCurrentScreen()
+    
         }
         
     } else if(document.getElementById("mode").selectedIndex === 2){
@@ -830,6 +834,8 @@ var rawObjects = []
                 objects = "No objects on current screen"
                 }
             }
+renderCurrentScreen()
+    
         }
 if(objects[document.getElementById("objselect").selectedIndex]!=undefined){
     document.getElementById("OBJData").innerHTML = objects[document.getElementById("objselect").selectedIndex]} else {
@@ -841,7 +847,6 @@ disableElement("object manager")
 enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px")
 }
 var deleteobj = function(input){
-    renderCurrentScreen()
     var loc = epointers[selected]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
@@ -887,6 +892,8 @@ var deleteobj = function(input){
         byteArray[loc + 2 + g] = "ff"
         byteArray[loc + 3 + g] = "ff"
     }
+renderCurrentScreen()
+    
 }
 var deleted = function(){
     deleteobj(document.getElementById("objselect").selectedIndex)
