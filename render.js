@@ -430,7 +430,6 @@ console.log(scroll[selected])
         scrollSelect.value = scroll[selected]
 console.log(scrollSelect)
 console.log(scrollSelect.value)
-console.log(scrollSelect[selected])
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
@@ -470,9 +469,9 @@ renderCurrentScreen()
         scrollSelect.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
             var locp = loc + selected
-            byteArray[locp] = scrollSelect.selectedIndex.toString(16)
-            scroll[selected] = scroll.selectedIndex.toString(16)
-            console.log("changed scroll data at "+locp.toString(16)+" to "+scroll.selectedIndex.toString(16)+"")
+            byteArray[locp] = "0""+scrollSelect.selectedIndex.toString(16)+"
+            scroll[selected] = "0""+scrollSelect.selectedIndex.toString(16)+"
+            console.log("changed scroll data at "+locp.toString(16)+" to "+scroll[selected]+"")
         }
          epointertext.onchange=function(){
             var selection = input.selectedIndex*512
