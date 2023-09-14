@@ -467,10 +467,11 @@ renderCurrentScreen()
             console.log("changed room transition at "+locp.toString(16)+" to "+transtext.value+"")
         }
         scrollSelect.onchange=function(){
+	    var byteString= "0""+scrollSelect.selectedIndex.toString(16)+"
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
             var locp = loc + selected
-            byteArray[locp] = "0""+scrollSelect.selectedIndex.toString(16)+"
-            scroll[selected] = "0""+scrollSelect.selectedIndex.toString(16)+"
+            byteArray[locp] = byteString
+            scroll[selected] = byteString
             console.log("changed scroll data at "+locp.toString(16)+" to "+scroll[selected]+"")
         }
          epointertext.onchange=function(){
