@@ -167,6 +167,7 @@ function B16toBinary(hexidecimalNumber) {
 }
 var tilesetData=[]
 var appendPointers=function(){
+tilesetData[select.selectedIndex]=undefined
 graphicsData[select.selectedIndex][1]=document.getElementById("metatilePointer").value
 graphicsData[select.selectedIndex][0]=document.getElementById("graphicsPointer").value
 
