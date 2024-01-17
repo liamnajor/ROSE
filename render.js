@@ -168,8 +168,8 @@ function B16toBinary(hexidecimalNumber) {
 var tilesetData=[]
 var appendPointers=function(){
 tilesetData=[]
-graphicsData[select.selectedIndex][1]=document.getElementById("metatilePointers").value
-graphicsData[select.selectedIndex][0]=document.getElementById("graphicsPointers").value
+graphicsData[select.selectedIndex][1]=parseInt(document.getElementById("metatilePointers").value,16)
+graphicsData[select.selectedIndex][0]=parseInt(document.getElementById("graphicsPointers").value,16)
 
 }
 var changeTileset = function(tile){
