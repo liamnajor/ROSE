@@ -27,10 +27,10 @@ body {
     </div>
 
 <input type = "button" class="button" id="openFilePane" onclick="openFilePane()" style="display:none" value="File"></input>    
-    <div id="object manager" class="div" style = "position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 350px">
+    <div id="object manager" class="div" style = "position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 450px">
     <input type = "button" class="button" id="closeObjectPane" onclick="closeObjectPane()" value="Objects:"></input><br>        
     Pointer: <textarea id = "pointers" cols="4"></textarea><br>
-    Scroll: <select id="scroll">
+    Scroll: <select id="scroll"><br>
 <option value="00">Free Scroll</option>
 <option value="01">Stop Scrolling Right</option>
 <option value="02">Stop Scrolling Left</option>
@@ -50,6 +50,8 @@ body {
     Room Transition: <textarea id = "rtransition" cols="4"></textarea>
     <br>
     enemy data pointer:<textarea id = "enemy-dat" cols="4"></textarea><br>
+    MetaTile: <textarea id = "metatilePointers" cols="8"></textarea><br>
+    Graphics: <textarea id = "graphicsPointers" cols="8"></textarea> <input class = "button" type = "button" value = "append pointers" onclick="appendPointers()"><br>
     <input class = "buttonRight" type = "button" value = "delete object:" onclick="deleted()"><select id = "objselect">
 <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
     </select><br><br>
@@ -141,7 +143,7 @@ body {
    </div>
     
    
-<script src="objects.js"></script>
+<script src="data.js"></script>
 <script src="psuedoCollisions.js"></script>
     <script src="GB_Emu/js/other/mobile.js"></script>
     <script src="GB_Emu/js/other/base64.js"></script>
@@ -156,6 +158,6 @@ body {
         <script src="GB_Emu/js/scripts.js"></script>
 <script src = "hex.js"></script>
 <script  src = "render.js"></script>
-    <script src = "data.js"></script>
+    <script src = "files.js"></script>
 </body>
 </html>

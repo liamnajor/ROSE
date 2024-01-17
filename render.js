@@ -151,31 +151,132 @@ var samus
 var obj
 var objnum
 var k = 0
-var changeTileset = function(tile){
-    var ctx = document.getElementById("tilesetimage").getContext("2d")
-    ctx.drawImage(tile, 0, 0)
-    //console.log("drew tileset")
-drawgrid(ctx)
+/*function stringTo8BitBinary(inputString) {
+    let binaryResult = '';
+    for (let i = 0; i < inputString.length; i++) {
+        let charCode = inputString.charCodeAt(i);
+        binaryResult += charCode.toString(2).padStart(8, '0');
+    }
+    return binaryResult;
+}*/
+var select = document.getElementById("tileset")
+
+function B16toBinary(hexidecimalNumber) {
+    
+    return  parseInt(hexidecimalNumber,16).toString(2).padStart(8, '0');
 }
+var tilesetData=[]
+var appendPointers=function(){
+graphicsData[select.selectedIndex][1]=document.getElementById("metatilePointer").value
+graphicsData[select.selectedIndex][0]=document.getElementById("graphicsPointer").value
+
+}
+var changeTileset = function(tile){
+document.getElementById("metatilePointers").value=graphicsData[select.selectedIndex][1].toString(16)
+document.getElementById("graphicsPointers").value=graphicsData[select.selectedIndex][0].toString(16)
+    var ctx = document.getElementById("tilesetimage").getContext("2d")
+    //ctx.drawImage(tile, 0, 0)
+    generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0],ctx)
+//drawgrid(ctx)
+}
+
+    var generateTileset = function(metatileOffset,graphicsOffset,ctx){
+    var bitValues=[0,255,170,85]
+    //relative position variables
+    var x = 0
+    var y = 0
+    //tile counter
+    var tiles = 0
+    
+    var canvas = document.getElementById("tilesetimage")
+    if (tilesetData[select.selectedIndex] === undefined||tilesetData[select.selectedIndex] === 0){
+    var imageData=new Uint8ClampedArray(canvas.width*canvas.height*4)
+    while(tiles!=512){
+    var iterate = function(){
+    var indexByte=parseInt(byteArray[metatileOffset+tiles],16)
+    
+    var bitnumy=0
+    while(bitnumy<8){
+    //grab 2 bytes to join together
+    var byte=byteArray[graphicsOffset+(indexByte*16)+(bitnumy*2)]
+    var byte2=byteArray[graphicsOffset+(indexByte*16)+(bitnumy*2)+1]
+    //convert to bits
+    var bits2=B16toBinary(byte).split("")
+    var bits=B16toBinary(byte2).split("")
+    var bitnumx=0
+    while(bitnumx<8){
+    //join the bits
+    var dualBit=parseInt(""+bits[bitnumx]+""+bits2[bitnumx]+"",2)
+    //calculate offset
+    var offset = (x*32)+(bitnumx*4)+(y*canvas.width*32)+(bitnumy*(canvas.width*4))
+    //multiply bit values into RGBA Array
+    if(indexByte < parseInt("80",16)){
+    imageData[offset]=bitValues[dualBit]
+    imageData[offset+1]=bitValues[dualBit]
+    imageData[offset+2]=bitValues[dualBit]
+    imageData[offset+3]=255
+    } else if(indexByte >= parseInt("80",16)){
+    imageData[offset]=0
+    imageData[offset+1]=0
+    imageData[offset+2]=0
+    imageData[offset+3]=255
+    } 
+    bitnumx+=1}
+    
+    bitnumy+=1}}
+    
+    //top left tile
+    iterate()
+    x += 1
+    
+    tiles += 1
+    //top right tile
+    iterate()
+    x-=1
+    y+=1
+    tiles += 1
+    //bottom left tile
+    iterate()
+    x += 1
+    
+    tiles += 1
+    //bottom right tile
+    iterate()
+    x+=1
+    y-=1
+    tiles += 1
+    if(x >= 32){
+    x=0
+    y+=2
+    }
+    }
+    console.log(imageData)
+    var data=new ImageData(imageData, canvas.width, canvas.height)
+    ctx.putImageData(data,0,0)
+    tilesetData[select.selectedIndex]=data} else {
+    ctx.putImageData(tilesetData[select.selectedIndex],0,0)
+    }
+    //return imageData
+    }
 var loadtileset = function(){
     var samusimg = new Image(16, 32);
     samusimg.src = "Object Sprites/samus.png"
     samus = samusimg
-    var objimg = new Image(16, 16)
-    objimg.src = "Object Sprites/placeholderOBJ.png"
-    obj = objimg
     var select = document.getElementById("tileset")
     var tileset = new Image(256, 128);
+    //tileset.putImageData=generateTileSet(metatileOffset,graphicsOffset)
     var selected = select.selectedIndex+9
-    tileset.src = "Tilesets/"+selected.toString(16)+".png";
-    imagetileset =  tileset
-    drawgrid(tilectx)
+    //tileset.src = "Tilesets/"+selected.toString(16)+".png";
+    imagetileset =  document.getElementById("tilesetimage")
+    changeTileset(imagetileset)
+    //tileset.putImageData(generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0]))
+    //drawgrid(tilectx)
 }
 var renderCurrentScreen = function(xOffset,yOffset,xsize,ysize){
 disableElement("OBJData")
 enableElement("viewDat")
 disableElement("object manager")
-enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 350px")
+enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 450px")
         var i = 0
 //start drawing loop, for 256 tiles
         while(i < 256){
@@ -275,8 +376,8 @@ added = true
         console.log(""+bank+","+tile+"")
         ctx.clearRect(0, 0, 256, 256);
         changeTileset(imagetileset)
-        drawgrid(ctx, "white")
-        drawgrid(ctx, "white")
+        //drawgrid(ctx, "white")
+        //drawgrid(ctx, "white")
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
         ctx.beginPath();
@@ -439,8 +540,8 @@ console.log(scrollSelect.value)
         ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
 	drawChunkImageData(ctx,imageDatas)//.putImageData(imageData, 0, 0)
-        drawgrid(ctx)
-        drawgrid(ctx)
+        //drawgrid(ctx)
+        //drawgrid(ctx)
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
         ctx.beginPath();
@@ -503,9 +604,9 @@ renderCurrentScreen()
     })}
     
     
-    drawgrid(ctx)
+    //drawgrid(ctx)
     loadtileset()    
-    drawgrid(tilectx)
+    //drawgrid(tilectx)
     var point = 0
     while(point != 256){
         var loc = parseInt(startbank[input.selectedIndex], 16)
