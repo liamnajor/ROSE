@@ -177,11 +177,11 @@ document.getElementById("metatilePointers").value=graphicsData[select.selectedIn
 document.getElementById("graphicsPointers").value=graphicsData[select.selectedIndex][0].toString(16)
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     //ctx.drawImage(tile, 0, 0)
-    generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0],ctx)
+    generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0],graphicsData[select.selectedIndex][3],ctx)
 //drawgrid(ctx)
 }
 
-    var generateTileset = function(metatileOffset,graphicsOffset,ctx){
+    var generateTileset = function(metatileOffset,graphicsOffset,spriteOffset,ctx){
     var bitValues=[0,255,170,85]
     //relative position variables
     var x = 0
@@ -194,8 +194,22 @@ document.getElementById("graphicsPointers").value=graphicsData[select.selectedIn
     var imageData=new Uint8ClampedArray(canvas.width*canvas.height*4)
     while(tiles!=512){
     var iterate = function(){
+    //calculate index offset
     var indexByte=parseInt(byteArray[metatileOffset+tiles],16)
-    
+        graphicsOffset=graphicsData[select.selectedIndex][0]
+        metatileOffset=graphicsData[select.selectedIndex][1]
+        spriteOffset=graphicsData[select.selectedIndex][3]
+    //load sprite graphics
+    if(indexByte > parseInt("B0",16) && indexByte < parseInt("EF",16) && spriteOffset!=undefined){
+        //indexByte=parseInt(byteArray[graphicsData[select.selectedIndex][3]+tiles],16)//extra graphics, 1B520
+        graphicsOffset=spriteOffset
+        indexByte-=parseInt("B0",16)
+    }
+    //adds pre defined bytes (instead of the pointers in the metatile) at the defined points in the array
+    /*if(graphicsData[select.selectedIndex][3]!=undefined){
+    if(graphicsData[select.selectedIndex][3][tiles+1]!=undefined){
+        indexByte=byteArray[graphicsData[select.selectIndex][3][tiles+1]+graphicsData[select.selectIndex][3][0]]
+    }}*/
     var bitnumy=0
     while(bitnumy<8){
     //grab 2 bytes to join together
@@ -211,15 +225,15 @@ document.getElementById("graphicsPointers").value=graphicsData[select.selectedIn
     //calculate offset
     var offset = (x*32)+(bitnumx*4)+(y*canvas.width*32)+(bitnumy*(canvas.width*4))
     //multiply bit values into RGBA Array
-    if(indexByte < parseInt("80",16)){
-    imageData[offset]=bitValues[dualBit]
-    imageData[offset+1]=bitValues[dualBit]
-    imageData[offset+2]=bitValues[dualBit]
-    imageData[offset+3]=255
-    } else if(indexByte >= parseInt("80",16)){
+    if(indexByte > parseInt("Ef",16)){
     imageData[offset]=0
     imageData[offset+1]=0
     imageData[offset+2]=0
+    imageData[offset+3]=255
+    } else {
+    imageData[offset]=bitValues[dualBit]
+    imageData[offset+1]=bitValues[dualBit]
+    imageData[offset+2]=bitValues[dualBit]
     imageData[offset+3]=255
     } 
     bitnumx+=1}
@@ -263,10 +277,10 @@ var loadtileset = function(){
     var samusimg = new Image(16, 32);
     samusimg.src = "Object Sprites/samus.png"
     samus = samusimg
-    var select = document.getElementById("tileset")
+    //var select = document.getElementById("tileset")
     var tileset = new Image(256, 128);
     //tileset.putImageData=generateTileSet(metatileOffset,graphicsOffset)
-    var selected = select.selectedIndex+9
+    //var selected = select.selectedIndex+9
     //tileset.src = "Tilesets/"+selected.toString(16)+".png";
     imagetileset =  document.getElementById("tilesetimage")
     changeTileset(imagetileset)
