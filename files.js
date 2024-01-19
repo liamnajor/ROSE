@@ -134,24 +134,6 @@ var disableOnScreenButtons = function(){
     disableElement("select_button_group")
     disableElement("start_button_group")
     
-/*
-    document.getElementById("show").style.display = ""
-    document.getElementById("hide").style.display = "none"
-    document.getElementById("d_pad").style.display = "none"
-    document.getElementById("d_pad_up").style.display = "none"
-    document.getElementById("arrow_up").style.display = "none"
-    document.getElementById("d_pad_left_right").style.display = "none"
-    document.getElementById("d_pad_left").style.display = "none"
-    document.getElementById("arrow_left").style.display = "none"
-    document.getElementById("d_pad_right").style.display = "none"
-    document.getElementById("arrow_right").style.display = "none"
-    document.getElementById("d_pad_center").style.display = "none"
-    document.getElementById("d_pad_down").style.display = "none"
-    document.getElementById("arrow_down").style.display = "none"
-    document.getElementById("a_button_group").style.display = "none"
-    document.getElementById("b_button_group").style.display = "none"
-    document.getElementById("select_button_group" ).style.display = "none"
-    document.getElementById("start_button_group").style.display = "none"*/
     document.getElementById("gameboy_shell").style.height = "110px"
 }
 
@@ -159,21 +141,8 @@ var disableOnScreenButtons = function(){
     hideEmu()
 var decode = function(){
 document.getElementById("filename").innerHTML= document.getElementById("File").files[0].name
-    /*if(localstoragesupported === true){
-    var ROM = localStorage.getItem('ROM');
-    if(ROM === null || ROM === undefined || hexout != ""){
-        var bytes = hexout
-        localStorage.setItem("ROM", bytes)
-        console.log("saved to local storage")
-    } else {
-        hexout = ROM
-        var bytes = ROM
-        console.log("loaded from local storage")
-    }} else {*/
         var ROM = hexout
         var bytes = ROM
-        //console.log("loaded from local file, local storage overridden/not supported")
-    //}
     var e = bytes.length
     var p = 0
     var i = e/2
@@ -225,8 +194,6 @@ c+=1
 var encode = function(output){
     var value = ""
     var bytes = hexout
-    //byteArray[parseInt({address in hexidecimal}, 16) OR {address in base-10] = {replacement}
-    //(base values) 4E6F	$6000	graphics
     byteArray[parseInt("4E6F", 16)]	= tiles0
     byteArray[parseInt("4E70", 16)] = tiles1
 
@@ -340,7 +307,7 @@ enableElement("viewDat")
 }
 var openObjectPane=function() {
 disableElement("openObjectPane")
-enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 450px")
+enableElement("object manager",OBJManagerStyle)
 }
 var closeTilesetPane=function() {
 disableElement("tileset manager")
@@ -354,6 +321,13 @@ document.getElementById("objselect").onchange = function(){
 disableElement("OBJData")
 enableElement("viewDat")
 disableElement("object manager")
-enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px")
+enableElement("object manager",OBJManagerStyle)
 
 }
+document.getElementById("OBJData").addEventListener("click", function(){
+disableElement("OBJData")
+enableElement("viewDat")
+disableElement("object manager")
+enableElement("object manager",OBJManagerStyle)
+})
+//document.getElementById("object manager").addEventListener("click", function(){disableElement("OBJData")})

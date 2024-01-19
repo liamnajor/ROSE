@@ -30,7 +30,6 @@ var addBytes = function(bytes, start){
 var counter = 0
 var bytesString = bytes
 bytes = bytesString.split(" ")
-console.log(bytes)
 while(counter != bytes.length){
 byteArray[parseInt(start)]=bytes[counter]
 counter += 1
@@ -76,7 +75,7 @@ addbank(1,15)//1B
 addbank(1,15)//1C
 addbank(1,15)//1D
 addbank(1,15)//1E*/
-addbank(1)//1F
+addbank(1)
 expandedROM === true
 } else {
 addbank(1)}}
@@ -265,7 +264,6 @@ document.getElementById("graphicsPointers").value=graphicsData[select.selectedIn
     y+=2
     }
     }
-    console.log(imageData)
     var data=new ImageData(imageData, canvas.width, canvas.height)
     ctx.putImageData(data,0,0)
     tilesetData[select.selectedIndex]=data} else {
@@ -291,7 +289,7 @@ var renderCurrentScreen = function(xOffset,yOffset,xsize,ysize){
 disableElement("OBJData")
 enableElement("viewDat")
 disableElement("object manager")
-enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 450px")
+enableElement("object manager",OBJManagerStyle)
         var i = 0
 //start drawing loop, for 256 tiles
         while(i < 256){
@@ -367,8 +365,6 @@ placeBlock(renderer,xpos*16,ypos*16, currentTile)
             }
             if(e === 2){
                 drawObj(ctx,parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16), byteArray[loc + p])
-                //console.log("drew object number "+d+" at X:"+byteArray[loc + x]+" and Y:"+byteArray[loc + y]+"")
-                //console.log("obj"+d+":"+byteArray[loc + p]+" "+byteArray[loc + p + 1]+" "+byteArray[loc + x]+" "+byteArray[loc + y]+" ")
                 d += 1
                 e = 0
             }
@@ -388,7 +384,6 @@ added = true
 	ctx.fillStyle = "white";
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         tile = bank
-        console.log(""+bank+","+tile+"")
         ctx.clearRect(0, 0, 256, 256);
         changeTileset(imagetileset)
         //drawgrid(ctx, "white")
@@ -405,32 +400,6 @@ added = true
             
     })
     roomedit.addEventListener("mousedown", function(e){
-    /*var placeblock = function(ctx){
-        var edittile = true
-        if(tile === null || tile === undefined){
-            edittile = false
-        }
-        var pos = parseInt(""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+"", 16)
-        var posb = ""+parseInt(chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].pointer+"00", 16)
-        posb -= parseInt("4000", 16)
-        posb += parseInt(startbank[input.selectedIndex], 16)
-        posb += pos
-        if(edittile === true){
-            byteArray[posb] = tile
-            chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
-        } else {
-            console.error("exception: tile not selected")
-            console.log("edits not applied")
-        }
-        var x = Math.floor(e.offsetX/16)
-        var y = Math.floor(e.offsetY/16)
-        var xpos = parseInt(tile.substr(1, 2), 16)*16
-        var ypos = parseInt(tile.substr(0, 1), 16)*16
-        var xclear = x*16
-        var yclear = y*16
-        ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
-        renderCurrentScreen()
-    }*/
 
     if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
@@ -486,9 +455,6 @@ renderCurrentScreen()
         var sy = y*16
         var sx = x*16
         var ctx = this.getContext("2d")
-        //ctx.drawImage(samus, sx*16, y*16)
-        //ctx.drawImage(imagetileset,0,0,16,16,x*16,y*16,16,16)
-        //ctx.drawImage(samus, sx, sy-7)
         spawn(byteArray, sx.toString(16), sy.toString(16))
         renderCurrentScreen()
     } else {
@@ -498,32 +464,6 @@ renderCurrentScreen()
     roomedit.addEventListener("mousemove", function(e){
 
     if(document.getElementById("mode").selectedIndex === 0){
-    /*var placeblock = function(ctx){
-        var edittile = true
-        if(tile === null || tile === undefined){
-            edittile = false
-        }
-        var pos = parseInt(""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+"", 16)
-        var posb = ""+parseInt(chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].pointer+"00", 16)
-        posb -= parseInt("4000", 16)
-        posb += parseInt(startbank[input.selectedIndex], 16)
-        posb += pos
-        if(edittile === true){
-            byteArray[posb] = tile
-            chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
-        } else {
-            console.error("exception: tile not selected")
-            console.log("edits not applied")
-        }
-        var x = Math.floor(e.offsetX/16)
-        var y = Math.floor(e.offsetY/16)
-        var xpos = parseInt(tile.substr(1, 2), 16)*16
-        var ypos = parseInt(tile.substr(0, 1), 16)*16
-        var xclear = x*16
-        var yclear = y*16
-        ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
-        renderCurrentScreen()
-    }*/
         var ctx = this.getContext("2d")
         if(e.buttons === 1){
             placeBlock(ctx,e.offsetX,e.offsetY,tile)
@@ -544,13 +484,9 @@ for(let e = 0; e!=256;e+=1){
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         var epointertext = document.getElementById("enemy-dat")
         selected = parseInt(bank, 16)
-        console.log(""+bank+","+selected+"")
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
-console.log(scroll[selected])
         scrollSelect.value = scroll[selected]
-console.log(scrollSelect)
-console.log(scrollSelect.value)
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
@@ -575,7 +511,6 @@ renderCurrentScreen()
             byteArray[locp] = pointertext.value.substr(0, 2)
             byteArray[locp+1] = pointertext.value.substr(2, 4)
             pointers[selected] = pointertext.value
-            console.log("changed chunk pointer at "+locp.toString(16)+" to "+pointertext.value+"")
 renderCurrentScreen()
         }
         transtext.onchange=function(){
@@ -585,14 +520,12 @@ renderCurrentScreen()
             byteArray[locp] = transtext.value.substr(0, 2)
             byteArray[locp+1] = transtext.value.substr(2, 4)
             room_transitions[selected] = transtext.value
-            console.log("changed room transition at "+locp.toString(16)+" to "+transtext.value+"")
         }
         scrollSelect.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
             var locp = loc + selected
             byteArray[locp] = scrolls[scrollSelect.selectedIndex]
             scroll[selected] = scrolls[scrollSelect.selectedIndex]
-            console.log("changed scroll data at "+locp.toString(16)+" to "+scroll[selected]+"")
         }
          epointertext.onchange=function(){
             var selection = input.selectedIndex*512
@@ -600,28 +533,9 @@ renderCurrentScreen()
             var locp = loc + selected
             epointers[selected] = epointertext.value
             byteArray[loc] = epointertext.value
-             console.log("changed object pointer at "+locp.toString(16)+" to "+epointertext.value+"")
             }
-/*            var e = ""+epointer1+""+epointer2+""
-            var f = parseInt(e, 16)
-            var i = 0
-            var enemies = []
-            while(byteArray[f] != "ff"){
-                var ID = byteArray[parseInt(""+epointer1+"", 16)]
-                var type = byteArray[parseInt(""+epointer1+"", 16) + 1]
-                var xpos = byteArray[parseInt(""+epointer1+"", 16) + 2]
-                var ypos = byteArray[parseInt(""+epointer1+"", 16) + 3]
-                f += 4
-                eneimies[e] = [ID, type, xpos, ypos]
-                i += 1
-            }
-            console.log(enemies.length)*/
     })}
-    
-    
-    //drawgrid(ctx)
     loadtileset()    
-    //drawgrid(tilectx)
     var point = 0
     while(point != 256){
         var loc = parseInt(startbank[input.selectedIndex], 16)
@@ -716,22 +630,9 @@ for (let p = 0; p < 1024; p += 4) {
   array[x][p+2] = array[x][p] // B value
   array[x][p+3] = 255;  // A value
 }
-}/*
-for (let x = 0; x != 16; x += 1) {
-for (let y = 0; y != 16; y += 1) {
-for (let p = 0; p < 1024; p += 4) {
-var e = x*y
-  array[e][p] = simplePalette[chunks[parseInt(pointers[e],16)-parseInt("45",16)].collisions[Math.floor(p/4)]];// R value
-  array[e][p+1] = array[p];  // G value
-  array[e][p+2] = array[p] // B value
-  array[e][p+3] = 255;  // A value
-
 }
-}
-}*/
 imageDatas=array
 }
-/*set spawn template(need to implement the save editor first to get the pointer locations)*/
 var spawn = function(byteArray, x, y){
     hex = selected.toString(16)
     byteArray[20068] = ""+y+""
@@ -750,177 +651,24 @@ var spawn = function(byteArray, x, y){
     //TODO: set metatiles, graphics properly
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = document.getElementById("tileset").selectedIndex
-    if(sel === 0){
-    tilebank = "07"
-    tiles1 = "40"
-    tiles0 = "00"
-    metatiles1 = "48"
-    metatiles0 = "80"
-    collision1 = "41"//correct
-    collision0 = "80"
-    } else if(sel === 1){
-    tilebank = "07"
-    tiles1 = "48"
-    tiles0 = "00"
-    metatiles1 = "4A"
-    metatiles0 = "80"
-    collision1 = "42"//unknown
-    collision0 = "80"
-    } else if(sel === 2){
-    tiles1 = "71"
-    tiles0 = "BC"
-    tilebank = "08"
-    metatiles1 = "4C"
-    metatiles0 = "80"
-    collision1 = "42"//unknown
-    collision0 = "80"
-    } else if(sel === 3){
-    tilebank = "07"
-    tiles1 = "60"
-    tiles0 = "00"
-    metatiles1 = "52"
-    metatiles0 = "80"
-    collision1 = "45"//correct
-    collision0 = "80"
-    } else if(sel === 4){
-    tilebank = "07"
-    tiles1 = "58"
-    tiles0 = "00"
-    metatiles1 = "50"
-    metatiles0 = "80"
-    collision1 = "44"//unknown, might be ruins interior
-    collision0 = "80"
-    } else if(sel === 5){
-    var caveVariant = parseInt(prompt("select acid caves varient, 1-3, 1 being acid all up, 2 being middle, and 3 being lowered"), 10)
-    if (caveVariant === 1){
-        tiles1 = "68"
-        tiles0 = "00"
-        metatiles1 = "56"
-        metatiles0 = "A8"
-        console.log("acid not lowered")
-    } else if(caveVariant === 2){
-        tiles1 = "6D"
-        tiles0 = "30"
-        metatiles1 = "54"
-        metatiles0 = "80"
-        console.log("acid lowered halfway")
-    } else if (caveVariant === 3){
-        tiles1 = "72"
-        tiles0 = "60"
-        metatiles1 = "55"
-        metatiles0 = "94"
-        console.log("acid lowered fully")
-    }
-    tilebank = "07"
-    collision1 = "46" //correct, but glitchy
-    collision0 = "80"
-    } else if(sel === 6){
-    tiles1 = "69"
-    tiles0 = "BC"
-    tilebank = "08"
-    metatiles1 = "57"
-    metatiles0 = "BC"
-    collision1 = "47"//correct, I think...
-    collision0 = "80"
-    } else {
-        window.alert("INVALID TILESET")
-    }
-    //(base values) 4E6F	$6000	graphics
+    var collisions = [1,2,0,5,4,6,6,6,7]
+    
+    if(sel===1){
+    byteArray[parseInt("4E76",16)]="5E"}
+    tilebank = "0"+Math.floor(graphicsData[select.selectedIndex][0]/parseInt("4000",16)).toString("16")+""
+    var offset = (tilebank-1)*parseInt("4000",16)
+    var str=(graphicsData[select.selectedIndex][0]-offset).toString(16).split("")//.split("")
+    tiles0	= ""+str[2]+""+str[3]+""
+    tiles1 = ""+str[0]+""+str[1]+""
+    
+    var offset = 7*parseInt("4000",16)
+    var str=(graphicsData[select.selectedIndex][1]-offset).toString(16).split("")//.split("")
+    
+    metatiles0 =  ""+str[2]+""+str[3]+""
+    metatiles1 =  ""+str[0]+""+str[1]+""
 
-    //(base values) 4E71    $5280  	Metatile
-
-    //(base values) 4E73    $4580   collision
-    /*use scroll borders to clip screen location of the camera at spawn (low priority)
-    stop down:
-0F
-0E
-0D
-0C
-0B
-0A
-09
-08
-stop up:
-0F
-0E
-0D
-0C
-07
-06
-05
-04
-stop left:
-0F
-0E
-0B
-07
-0A
-06
-03
-02
-stop right: 
-0F
-0D
-0B
-09
-07
-05
-03
-01
-
-00-Free Scroll
-01-Stop Scrolling Right
-02-Stop Scrolling Left
-03-Vertical Shaft
-04-Stop Scrolling Up
-05-Stop Scrolling Up Right Corner
-06-Stop Scrolling Up Left Corner
-07-Vertical Shaft End Up
-08-Stop Scrolling Down
-09-Stop Scrolling Down Right
-0A-Stop Scrolling Down Left
-0B-Vertical Shaft End Down
-0C-Hallway
-0D-Hallway End Right
-0E-Hallway End Left
-0F-No Scroll
-
-
-Metatile Definitions
-0x20880-0x20A7F - Bubbles, Ruins 3 Catacombs
-0x20A80-0x20C7F - Inside Ruins
-0x20C80-0x20E7F - Final Ruins
-0x20E80-0x2107F - Queen's Room
-0x21080-0x2127F - First/Last Caves
-0x21280-0x2147F - Outside/Ship
-0x21480-0x21593 - Acid Caves (Acid Mid)
-0x21594-0x218A7 - Acid Caves (Acid Down)
-0x216A8-0x217BB - Acid Caves (Acid Up)
-0x217BC-0x219BB - Outside Ruins
-
-Collision Data
-0x20080-0x2087F - 0x100 per tileset
-20080(4080) - ???(set 1)
-20180(4180) - ???(set 2)
-20280(4280) - ???(set 3)
-20380(4380) - ???(set 4)
-20480(4480) - ???(set 5)
-20580(4580) - outside/ship(set 6)
-20680(4680) - ???(set 7)
-20780(4780) - ???(set 8)
-
-Tiles
-0x1C000-0x1C7FF - Bubbles, Ruins 3 Catacombs
-0x1C800-0x1CFFF - Inside Ruins
-0x1D000-0x1D7FF - Queeny
-0x1D800-0x1DFFF - First/Last Caves
-0x1E000-0x1E7FF - Outside/Ship
-0x1E800-0x1ED2F - Caves with Acid
-0x1ED30-0x1F25F - Caves with Acid variant 1
-0x1F260-0x1F78F - Caves with Acid variant 2
-0x1F790-0x1FB6F - Powerups and Refills
-0x1FB70-0x1FFFF - Free Space
-*/
+    collision1 = "4"+collisions[sel]+""
+    collision0 = "80"
 }
 var viewdat = function(){
     var loc = epointers[selected]
@@ -929,7 +677,6 @@ var viewdat = function(){
     d += parseInt("80", 16)
     e = loc.substr(0, 2)
     var loc = parseInt(""+d.toString(16)+""+e+"", 16)
-    console.log(loc)
     e = 0
     d = 0
     //objnum
@@ -960,7 +707,7 @@ document.getElementById("OBJData").innerHTML = "Invalid object. It doesn't exist
 enableElement("OBJData")
 disableElement("viewDat")
 disableElement("object manager")
-enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px")
+enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 485px")
 }
 var deleteobj = function(input){
     var loc = epointers[selected]
