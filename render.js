@@ -852,13 +852,3 @@ if(fileChange === false){
 decode()
 fileChange = true}}
 })
-/*document.getElementById("tileset manager").addEventListener("mousedown", function(){
-        changeTileset(imagetileset)
-	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
-})*/
-/*window.addEventListener("mouseup", function(){
-        renderCurrentScreen()
-        changeTileset(imagetileset)
-	drawChunkImageData(document.getElementById("edit").getContext("2d"),imageDatas)
-})*/
-
