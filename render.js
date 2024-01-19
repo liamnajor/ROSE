@@ -172,6 +172,7 @@ graphicsData[select.selectedIndex][0]=parseInt(document.getElementById("graphics
 
 }
 var changeTileset = function(tile){
+document.getElementById("tilesetName").innerHTML = graphicsData[select.selectedIndex][2]
 document.getElementById("metatilePointers").value=graphicsData[select.selectedIndex][1].toString(16)
 document.getElementById("graphicsPointers").value=graphicsData[select.selectedIndex][0].toString(16)
     var ctx = document.getElementById("tilesetimage").getContext("2d")

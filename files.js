@@ -315,7 +315,7 @@ enableElement("openTilesetPane","position:absolute; top: 40px; right: 50px;")
 }
 var openTilesetPane=function() {
 disableElement("openTilesetPane")
-enableElement("tileset manager","position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 465px")
+enableElement("tileset manager","position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 485px")
 }
 document.getElementById("objselect").onchange = function(){
 disableElement("OBJData")
