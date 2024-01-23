@@ -28,7 +28,7 @@ body {
 <input type = "button" class="button" id="openFilePane" onclick="openFilePane()" style="display:none" value="File"></input>    
     <div id="object manager" class="div" style = "position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px">
     <input type = "button" class="button" id="closeObjectPane" onclick="closeObjectPane()" value="Objects:"></input><br>        
-    Pointer: <textarea id = "pointers" cols="4"></textarea><br>
+    Pointer: <textarea id = "pointers"  rows="1" cols="4"></textarea><br>
     Scroll: <select id="scroll"><br>
 <option value="00">Free Scroll</option>
 <option value="01">Stop Scrolling Right</option>
@@ -46,11 +46,11 @@ body {
 <option value="0d">Hallway End Right</option>
 <option value="0e">Hallway End Left</option>
 <option value="0f">No Scroll</option></select><br>
-    Room Transition: <textarea id = "rtransition" cols="4"></textarea>
+    Room Transition: <textarea id = "rtransition"  rows="1" cols="4"></textarea>
     <br>
-    enemy data pointer:<textarea id = "enemy-dat" cols="4"></textarea><br>
-    MetaTile: <textarea id = "metatilePointers" cols="8"></textarea><br>
-    Graphics: <textarea id = "graphicsPointers" cols="8"></textarea> <input class = "button" type = "button" value = "append pointers" onclick="appendPointers()"><br>
+    enemy data pointer:<textarea id = "enemy-dat"  rows="1" cols="4"></textarea><br>
+    MetaTile: <textarea id = "metatilePointers" rows="1" cols="8"></textarea><br>
+    Graphics: <textarea id = "graphicsPointers" rows="1" cols="8"></textarea> <input class = "button" type = "button" value = "append pointers" onclick="appendPointers()"><br>
     <input class = "buttonRight" type = "button" value = "delete object:" onclick="deleted()"><select id = "objselect">
 <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
     </select><br><br>
@@ -68,7 +68,7 @@ body {
 <canvas width = "256" height = "256" id = "roomedit"></canvas>
     </div>
 
-<div id="tileset manager" class="div" style = "position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 485px" ><input type = "button" class="buttonRight" id="closeTilesetPane" onclick="closeTilesetPane()" value="Tileset:"></input>
+<div id="tileset manager" class="div" style = "position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 565px" ><input type = "button" class="buttonRight" id="closeTilesetPane" onclick="closeTilesetPane()" value="Tileset:"></input>
 <select id = "tileset">
         <option>9</option>
         <option>A</option>
@@ -79,8 +79,27 @@ body {
         <option>E2</option>
         <option>E3</option>
         <option>F</option>
-    </select><div id="tilesetName"></div><canvas id = "tilesetimage" width = 256 height = 128></canvas> 
+    </select><div id="tilesetName">tilesetName</div><canvas id = "tilesetimage" width = 256 height = 128></canvas> 
     <!--<div class="div" style = "position: absolute; top: 335px; right: 50px; border: 1px solid #000000; width: 260px; height: 290px">-->
+    <div id="roomTransitionHeader">address:room transition pointer;</div><textarea id="roomTransition"rows=4 cols=35>transition code</textarea onChange="addRoomTransition()"><select id = "opCodeSelect" style="display:none">
+        <option>0</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+        <option>6</option>
+        <option>7</option>
+        <option>7</option>
+        <option>8</option>
+        <option>9</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+        <option>D</option>
+        <option>E</option>
+        <option>F</option>
+    </select><!--<textarea id="room transition" rows="1" cols="10"></textarea><input class="buttonRight" type = "button" onClick="addOpcodeToRoomTransition()" value="+"></input><input type="button" class="button" value="add to ROM" onclick="addRoomTransition()"></input>-->
     Bank:<select id = "bankselect">
         <option>9</option>
         <option>A</option>

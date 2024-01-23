@@ -1,3 +1,4 @@
+var roomTransitionOffset=0
 var added = false
 var placedBlocks = []
 var scrolls=["00","01","02","03","04","05","06","07","08","09","0a","0b","0c","0d","0e","0f",]
@@ -479,6 +480,7 @@ var array = []
 for(let e = 0; e!=256;e+=1){
 	array[e]=new Uint8ClampedArray(1024)}
 	generateArray(array, simplePalette,chunks)
+	var roomTransition = "ff"
         var pointertext = document.getElementById("pointers")
         var scrollSelect = document.querySelector("#scroll")
         var transtext = document.getElementById("rtransition")
@@ -487,6 +489,8 @@ for(let e = 0; e!=256;e+=1){
         selected = parseInt(bank, 16)
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
+        var RTO = parseInt(""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"",16)*2
+        RTO += parseInt("142E5",16)
         scrollSelect.value = scroll[selected]
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
@@ -521,6 +525,7 @@ renderCurrentScreen()
             byteArray[locp] = transtext.value.substr(0, 2)
             byteArray[locp+1] = transtext.value.substr(2, 4)
             room_transitions[selected] = transtext.value
+            //document.getElementById("room transition").value=byteArray[parseInt(transtext.value,16)]
         }
         scrollSelect.onchange=function(){
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
@@ -535,6 +540,29 @@ renderCurrentScreen()
             epointers[selected] = epointertext.value
             byteArray[loc] = epointertext.value
             }
+
+            //document.getElementById("roomTransition").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO]+","+byteArray[RTO+1]+""+roomTransition+""
+            var offset = parseInt("1"+byteArray[RTO+1]+""+byteArray[RTO]+"",16)
+            
+            document.getElementById("roomTransition").onchange = function(){
+            console.log("beep")
+                var i = 0
+                var stringArray = document.getElementById("roomTransition").value.split(",")
+                while(i!=stringArray.length-1){
+                byteArray[roomTransitionOffset+i]=stringArray[i]
+                console.log(stringArray[i])
+                i += 1
+                }
+            }
+            var i = 0;
+            var j = 12
+            while(parseInt(byteArray[offset+i],16)!=parseInt("FF",16)){
+            if(i===0){roomTransition=""}
+                roomTransition += ""+byteArray[offset+i]+","
+            i +=1}
+            document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO+1]+","+byteArray[RTO]+";"
+            document.getElementById("roomTransition").value = roomTransition
+            roomTransitionOffset=offset
     })}
     loadtileset()    
     var point = 0
@@ -646,10 +674,7 @@ var spawn = function(byteArray, x, y){
     byteArray[20075] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
     byteArray[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
-    //window.alert("warning: collision data might not be right, expect glitches.")
-    
     console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
-    //TODO: set metatiles, graphics properly
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = document.getElementById("tileset").selectedIndex
     var collisions = [1,2,0,5,4,6,6,6,7]

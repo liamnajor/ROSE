@@ -1,5 +1,6 @@
 var OBJManagerStyle="position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px"
 //graphics data format: graphics offset, metatile offset, name, sprite offset
+
 var graphicsData=[[parseInt("1C000",16),parseInt("20880",16),"Bubbles, Ruins 3 Catacombs"],
 [parseInt("1C800",16),parseInt("20A80",16),"Inside Ruins"],
 [parseInt("231BC",16),parseInt("20C80",16),"Final Ruins"],
@@ -9,6 +10,140 @@ var graphicsData=[[parseInt("1C000",16),parseInt("20880",16),"Bubbles, Ruins 3 C
 [parseInt("1ED30",16),parseInt("21594",16),"Acid Caves (Acid down)"],
 [parseInt("1F260",16),parseInt("216A8",16),"Acid Caves (Acid up)"],
 [parseInt("229BC",16),parseInt("217BC",16),"Outside Ruins"]]
+
+var roomTransitionOpcodes=[
+["0x","COPY_DATA","bb ssss dddd llll"],//x=0, data, x=1, bg, x=2, spr, bb=source bank, ssss=source pointer, dddd=destination pointer, llll=length (in bytes)
+["1x","TILETABLE"],/*Tile Tables
+0 - finalLab
+1 - ruinsInside
+2 - plantBubbles
+3 - queen
+4 - caveFirst
+5 - surface
+6 - lavaCavesEmpty
+7 - lavaCavesFull
+8 - lavaCavesMid
+9 - ruinsExt*/
+["2x","COLLISION"],/*Collision Tables
+0 - plantBubbles
+1 - ruinsInside
+2 - queen
+3 - caveFirst
+4 - surface
+5 - lavaCaves
+6 - ruinsExt
+7 - finalLab*/
+["3x","SOLIDITY"],/*Solidity Values
+0 - plantBubbles
+1 - ruinsInside
+2 - queen
+3 - caveFirst
+4 - surface
+5 - lavaCaves
+6 - ruinsExt
+7 - finalLab*/
+["4b","WARP","b,yx"],//b = bank. 2 bytes, 4{bank} {y}{x}
+["50","ESCAPE_QUEEN"],
+["60","DAMAGE","aa,ss"],//aa=acid damage, ss=spike damage
+["70","EXIT_QUEEN"],
+["8a","ENTER_QUEEN","bb,bb,cc,cc,dd,dd,ee,ee"],/* Transition to the Queen Fight, 8a
+Handles a lot of special stuff regarding the queen fight, but not everything.
+
+Form: 8a bbbb cccc dddd eeee
+
+a: Bank for current room ($F)
+b: Scroll Y position ($F48)
+c: Scroll X position ($EAE)
+d: Samus Y position ($F02)
+e: Samus X position ($EDE)*/
+["90","IF_MET_LESS","nn,xx,xx"],/*Conditional Operator
+Syntax: 9* nn xxxx
+
+Operands:
+
+nn - Number of Metroids
+xxxx - Transition index
+“If the amount of Metroids remaining is less than or equal 'nn', then jump to and do transition 'xxxx' instead.”
+
+This is how the game handles lowering (and raising) acid levels. Keep in mind that earthquakes are handled elsewhere.
+
+Note that this uses the real Metroid counter (memory address $D089), which also accounts for the Metroids in the endgame. Also keep in mind that this value is in binary coded decimal.*/
+["A0","FADEOUT"],
+["Bx","LOAD","bb,xx,xx"],
+/*:
+x=1, load bg
+x=2, load sprite
+bb - source bank
+xxxx - source pointer
+BG Graphics Pages
+07:4000 plantBubbles
+07:4800 ruinsInside
+07:5000 queenBG
+07:5800 caveFirst
+07:6000 surfaceBG
+07:6800 lavaCavesA
+07:6D30 lavaCavesB
+07:7260 lavaCavesC
+08:71BC	finalLab
+08:79BC	queenSPR
+Sprite Graphics Pages
+06:5920 enemiesA
+06:5D20 enemiesB
+06:6120 enemiesC
+06:6520 enemiesD
+06:6920 enemiesE
+06:6D20 enemiesF
+06:7120 arachnus
+06:7520 surfaceSPR
+08:59BC	metAlpha
+08:5DBC	metGamma
+08:61BC	metZeta
+08:65BC	metOmega
+08:69BC	ruinsExt
+08:71BC	finalLab
+08:79BC	queenSPR*
+* Note: queenSPR is loaded using the “0*” operator because it uses a nonstandard amount of tiles.*/
+["Cx","SONG"],/*
+0 - No change in music.
+    - Silences the roar from "song" A below
+1 - "The Last Metroid"
+2 - Queen Fight
+3 - Inside Ruins
+4 - Main Tunnels
+5 - Ambience 1
+6 - Ambience 2
+7 - Ambience 3 (bugs)
+8 - Omega Metroid Area
+9 - Final Ruins
+A - No music: SFX - Metroid Queen roar (persists)
+B - Final Alarm
+C - Metroid Fight
+D - Ambience 4
+E - SFX: Earthquake
+F - Metroid Defeated*/
+["Dx","ITEM"],/*Load Message/Special Graphics
+This loads the graphics for the orb, the desired item, the item font (well, up to the number 2), and the corresponding text string to VRAM.
+
+0 - Save ... (just for the message)
+1 - Plasma Beam
+2 - Ice Beam
+3 - Wave Beam
+4 - Spazer
+5 - Bombs
+6 - Screw Attack
+7 - Varia Suit
+8 - High Jump Boots
+9 - Space Jump
+A - Spider Ball
+B - Spring Ball
+C - Energy Tank (unused)
+D - Missile Tank (unused)
+E - Energy (i.e. refill; again, unused)
+F - Missiles (i.e. refill; unused)
+Note that, for the last 4 items, their sprites are always in VRAM, and they don't cause text strings to appear, so this is unnecessary for them.*/
+["FF","END_DOOR"],//terminating op
+]
+
 var objectList = [
 [parseInt(0x00),"Tsumari A"],
 [parseInt(0x01),"Tsumari B"],
@@ -98,6 +233,7 @@ var objectList = [
 [parseInt(0xD8),"Gullugg"],
 [parseInt(0xDB),"Baby metroid egg preview (intangible)"],
 [parseInt(0xF8),"Missile door"]]
+
 //convert to logical array, add entries above if needed. TODO: load from a JSON file for configuration with custom hacks
 var logObjectList = []
 var counter = 0
