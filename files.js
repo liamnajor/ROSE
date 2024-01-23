@@ -160,7 +160,6 @@ e = b
     var s = parseInt("24000", 16)
     var h = 0
     var hs = byteArray.length
-    console.log(hs.toString(16))
     while (s != hs){
         startbank[h] = s.toString(16)
         s += parseInt("4000", 16)

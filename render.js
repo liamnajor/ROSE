@@ -489,8 +489,7 @@ for(let e = 0; e!=256;e+=1){
         selected = parseInt(bank, 16)
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
-        var RTO = parseInt(""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"",16)*2
-        RTO += parseInt("142E5",16)
+        var RTO =  parseInt("142E5",16)+(parseInt("0"+transtext.value.substr(0,2)+"",16)*2)+parseInt(""+transtext.value.substr(2,2)+"0",16)
         scrollSelect.value = scroll[selected]
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
@@ -560,7 +559,9 @@ renderCurrentScreen()
             if(i===0){roomTransition=""}
                 roomTransition += ""+byteArray[offset+i]+","
             i +=1}
-            document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO+1]+","+byteArray[RTO]+";"
+             //console.log(""+RTO+",""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"")
+            document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"-"+byteArray[RTO+1]+","+byteArray[RTO]+""
+            //document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO+1]+","+byteArray[RTO]+";"
             document.getElementById("roomTransition").value = roomTransition
             roomTransitionOffset=offset
     })}
@@ -630,7 +631,7 @@ renderCurrentScreen()
         }
         point += 1
     }
-    console.log(totalbanksadded)
+    //console.log(totalbanksadded)
     if(startbank.length >= 8){
         var e = 0
         var parent = document.getElementById("bankselect")
