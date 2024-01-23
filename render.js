@@ -489,7 +489,7 @@ for(let e = 0; e!=256;e+=1){
         selected = parseInt(bank, 16)
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
-        var RTO =  parseInt("142E5",16)+(parseInt(""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"",16)*2)//+parseInt(""+transtext.value.substr(2,2)+"0",16)
+        var RTO = parseInt("142E5",16)+(parseInt(""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"",16)*2)
         scrollSelect.value = scroll[selected]
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
