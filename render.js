@@ -489,7 +489,6 @@ for(let e = 0; e!=256;e+=1){
         selected = parseInt(bank, 16)
         pointertext.value = pointers[selected]
         transtext.value = room_transitions[selected]
-        var RTO = parseInt("142E5",16)+(parseInt(""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"",16)*2)
         scrollSelect.value = scroll[selected]
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
@@ -541,6 +540,12 @@ renderCurrentScreen()
             }
 
             //document.getElementById("roomTransition").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO]+","+byteArray[RTO+1]+""+roomTransition+""
+            //var RTO = parseInt("142E5",16)+((parseInt(""+transtext.value.substr(3,1)+""+transtext.value.substr(2,1)+"",16)+parseInt(""+transtext.value.substr(0,2)+"",16))*2)
+            var str1 = parseInt(""+transtext.value.substr(2,2)+"0",16)
+            var str2 = parseInt(""+transtext.value.substr(0,2)+"",16)
+            var str = parseInt(""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"",16)
+            str = str % 0x0200
+            var RTO = parseInt("142E5",16)+(str*2)//146E5 is theoretically the max. 
             var offset = parseInt("1"+byteArray[RTO+1]+""+byteArray[RTO]+"",16)
             
             document.getElementById("roomTransition").onchange = function(){
@@ -554,13 +559,12 @@ renderCurrentScreen()
                 }
             }
             var i = 0;
-            var j = 12
             while(parseInt(byteArray[offset+i],16)!=parseInt("FF",16)){
             if(i===0){roomTransition=""}
                 roomTransition += ""+byteArray[offset+i]+","
             i +=1}
              //console.log(""+RTO+",""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"")
-            document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"-"+byteArray[RTO+1]+","+byteArray[RTO]+""
+            document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+"(+"+(RTO-parseInt("142e5",16)).toString(16)+" from 142E5):"+str.toString(16).padStart(4, '0')+" - "+offset.toString(16)+""
             //document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO+1]+","+byteArray[RTO]+";"
             document.getElementById("roomTransition").value = roomTransition
             roomTransitionOffset=offset
