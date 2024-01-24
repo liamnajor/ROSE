@@ -544,7 +544,8 @@ renderCurrentScreen()
             var str1 = parseInt(""+transtext.value.substr(2,2)+"0",16)
             var str2 = parseInt(""+transtext.value.substr(0,2)+"",16)
             var str = parseInt(""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"",16)
-            str = str % 0x0200
+            if(str >= parseInt("200",16)){
+            str = str % 0x0200}
             var RTO = parseInt("142E5",16)+(str*2)//146E5 is theoretically the max. 
             var offset = parseInt("1"+byteArray[RTO+1]+""+byteArray[RTO]+"",16)
             
