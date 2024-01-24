@@ -565,7 +565,7 @@ renderCurrentScreen()
                 roomTransition += ""+byteArray[offset+i]+","
             i +=1}
              //console.log(""+RTO+",""+transtext.value.substr(2,2)+""+transtext.value.substr(0,2)+"")
-            document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+"(+"+(RTO-parseInt("142e5",16)).toString(16)+" from 142E5):"+str.toString(16).padStart(4, '0')+" - "+offset.toString(16)+""
+            document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+"(142E5+"+(RTO-parseInt("142e5",16)).toString(16)+"):"+str.toString(16).padStart(4, '0')+" - "+offset.toString(16)+""
             //document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO+1]+","+byteArray[RTO]+";"
             document.getElementById("roomTransition").value = roomTransition
             roomTransitionOffset=offset
