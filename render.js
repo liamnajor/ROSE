@@ -498,6 +498,7 @@ for(let e = 0; e!=256;e+=1){
         //drawgrid(ctx)
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
+	    ctx.fillStyle = "red";
         ctx.beginPath();
         ctx.moveTo(x-1,y-1);
         ctx.lineTo(x-1,y+17);
