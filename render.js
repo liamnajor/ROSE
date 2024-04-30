@@ -277,7 +277,7 @@ var loadtileset = function(){
     samusimg.src = "Object Sprites/samus.png"
     samus = samusimg
     //var select = document.getElementById("tileset")
-    var tileset = new Image(256, 128);
+    //var tileset = new Image(256, 128);
     //tileset.putImageData=generateTileSet(metatileOffset,graphicsOffset)
     //var selected = select.selectedIndex+9
     //tileset.src = "Tilesets/"+selected.toString(16)+".png";
@@ -371,41 +371,51 @@ placeBlock(renderer,xpos*16,ypos*16, currentTile)
         }
         objnum = d
     }
-var renderbank = function(){
+var renderbank = function(addEventListeners){
     var input = document.getElementById("bankselect") //select element, loads a bank
     var canvas = document.getElementById("edit")
     var ctx = canvas.getContext("2d")
     var roomedit = document.getElementById("roomedit")
     var tileset = document.getElementById("tilesetimage")
-    if(added != true){
+    if(added != true && addEventListeners === true){
 added = true
         tileset.addEventListener("mousedown", function(e){
-        var ctx = document.getElementById("tilesetimage").getContext("2d")
-	//ctx.fillStyle = "white";
+        var tilesetOverlay=document.getElementById("tilesetOverlay")    
+        if(document.getElementById("tilesetOverlay")===null){
+            var tilesetOverlayElement = document.createElement("canvas")
+            tilesetOverlayElement.id="tilesetOverlay"
+            tilesetOverlayElement.width=18
+            tilesetOverlayElement.height=18
+            tilesetOverlayElement.style="display:none;"
+            document.getElementById("tileset manager").appendChild(tilesetOverlayElement)
+            tilesetOverlay=document.getElementById("tilesetOverlay")
+            var contx = tilesetOverlay.getContext("2d")
+            contx.strokeStyle = 'red';
+            contx.beginPath();
+            contx.moveTo(0,0);
+            contx.lineTo(0,18);
+            contx.stroke();
+            contx.lineTo(18,18);
+            contx.stroke();
+            contx.lineTo(18,0);
+            contx.stroke();
+            contx.lineTo(0,0);
+            contx.stroke();
+        }
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         tile = bank
-        ctx.clearRect(0, 0, 256, 256);
+        //imagetileset.getContext("2d").clearRect(0, 0, 256, 256);
         changeTileset(imagetileset)
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
-        ctx.strokeStyle='red'
-        ctx.beginPath();
-        ctx.moveTo(x-1,y-1);
-        ctx.lineTo(x-1,y+17);
-        ctx.stroke();
-        ctx.lineTo(x+17,y+17);
-        ctx.stroke();
-        ctx.lineTo(x+17,y-1);
-        ctx.stroke();
-        ctx.lineTo(x-1,y-1);
-        ctx.stroke();
+        y += 40
+        x += 5
+        tilesetOverlay.style="position:absolute;top:"+y+"px;left:"+x+"px;z-index:10"
+        
     })
     roomedit.addEventListener("mousedown", function(e){
 
-    if(document.getElementById("mode").selectedIndex === 0){
-        var ctx = this.getContext("2d")
-	placeBlock(ctx,e.offsetX,e.offsetY,tile)
-        } else if(document.getElementById("mode").selectedIndex === 1){
+        if(document.getElementById("mode").selectedIndex === 1){
         var ctx = this.getContext("2d")
         var ID = document.getElementById("OBJID").value
         var x = Math.floor(e.offsetX/16)
@@ -469,8 +479,6 @@ renderCurrentScreen()
         if(e.buttons === 1){
             placeBlock(ctx,e.offsetX,e.offsetY,tile)
         }
-    } else {
-        
     }
     })
     canvas.addEventListener("mousedown", function(e){
@@ -572,8 +580,9 @@ renderCurrentScreen()
             //document.getElementById("roomTransitionHeader").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO+1]+","+byteArray[RTO]+";"
             document.getElementById("roomTransition").value = roomTransition
             roomTransitionOffset=offset
-    })}
-    loadtileset()    
+    })
+}
+    loadtileset()
     var point = 0
     while(point != 256){
         var loc = parseInt(startbank[input.selectedIndex], 16)
@@ -657,7 +666,7 @@ renderCurrentScreen()
         }
     }
     totalbanksadded = Math.floor(byteArray.length/parseInt("4000", 16))
-}
+}//renderbank closing bracket
 var generateArray = function(array, simplePalette,chunks){
 
 for (let x = 0; x != 59; x += 1){

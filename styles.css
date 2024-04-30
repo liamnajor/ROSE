@@ -45,7 +45,6 @@ border-radius: 14px;
 
 }
 textarea {  
-  border-color:#000000;
   border: 2px;
   background-color: #AAA666;
   color: #1F1F4F;
@@ -64,7 +63,6 @@ margin-left: auto;
 margin-right: auto;
 }
 .div {
-  border-color:#000000;
   border: 2px;
   background-color: #666666;
   color: #AFBF9F;

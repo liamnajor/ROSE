@@ -243,3 +243,6 @@ while (counter!=objectList.length){
     document.getElementById("OBJType").innerHTML += "<option>"+objectList[counter][1]+"</option>"
   counter+=1
 }
+window.addEventListener("selectstart", function(event) {
+  event.preventDefault();
+});
