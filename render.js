@@ -108,9 +108,9 @@ arrayGenerated = false
 var tilectx = document.getElementById("tilesetimage").getContext("2d")
 var drawgrid = function(ctx, style){
         if(style != undefined||style != null){
-           ctx.fillStyle = style;
+           ctx.strokeStyle = style;
         } else {
-	   ctx.fillStyle = "white";
+	   ctx.strokeStyle = "white";
         }
         var x = 0
         while(x != 272){
@@ -179,7 +179,6 @@ document.getElementById("graphicsPointers").value=graphicsData[select.selectedIn
     var ctx = document.getElementById("tilesetimage").getContext("2d")
     //ctx.drawImage(tile, 0, 0)
     generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0],graphicsData[select.selectedIndex][3],ctx)
-//drawgrid(ctx)
 }
 
     var generateTileset = function(metatileOffset,graphicsOffset,spriteOffset,ctx){
@@ -285,7 +284,6 @@ var loadtileset = function(){
     imagetileset =  document.getElementById("tilesetimage")
     changeTileset(imagetileset)
     //tileset.putImageData(generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0]))
-    //drawgrid(tilectx)
 }
 var renderCurrentScreen = function(xOffset,yOffset,xsize,ysize){
 disableElement("OBJData")
@@ -382,24 +380,25 @@ var renderbank = function(){
     if(added != true){
 added = true
         tileset.addEventListener("mousedown", function(e){
-        var ctx = this.getContext("2d")
-	ctx.fillStyle = "white";
+        var ctx = document.getElementById("tilesetimage").getContext("2d")
+	//ctx.fillStyle = "white";
         var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
         tile = bank
         ctx.clearRect(0, 0, 256, 256);
         changeTileset(imagetileset)
-        //drawgrid(ctx, "white")
-        //drawgrid(ctx, "white")
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
+        ctx.strokeStyle='red'
         ctx.beginPath();
         ctx.moveTo(x-1,y-1);
         ctx.lineTo(x-1,y+17);
+        ctx.stroke();
         ctx.lineTo(x+17,y+17);
+        ctx.stroke();
         ctx.lineTo(x+17,y-1);
+        ctx.stroke();
         ctx.lineTo(x-1,y-1);
-        ctx.stroke();      
-            
+        ctx.stroke();
     })
     roomedit.addEventListener("mousedown", function(e){
 
@@ -493,17 +492,20 @@ for(let e = 0; e!=256;e+=1){
         epointertext.value = epointers[selected]
         ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
-	drawChunkImageData(ctx,imageDatas)//.putImageData(imageData, 0, 0)
-        //drawgrid(ctx)
-        //drawgrid(ctx)
+	    drawChunkImageData(ctx,imageDatas)//.putImageData(imageData, 0, 0)
+        drawgrid(ctx,"black")
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
-	    ctx.fillStyle = "red";
+	    ctx.strokeStyle = 'red';
         ctx.beginPath();
         ctx.moveTo(x-1,y-1);
+        
         ctx.lineTo(x-1,y+17);
+        ctx.stroke();
         ctx.lineTo(x+17,y+17);
+        ctx.stroke();
         ctx.lineTo(x+17,y-1);
+        ctx.stroke();
         ctx.lineTo(x-1,y-1);
         ctx.stroke();
 renderCurrentScreen()
