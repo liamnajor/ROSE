@@ -1,33 +1,175 @@
+var checkSpawn = function(pos, xOffset, yOffset){    
+var bank = document.getElementById("bankselect").selectedIndex + 9    
+if(byteArray[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
+            if(byteArray[20073] === "0"+pos.substr(0, 1)+""){
+                if(byteArray[20075] === "0"+pos.substr(1, 2)+""){
+                    var x = parseInt(byteArray[20074], 16)+(xOffset*256)
+                    var y = parseInt(byteArray[20072], 16)+(yOffset*256)
+                    var ctx = roomedit.getContext("2d")
+                    ctx.drawImage(samus, x-1, y-11)
+                    //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
+                }
+            }
+        }
+
+}
+var captureMode = false
+var borderX=0
+var borderY=0
+/*
+<option value="00">[0,0,0,0]Free Scroll</option>
+<option value="01">[0,1,0,0]Stop Scrolling Right</option>
+<option value="02">[0,0,0,1]Stop Scrolling Left</option>
+<option value="03">[0,1,0,1]Shaft</option>
+<option value="04">[0,0,1,0]Stop Scrolling Up</option>
+<option value="05">[0,1,1,0]Stop Scrolling Up Right Corner</option>
+<option value="06">[0,0,1,1]Stop Scrolling Up Left Corner</option>
+<option value="07">[0,1,1,1]Shaft End Up</option>
+<option value="08">[1,0,0,0]Stop Scrolling Down</option>
+<option value="09">[1,1,0,0]Stop Scrolling Down Right</option>
+<option value="0a">[0,1,0,1]Stop Scrolling Down Left</option>
+<option value="0b">[1,1,0,1]Shaft End Down</option>
+<option value="0c">[1,0,1,0]hallway</option>
+<option value="0d">[1,1,1,0]hallway end right</option>
+<option value="0e">[1,0,1,1]hallway end left</option>
+<option value="0f">[1,1,1,1]no scroll</option> [down,right,up,left]
+*/ 
+var scrollMask = [
+[0,0,0,0],//free scroll
+[0,0,1,0],//stop right
+[1,0,0,0],//stop left
+[1,0,1,0],//shaft
+[0,0,0,1],//stop up
+[0,0,1,1],//stop up right
+[1,0,0,1],//stop up left
+[1,0,1,1],//shaft end up
+[0,1,0,0],//stop down
+[0,1,1,0],//stop down right
+[1,1,0,0],//stop down left
+[1,1,1,0],//shaft end down
+[0,1,0,1],//hall
+[0,1,1,1],//hall end right
+[1,1,0,1],//hall end left
+[1,1,1,1]//no scroll
+]
+var prevXOffset = 0
+var prevYOffset = 0
+var drawSquare = function(ctx, x, y, xOffset, yOffset, width, height, color, faces){
+	    if(!color){var color = 'red';}
+	    if(!faces){
+	        var faces = [1,1,1,1]
+	    }
+	    ctx.strokeStyle  = color
+	    //if(document.getElementById("roomedit").width/256 <= 16 || document.getElementById("roomedit").height/256 <= 16){
+	    ctx.beginPath();
+	    ctx.moveTo((x)+xOffset,(y)+yOffset);//move to single pixel offset from origin
+        if(faces[0]===1){
+        ctx.lineTo((x)+xOffset,(y+(height))+yOffset);//line down from left
+        ctx.stroke();
+        } 
+        ctx.moveTo((x)+xOffset,(y+(height))+yOffset);//move to end position
+        if(faces[1]===1){
+        ctx.lineTo((x+(width))+xOffset,(y+(height))+yOffset);//line right from bottom left
+        ctx.stroke();
+        }
+        ctx.moveTo((x+(width))+xOffset,(y+(height))+yOffset);//move to end position
+        if(faces[2]===1){
+        ctx.lineTo((x+(width))+xOffset,(y)+yOffset);//line up from bottom right
+        ctx.stroke();
+        } 
+        ctx.moveTo((x+(width))+xOffset,(y)+yOffset)//move to  end position
+	    if(faces[3]===1){
+        ctx.lineTo((x)+xOffset,(y)+yOffset);//line left from top right
+        ctx.stroke();
+        }
+        }
+        var appendData = function(e, divisor){
+        if(!divisor){
+            var divisor = 16
+            selectedChunk = parseInt(""+Math.floor(e.offsetY/divisor).toString(16)+""+Math.floor(e.offsetX/divisor).toString(16)+"",16)
+            var currentChunk = selectedChunk
+            subSelectedChunk = 0
+        } else {
+            drawSquare(document.getElementById("roomedit").getContext("2d"),(Math.floor(e.offsetX/divisor)*256)+1,(Math.floor(e.offsetY/divisor)*256)+1,0,0,255,255)
+            
+	    borderX =Math.floor(e.offsetX/divisor)*256
+	    borderY =Math.floor(e.offsetY/divisor)*256
+            subSelectedChunk =  parseInt(""+Math.floor(e.offsetY/divisor).toString(16)+""+Math.floor(e.offsetX/divisor).toString(16)+"",16)
+            var currentChunk = selectedChunk + subSelectedChunk
+        }
+        while(currentChunk > 255){
+        currentChunk -= 256}
+	    roomTransition = "ff"
+        pointertext = document.getElementById("pointers")
+        scrollSelect = document.querySelector("#scroll")
+        transtext = document.getElementById("rtransition")
+        epointertext = document.getElementById("enemy-dat")
+        pointertext.value = pointers[currentChunk]
+        transtext.value = room_transitions[currentChunk]
+        scrollSelect.value = scroll[currentChunk]
+        epointertext.value = epointers[currentChunk]
+        
+    
+	    }
+var addFile = function(src,type){
+var jsonData = []
+var file = document.createElement("script")
+file.src=src
+file.type=type
+file.id="data identifier "+jsonData.length+""
+document.body.appendChild(file)
+if(type==="application/json"){
+console.log(document.getElementById("data identifier "+jsonData.length+""))
+    jsonData[jsonData.length]=JSON.parse(document.getElementById("data identifier "+jsonData.length+"").innerHTML)
+}
+}
+var renderedChunks = []
 var roomTransitionOffset=0
 var added = false
 var placedBlocks = []
 var scrolls=["00","01","02","03","04","05","06","07","08","09","0a","0b","0c","0d","0e","0f",]
-var placeBlock = function(ctx, x, y, tile){
+var offsetLog = []
+    var placeBlock = function(ctx, x, y, tile){
         var edittile = true
-        if(tile === undefined){
-        edittile = false}
-        var x = Math.floor(x/16)
-        var y = Math.floor(y/16)
-        var pos = parseInt(""+y.toString(16)+""+x.toString(16)+"", 16)
-        var posb = ""+parseInt(chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].pointer+"00", 16)
-        posb -= parseInt("4000", 16)
-        posb += parseInt(startbank[document.getElementById("bankselect").selectedIndex], 16)
-        posb += pos
+        var xOffset = Math.floor(x/256)//xOffset and yOffset are in screens
+        var yOffset = Math.floor(y/256)
+        var chunkOffset = xOffset + (yOffset * 16)
+        var currentChunk = selectedChunk + chunkOffset
+        while(currentChunk > 255){
+        currentChunk -= 256}
+        var x = Math.floor(x/16)-(xOffset*16)//x and y coordinate position of tile, in tiles (16x16 pixels)
+        var y = Math.floor(y/16)-(yOffset*16)
+        var pos = parseInt(""+y.toString(16)+""+x.toString(16)+"", 16)//parse tile position
+        //console.log(""+xOffset+","+yOffset+","+x+","+y+","+chunkOffset+","+selectedChunk+","+currentChunk+"")
+        //offsetLog[offsetLog.length]=[xOffset,yOffset,x,y,currentChunk]
+        var pointer = ""+parseInt(chunks[parseInt(pointers[currentChunk], 16)-parseInt("45", 16)].pointer+"00", 16)//get chunk pointer
+        pointer -= parseInt("4000", 16)//jump to pointer relative position
+        pointer += parseInt(startbank[document.getElementById("bankselect").selectedIndex], 16)//jump to start of selected bank
+        pointer += pos//add tile position
+        if(!tile){//checks for selected tile, if not, skip writing to the byte array or (?) editing the minimap tiles, and grabs the tile already present at the selected location
+        edittile = false
+        var tile =chunks[parseInt(pointers[currentChunk], 16)-parseInt("45", 16)].chunk[pos]}
         if(edittile === true){
-            byteArray[posb] = tile
-            chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[pos] = tile
-        var xpos = parseInt(tile.substr(1, 2), 16)*16
+            byteArray[pointer] = tile
+            chunks[parseInt(pointers[currentChunk], 16)-parseInt("45", 16)].chunk[pos] = tile
+            var i = selectedChunk + ((document.getElementById("roomedit").height/256)*16) + document.getElementById("roomedit").width/256
+            if(i > 256){i = 255}
+    /*while(i != selectedChunk){
+        if(renderedChunks[i]=== pointers[currentChunk]){
+            var y = Math.floor(i/16)
+            var x = i-y
+            renderCurrentScreen(x,y)
+        }
+        i-=1
+    }*/
+            }
+        var xpos = parseInt(tile.substr(1, 2), 16)*16//xpos and ypos are tileset positions for selected tile
         var ypos = parseInt(tile.substr(0, 1), 16)*16
-        var xclear = x*16
-        var yclear = y*16
+        var xclear = (x*16)+(xOffset*256)
+        var yclear = (y*16)+(yOffset*256)
         ctx.drawImage(imagetileset,xpos,ypos,16,16,xclear,yclear,16,16)
-    
-        } else {
-            console.error("exception: tile not selected")
-        }
-
-        }
-var addBytes = function(bytes, start){
+    }
+/*var addBytes = function(bytes, start){
 var counter = 0
 var bytesString = bytes
 bytes = bytesString.split(" ")
@@ -35,7 +177,7 @@ while(counter != bytes.length){
 byteArray[parseInt(start)]=bytes[counter]
 counter += 1
 }
-}
+}*/
 var expandedROM = false
 var expandROM = function(){
 if(expandedROM === false){
@@ -136,7 +278,8 @@ var epointers = []
 var room_transitions = []
 var scroll = []
 var chunks = []
-var selected
+var selectedChunk
+var subSelectedChunk
 var prevbank
 var tile
 var imagetileset
@@ -205,11 +348,6 @@ document.getElementById("graphicsPointers").value=graphicsData[select.selectedIn
         graphicsOffset=spriteOffset
         indexByte-=parseInt("B0",16)
     }
-    //adds pre defined bytes (instead of the pointers in the metatile) at the defined points in the array
-    /*if(graphicsData[select.selectedIndex][3]!=undefined){
-    if(graphicsData[select.selectedIndex][3][tiles+1]!=undefined){
-        indexByte=byteArray[graphicsData[select.selectIndex][3][tiles+1]+graphicsData[select.selectIndex][3][0]]
-    }}*/
     var bitnumy=0
     while(bitnumy<8){
     //grab 2 bytes to join together
@@ -272,7 +410,7 @@ document.getElementById("graphicsPointers").value=graphicsData[select.selectedIn
     }
     //return imageData
     }
-var loadtileset = function(){
+var loadImages = function(){
     var samusimg = new Image(16, 32);
     samusimg.src = "Object Sprites/samus.png"
     samus = samusimg
@@ -280,12 +418,19 @@ var loadtileset = function(){
     //var tileset = new Image(256, 128);
     //tileset.putImageData=generateTileSet(metatileOffset,graphicsOffset)
     //var selected = select.selectedIndex+9
-    //tileset.src = "Tilesets/"+selected.toString(16)+".png";
-    imagetileset =  document.getElementById("tilesetimage")
-    changeTileset(imagetileset)
+    //tileset.src = "Tilesets/"+selectedChunk.toString(16)+".png";
     //tileset.putImageData(generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0]))
 }
-var renderCurrentScreen = function(xOffset,yOffset,xsize,ysize){
+var renderCurrentScreen = function(xOffset,yOffset){
+
+        var renderer = roomedit.getContext("2d")
+//xOffset+= Math.floor(document.getElementById("roomedit").width/512)
+//xOffset += 2
+var chunkOffset = xOffset+(yOffset*16)
+        var currentChunk = selectedChunk+chunkOffset
+        while(currentChunk > 255){
+        currentChunk -= 256}
+//console.log(""+xOffset+","+yOffset+","+chunkOffset+","+Math.floor(document.getElementById("roomedit").width/512)+"")
 disableElement("OBJData")
 enableElement("viewDat")
 disableElement("object manager")
@@ -299,77 +444,86 @@ enableElement("object manager",OBJManagerStyle)
         while(xpos >= 16){
             xpos -= 16
             ypos += 1
-        }
-//select current tile within the chunk
-var currentTile = chunks[parseInt(pointers[selected], 16)-parseInt("45", 16)].chunk[i]
-        //0 = 7f
-//grab rendering context and add offsets for future edit canvas expansion
-        var renderer = roomedit.getContext("2d")
-
-        //pre implimentation zero out
-        xOffset = 0
-        yOffset = 0
-
-        if(x != undefined ||x != null){
-        if(xOffset >= 0){
-            roomedit.width += xOffset
-        }
-        if(yOffset >= 0){
-            roomedit.height += yOffset
-        }} else {
-            xOffset = 0
-            yOffset = 0
-        } 
-        xpos += xOffset
-        ypos += yOffset
+        }        
 //draw the processed tile at the processed position
-placeBlock(renderer,xpos*16,ypos*16, currentTile)
+placeBlock(renderer,(xpos*16)+(xOffset*256),(ypos*16)+(yOffset*256))//xpos and ypos are in tiles, and offset x and y are in screens (16x16 tiles)
+
 
 //renderer.drawImage(imagetileset,tilex*16,tiley*16,16,16,xpos*16,ypos*16,16,16)
         i += 1
         }
-        var pos = selected.toString(16)
+        var pos = currentChunk.toString(16)
         var bank = document.getElementById("bankselect").selectedIndex + 9
-       
-        if(byteArray[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
-            if(byteArray[20073] === "0"+pos.substr(0, 1)+""){
-                if(byteArray[20075] === "0"+pos.substr(1, 2)+""){
-                    var x = parseInt(byteArray[20074], 16)
-                    var y = parseInt(byteArray[20072], 16)
-                    var ctx = roomedit.getContext("2d")
-                    ctx.drawImage(samus, x-1, y-11)
-                    //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
-                }
-            }
-        }
-        var loc = epointers[selected]
-        var e = loc.substr(2, 4)
-        var d = parseInt(e, 16)
-        d += parseInt("80", 16)
-        e = loc.substr(0, 2)
-        var loc = parseInt(""+d.toString(16)+""+e+"", 16)
-        //ID,type,x,y
-        e = 0
-        d = 0
+        checkSpawn(pos, xOffset, yOffset)       
+        var loc = epointers[parseInt(pos,16)]//loc = pointer string
+        var byte1 = loc.substr(2, 4)
+        //byte 1 (e) is the first byte of a 2 byte pointer, and temporary placeholder for the second byte
+        var byte2 = parseInt(byte1, 16)
+        //byte 2 (d) is the second byte of the pointer, parsed from the temporary bufer value byte 1
+        byte2 += parseInt("80", 16)//add offset of 0x80
+        byte1 = loc.substr(0, 2)//clear buffer of byte 2 by overwriting it with byte 1
+        var loc = parseInt(""+byte2.toString(16)+""+byte1+"", 16)//byte 1 is already a string, so no need to... stringify? I guess?
+        //M2 enemy format: ID,type,x,y, 4 bytes
+        byte1 = 0
+        byte2 = 0
         var ctx = roomedit.getContext("2d")
-        while(e != 4){
-            var p = d*4
+        //love undocumented speghetti to unravel...thanks past me, you suck at coding. D, E, and P suck as variable names, and you NEED to DOCUMENT what your code does. 
+        //ok done. the names made SOME sense, but single letters suck as names regardless without some kind of clarification, even a comment ^ 
+        while(byte1 != 4){
+            var p = byte2*4//p = pointer
             var x = p+2
+            //at least x and y make sense...they are positions, meaning P is the pointer. ID = Pointer(+0, right at the pointed offset) and type = pointer+1  
             var y = p+3
-            if(e === 0){
-                if(byteArray[loc + p] != "ff"){
-                    e = 2
+            var t = p+1//t = type
+            if(byte1 === 0){
+                if(byteArray[loc + p] != "ff"){//check for terminating operator at pointer location
+                    byte1 = 2
                 } else {
-                    e = 4
+                    byte1 = 4
                 }
             }
-            if(e === 2){
-                drawObj(ctx,parseInt(byteArray[loc + x], 16), parseInt(byteArray[loc + y], 16), byteArray[loc + p])
-                d += 1
-                e = 0
+            if(byte1 === 2){
+                drawObj(ctx,parseInt(byteArray[loc + x], 16)+(xOffset*256), parseInt(byteArray[loc + y], 16)+(yOffset*256), byteArray[loc + p])
+                byte2 += 1
+                byte1 = 0
             }
         }
-        objnum = d
+        objnum = byte1
+    }
+    var renderCurrentScreens=function(width,height){
+    renderedChunks = []
+    //get width and height of viewport in screens
+    if(width===undefined){
+        var width=Math.floor(document.getElementById("roomedit").width/256)
+    } else if(document.getElementById("roomedit").width < width*256){
+         document.getElementById("roomedit").width = width*256
+    }
+    if(height===undefined){
+        var height=Math.floor(document.getElementById("roomedit").height/256)
+    } else if(document.getElementById("roomedit").height < height*256){
+         document.getElementById("roomedit").height = height*256
+    }
+    var x = width
+    var y = height
+    while(x > -1){
+        while(y > -1){
+            renderCurrentScreen(x,y)
+            renderedChunks[selectedChunk+((y*16)+x)] = pointers[selectedChunk+((y*16)+x)] 
+            y-=1
+        }
+        y=height
+        x-=1
+    }
+  var x = width
+    var y = height
+    while(x > -1){
+        while(y > -1){  
+drawSquare(document.getElementById("roomedit").getContext("2d"),x*256,y*256,0,0,254,254,"green",scrollMask[parseInt(scroll[selectedChunk + (x + (y*16))],16)])
+y-=1
+        }
+        y=height
+        x-=1
+    }
     }
 var renderbank = function(addEventListeners){
     var input = document.getElementById("bankselect") //select element, loads a bank
@@ -413,8 +567,13 @@ added = true
         tilesetOverlay.style="position:absolute;top:"+y+"px;left:"+x+"px;z-index:10"
         
     })
+    roomedit.addEventListener("contextmenu",function(event){
+        if(captureMode === false){
+        event.preventDefault()
+        }
+    },false);
     roomedit.addEventListener("mousedown", function(e){
-
+        if(e.buttons === 1){
         if(document.getElementById("mode").selectedIndex === 1){
         var ctx = this.getContext("2d")
         var ID = document.getElementById("OBJID").value
@@ -452,11 +611,10 @@ added = true
         byteArray[loc+num+4] = "ff"
         objnum += 1
         k += 1
-renderCurrentScreen()
+//drawOBJ(ctx,sx,sy, type)
     
         } else {
             window.alert("16 is the object limit per screen")
-renderCurrentScreen()
     
         }
         
@@ -466,10 +624,14 @@ renderCurrentScreen()
         var sy = y*16
         var sx = x*16
         var ctx = this.getContext("2d")
-        spawn(byteArray, sx.toString(16), sy.toString(16))
-        renderCurrentScreen()
+        spawn(sx.toString(16), sy.toString(16))
+        //renderCurrentScreens()
     } else {
         console.log("unimplemented")
+    }
+    } else if(e.buttons === 2){
+    renderCurrentScreens()
+    appendData(e,256)
     }
     })
     roomedit.addEventListener("mousemove", function(e){
@@ -477,77 +639,109 @@ renderCurrentScreen()
     if(document.getElementById("mode").selectedIndex === 0){
         var ctx = this.getContext("2d")
         if(e.buttons === 1){
-            placeBlock(ctx,e.offsetX,e.offsetY,tile)
+            placeBlock(ctx,e.offsetX,e.offsetY,tile)//,chunkOffset,screenOffsetX,screenOffsetY,true)
+            }
         }
-    }
     })
+    
+    roomedit.addEventListener("mouseup", function(e){
+    if(e.button === 0){
+        renderCurrentScreens()
+        var y = Math.floor((selectedChunk + subSelectedChunk)/16)
+        var x = (selectedChunk + subSelectedChunk)-y
+        drawSquare(document.getElementById("roomedit").getContext("2d"),borderX+1,borderY+1,0,0,255,255)
+        }
+    })
+    var roomTransition = "ff"
+        var pointertext = document.getElementById("pointers")
+        var scrollSelect = document.querySelector("#scroll")
+        var transtext = document.getElementById("rtransition")
+        var bank = 0
+        var epointertext = document.getElementById("enemy-dat")
+        
+    	    
     canvas.addEventListener("mousedown", function(e){
+    
 	var simplePalette = [0,255,127]
 var array = []
 for(let e = 0; e!=256;e+=1){
 	array[e]=new Uint8ClampedArray(1024)}
 	generateArray(array, simplePalette,chunks)
-	var roomTransition = "ff"
-        var pointertext = document.getElementById("pointers")
-        var scrollSelect = document.querySelector("#scroll")
-        var transtext = document.getElementById("rtransition")
-        var bank = ""+Math.floor(e.offsetY/16).toString(16)+""+Math.floor(e.offsetX/16).toString(16)+""
-        var epointertext = document.getElementById("enemy-dat")
-        selected = parseInt(bank, 16)
-        pointertext.value = pointers[selected]
-        transtext.value = room_transitions[selected]
-        scrollSelect.value = scroll[selected]
-        epointertext.value = epointers[selected]
+	    appendData(e)
         ctx.fillStyle = "white";
         ctx.clearRect(0, 0, 256, 256);
 	    drawChunkImageData(ctx,imageDatas)//.putImageData(imageData, 0, 0)
         drawgrid(ctx,"black")
         var x = Math.floor(e.offsetX/16)*16
         var y = Math.floor(e.offsetY/16)*16
-	    ctx.strokeStyle = 'red';
-        ctx.beginPath();
-        ctx.moveTo(x-1,y-1);
+        var xOffset = 0
+        var yOffset = 0
+        drawSquare(ctx, x, y, 0,0,document.getElementById("roomedit").width/16,document.getElementById("roomedit").height/16)
+        if((x+document.getElementById("roomedit").width/16)+1 > 256){
+        drawSquare(ctx, x, y, -256,16,document.getElementById("roomedit").width/16,document.getElementById("roomedit").height/16)
+        console.log("x overflow")}
+        if((y+document.getElementById("roomedit").height/16)+1 > 240){
+        drawSquare(ctx, x, y, -256,-240,document.getElementById("roomedit").width/16,document.getElementById("roomedit").height/16)
+        console.log("y overflow")}
         
-        ctx.lineTo(x-1,y+17);
-        ctx.stroke();
-        ctx.lineTo(x+17,y+17);
-        ctx.stroke();
-        ctx.lineTo(x+17,y-1);
-        ctx.stroke();
-        ctx.lineTo(x-1,y-1);
-        ctx.stroke();
-renderCurrentScreen()
+        
+        
+renderCurrentScreens()
+drawSquare(document.getElementById("roomedit").getContext("2d"),1,1,0,0,255,255)
+borderX = 0
+borderY = 0
     setInterval(function(){window.dispatchEvent(frame)}, 1000/10)
+    document.getElementById("editWidth").value = Math.floor(document.getElementById("roomedit").width/256)
+    document.getElementById("editHeight").value = Math.floor(document.getElementById("roomedit").height/256)
+    document.getElementById("editHeight").onchange = function(){
+        document.getElementById("roomedit").height = document.getElementById("editHeight").value*256
+        renderCurrentScreens()
+    }
+    document.getElementById("editWidth").onchange = function(){
+        document.getElementById("roomedit").width = document.getElementById("editWidth").value*256
+        renderCurrentScreens()
+    }
+    
+    document.getElementById("captureMode").onchange = function(){
+        captureMode = document.getElementById("captureMode").checked
+        console.log("capture mode:"+document.getElementById("captureMode").checked+"")
+    
+    }
         pointertext.onchange=function(){
+        var currentChunk = selectedChunk + subSelectedChunk
             var loc = parseInt(startbank[input.selectedIndex], 16)
-            var select = selected * 2
+            var select = currentChunk * 2
             var locp = loc + select
             byteArray[locp] = pointertext.value.substr(0, 2)
             byteArray[locp+1] = pointertext.value.substr(2, 4)
-            pointers[selected] = pointertext.value
-renderCurrentScreen()
+            pointers[currentChunk] = pointertext.value
+renderCurrentScreens()
         }
         transtext.onchange=function(){
+        var currentChunk = selectedChunk + subSelectedChunk
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("300", 16)
-            var select = selected * 2
-            var locp = loc + select
+            var locp = loc + (currentChunk * 2)
             byteArray[locp] = transtext.value.substr(0, 2)
             byteArray[locp+1] = transtext.value.substr(2, 4)
-            room_transitions[selected] = transtext.value
+            room_transitions[currentChunk] = transtext.value
             //document.getElementById("room transition").value=byteArray[parseInt(transtext.value,16)]
         }
         scrollSelect.onchange=function(){
+        var currentChunk = selectedChunk + subSelectedChunk
             var loc = parseInt(startbank[input.selectedIndex], 16)+parseInt("200", 16)
-            var locp = loc + selected
+            var locp = loc + currentChunk
             byteArray[locp] = scrolls[scrollSelect.selectedIndex]
-            scroll[selected] = scrolls[scrollSelect.selectedIndex]
+            scroll[currentChunk] = scrolls[scrollSelect.selectedIndex]
+            renderCurrentScreens()
         }
          epointertext.onchange=function(){
+        var currentChunk = selectedChunk + subSelectedChunk
             var selection = input.selectedIndex*512
             var loc = parseInt("C2E0", 16)+selection
-            var locp = loc + selected
-            epointers[selected] = epointertext.value
+            var locp = loc + currentChunk
+            epointers[currentChunk] = epointertext.value
             byteArray[loc] = epointertext.value
+            renderCurrentScreens()
             }
 
             //document.getElementById("roomTransition").innerHTML = ""+RTO.toString(16)+":"+byteArray[RTO]+","+byteArray[RTO+1]+""+roomTransition+""
@@ -582,7 +776,9 @@ renderCurrentScreen()
             roomTransitionOffset=offset
     })
 }
-    loadtileset()
+    loadImages()
+    imagetileset =  document.getElementById("tilesetimage")
+    changeTileset(imagetileset)
     var point = 0
     while(point != 256){
         var loc = parseInt(startbank[input.selectedIndex], 16)
@@ -680,19 +876,26 @@ for (let p = 0; p < 1024; p += 4) {
 }
 imageDatas=array
 }
-var spawn = function(byteArray, x, y){
-    hex = selected.toString(16)
-    byteArray[20068] = ""+y+""
+var spawn = function(x, y){
+    var xOffset = Math.floor(x/256)
+    var yOffset = Math.floor(y/256)
+    var xPos = Math.floor(x-(xOffset*256)/16)
+    var yPos = Math.floor(y-(yOffset*256)/16)
+    var currentChunk = selectedChunk + ((yOffset*16)+xOffset)
+        while(currentChunk > 255){
+        currentChunk -= 256}
+    hex = currentChunk.toString(16)
+    byteArray[20068] = ""+yPos+""
     byteArray[20069] = "0"+hex.substr(0, 1)+""
-    byteArray[20070] = ""+x+""
+    byteArray[20070] = ""+xPos+""
     byteArray[20071] = "0"+hex.substr(1, 2)+""
-    byteArray[20072] = ""+y+""
+    byteArray[20072] = ""+yPos+""
     byteArray[20073] = "0"+hex.substr(0, 1)+""
-    byteArray[20074] = ""+x+""
+    byteArray[20074] = ""+xPos+""
     byteArray[20075] = "0"+hex.substr(1, 2)+""
     var bank = document.getElementById("bankselect").selectedIndex + 9
     byteArray[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
-    console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+x+" and y "+y+".")
+    console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+xPos+" and y "+yPos+".")
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = document.getElementById("tileset").selectedIndex
     var collisions = [1,2,0,5,4,6,6,6,7]
@@ -713,9 +916,10 @@ var spawn = function(byteArray, x, y){
 
     collision1 = "4"+collisions[sel]+""
     collision0 = "80"
+    checkSpawn(hex)
 }
-var viewdat = function(){
-    var loc = epointers[selected]
+var viewdat = function(draw){
+    var loc = epointers[selectedChunk]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
     d += parseInt("80", 16)
@@ -738,12 +942,13 @@ var rawObjects = []
             } else {
                 e = 4
                 if(d === 0){
-                objects = "No objects on current screen"
+                document.getElementById("OBJData").innerHTML = "No objects on current screen"
                 }
             }
-renderCurrentScreen()
+//renderCurrentScreens()
     
         }
+        if(draw===true){
 if(objects[document.getElementById("objselect").selectedIndex]!=undefined){
     document.getElementById("OBJData").innerHTML = objects[document.getElementById("objselect").selectedIndex]} else {
 document.getElementById("OBJData").innerHTML = "Invalid object. It doesn't exist."
@@ -753,8 +958,10 @@ disableElement("viewDat")
 disableElement("object manager")
 enableElement("object manager","position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 485px")
 }
+return objects
+}
 var deleteobj = function(input){
-    var loc = epointers[selected]
+    var loc = epointers[selectedChunk]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
     d += parseInt("80", 16)
@@ -779,8 +986,7 @@ var deleteobj = function(input){
     console.log("deleting object "+input+", with "+d+" total")
     objnum -= 1
     if(input < d){
-        var f = d-input
-        console.log(""+f+" objects were orphaned")
+        console.log(""+d-input+" objects were orphaned")
         var g = d*4
         byteArray[loc + p] = byteArray[loc + g]
         byteArray[loc + 1 + p] = byteArray[loc + 1 + g]
