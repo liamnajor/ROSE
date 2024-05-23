@@ -9,25 +9,28 @@ body {
   color:black;
   background-repeat: repeat;
 }</style>
-  <link rel="stylesheet" href="GB_Emu/css/mobile.css"/>
+  <link rel="stylesheet" href="GB_Emu/css/mobile.css"/>  
   </head>
   <body>
 
     <a href="https://liamnajor.github.io/ROSE-how-to"><img src="ROSE.png" id="icon" style="display: block;margin-left: auto;margin-right: auto;height: 70px"></a>
+    <div class = "div" style="display:block;width:180px">width:<textarea id="editWidth" rows=1 cols=3></textarea> height:<textarea id="editHeight" rows=1 cols=3></textarea><br>Capture Mode:<input  type="checkbox"id="captureMode"></input></div>
     <div id = "file manager" class="div" style = "position: absolute; top: 40px; left: 50px; border: 1px solid #000000; width: 329px; height: 220px;">
         <input type = "button" class="button" id="closeFilePane" onclick="closeFilePane()" value="File:"></input><br>
         
         FileName:<textarea id = "filename" rows="1" cols="40"></textarea><br><br>Data
 <div id="divMain">
-</div><br>
-        <input class="button" type = "button" id = "encode" value = "encode">
+</div>
+        <div class="div2">JSON:<input type = "file" id = "JSON" value = "json file input" onload = "convertJson()"></div>
+        File:<input class="button" type = "button" id = "encode" value = "encode">
         <input class="button" type = "button" id = "decode" value = "decode" onclick = "decode()">        
-        <input class="button" type = "button" id = "test" value = "play" onclick = "testhack()">
+        ROM:<input class="button" type = "button" id = "test" value = "play" onclick = "testhack()">  
+        <input class="button" type = "button" id = "kill" value = "kill" onclick = "killEmu()">  
     </div>
 
 <input type = "button" class="button" id="openFilePane" onclick="openFilePane()" style="display:none" value="File"></input>    
     <div id="object manager" class="div" style = "position: absolute; left: 50px; top: 280px; border: 1px solid #000000; width: 286px; height: 425px">
-    <input type = "button" class="button" id="closeObjectPane" onclick="closeObjectPane()" value="Objects:"></input><br>        
+    <input type = "button" class="button" id="closeObjectPane" onclick="closeObjectPane()" value="Objects:"></input>     
     Pointer: <textarea id = "pointers"  rows="1" cols="4"></textarea><br>
     Scroll: <select id="scroll"><br>
 <option value="00">Free Scroll</option>
@@ -54,7 +57,7 @@ body {
     <input class = "buttonRight" type = "button" value = "delete object:" onclick="deleted()"><select id = "objselect">
 <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
     </select><br><br>
-    <input class="buttonRight" type = "button" value = "View Object data" id="viewDat" onclick="viewdat()">^<div id="OBJData" class="div">
+    <input class="buttonRight" type = "button" value = "View Object data" id="viewDat" onclick="viewdat(true)">^<div id="OBJData" class="div">
     </div><br>Mode: <select id = "mode">
     <option>Tile</option>
     <option>Object</option>
@@ -63,11 +66,7 @@ body {
     </div>
     </div>
 <input type = "button" class="button" id="openObjectPane" onclick="openObjectPane()" style="display:none" value="Objects"></input>
-<div id = "world" class="div" style = "display: block;margin-left: auto;margin-right: auto;border: 1px solid #000000; width: 260px; height: 295px">
-<br>    
-<canvas width = "256" height = "256" id = "roomedit"></canvas>
-    </div>
-
+<canvas width = "768" height = "512" id = "roomedit"style = "display: block;"></canvas>  
 <div id="tileset manager" class="div" style = "position:absolute; top: 40px; right: 50px;border: 1px solid #000000; width: 260px; height: 565px" ><input type = "button" class="buttonRight" id="closeTilesetPane" onclick="closeTilesetPane()" value="Tileset:"></input>
 <select id = "tileset">
         <option>9</option>
@@ -80,7 +79,7 @@ body {
         <option>E3</option>
         <option>F</option>
     </select><canvas id = "tilesetimage" width = 256 height = 128 style="position:absolute;top:41px;left:6px"></canvas> 
-    <canvas width = 256 height = 128></canvas><!--placeholder because abolute position objects don't move relative ones.--> 
+    <canvas width = 256 height = 128></canvas>
     <div id="tilesetName">tilesetName</div>
     <div id="roomTransitionHeader">address:pointer-pointer2</div><textarea id="roomTransition"rows=4 cols=35>transition code</textarea onChange="addRoomTransition()"><select id = "opCodeSelect" style="display:none">
         <option>0</option>
@@ -100,7 +99,8 @@ body {
         <option>D</option>
         <option>E</option>
         <option>F</option>
-    </select><!--<textarea id="room transition" rows="1" cols="10"></textarea><input class="buttonRight" type = "button" onClick="addOpcodeToRoomTransition()" value="+"></input><input type="button" class="button" value="add to ROM" onclick="addRoomTransition()"></input>-->
+    </select>
+    <!--<textarea id="room transition" rows="1" cols="10"></textarea><input class="buttonRight" type = "button" onClick="addOpcodeToRoomTransition()" value="+"></input><input type="button" class="button" value="add to ROM" onclick="addRoomTransition()"></input>-->
     Bank:<select id = "bankselect">
         <option>9</option>
         <option>A</option>
@@ -165,7 +165,6 @@ body {
     
    
 <script src="data.js"></script>
-<script src="psuedoCollisions.js"></script>
     <script src="GB_Emu/js/other/mobile.js"></script>
     <script src="GB_Emu/js/other/base64.js"></script>
     <script src="GB_Emu/js/other/json2.js"></script>

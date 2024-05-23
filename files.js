@@ -88,6 +88,9 @@ var hideEmu = function(){
     disableElement("gameboy_shell")
     enableElement("showEmulator","display:block")
 }
+var killEmu = function(){
+    gameboy.ROM = []
+}
 var showEmu = function(){
     enableElement("gameboy_shell","display:block;background-color: rgb(255, 0, 0)")
     disableElement("showEmulator")
@@ -168,7 +171,6 @@ e = b
             break
         }
     }
-    renderbank(true)
     if(byteArray.length > parseInt(0x40000)){
 var counter = byteArray.length-parseInt(0x40000)
 var c= 0
@@ -189,6 +191,8 @@ c+=1
     collision0=byteArray[parseInt("4E73", 16)] 
     collision1= byteArray[parseInt("4E74", 16)]	
     tilebank=byteArray[parseInt("4E6E", 16)]
+    
+    renderbank(true)
 }
 var encode = function(output){
     var value = ""
@@ -284,7 +288,9 @@ document.getElementById("encode").addEventListener("click", function(e){
     encode(true)}
 })
 document.getElementById("tileset").addEventListener("change", function() {
-    loadtileset()
+    loadImages()
+    imagetileset =  document.getElementById("tilesetimage")
+    changeTileset(imagetileset)
 })
 document.getElementById("bankselect").addEventListener("change", function() {
     renderbank(false)
