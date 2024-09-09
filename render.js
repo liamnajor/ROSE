@@ -1,17 +1,13 @@
-var checkSpawn = function(pos, xOffset, yOffset){    
-var bank = document.getElementById("bankselect").selectedIndex + 9    
-if(byteArray[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
-            if(byteArray[20073] === "0"+pos.substr(0, 1)+""){
-                if(byteArray[20075] === "0"+pos.substr(1, 2)+""){
-                    var x = parseInt(byteArray[20074], 16)+(xOffset*256)
-                    var y = parseInt(byteArray[20072], 16)+(yOffset*256)
-                    var ctx = roomedit.getContext("2d")
-                    ctx.drawImage(samus, x-1, y-11)
-                    //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
-                }
-            }
-        }
-
+var correctedEpointers = 0
+var drawObj=function(ctx,x,y,type){
+ctx.beginPath()
+ctx.lineWidth = 3;
+ctx.strokeStyle = 'red';
+ctx.rect(x,y,16,16)
+ctx.font = "12px Arial";
+ctx.fillStyle = 'orange';
+ctx.fillText(""+type+"", x+1, y+12);
+ctx.stroke()
 }
 var captureMode = false
 var borderX=0
@@ -222,16 +218,7 @@ addbank(1)
 expandedROM === true
 } else {
 addbank(1)}}
-var drawObj=function(ctx,x,y,type){
-ctx.beginPath()
-ctx.lineWidth = 3;
-ctx.strokeStyle = 'red';
-ctx.rect(x,y,16,16)
-ctx.font = "12px Arial";
-ctx.fillStyle = 'orange';
-ctx.fillText(""+type+"", x+1, y+12);
-ctx.stroke()
-}
+
 var startbank = ["24000","28000","2C000","30000","34000","38000","3C000"]
 var imageDatas = []
 var prevTileset
@@ -292,7 +279,7 @@ var collision1 = "45"
 var tilebank = "07"
 var samus
 var obj
-var objnum
+var objnums = []
 var k = 0
 /*function stringTo8BitBinary(inputString) {
     let binaryResult = '';
@@ -421,13 +408,14 @@ var loadImages = function(){
     //tileset.src = "Tilesets/"+selectedChunk.toString(16)+".png";
     //tileset.putImageData(generateTileset(graphicsData[select.selectedIndex][1],graphicsData[select.selectedIndex][0]))
 }
-var renderCurrentScreen = function(xOffset,yOffset, chunk){
+var renderCurrentScreen = function(xOffset,yOffset){
 
         var renderer = roomedit.getContext("2d")
 //xOffset+= Math.floor(document.getElementById("roomedit").width/512)
 //xOffset += 2
 var chunkOffset = xOffset+(yOffset*16)
         var currentChunk = selectedChunk+chunkOffset
+        objnums[currentChunk] =0
         while(currentChunk > 255){
         currentChunk -= 256}
 //console.log(""+xOffset+","+yOffset+","+chunkOffset+","+Math.floor(document.getElementById("roomedit").width/512)+"")
@@ -468,8 +456,6 @@ placeBlock(renderer,(xpos*16)+(xOffset*256),(ypos*16)+(yOffset*256))//xpos and y
         byte1 = 0
         byte2 = 0
         var ctx = roomedit.getContext("2d")
-        //love undocumented speghetti to unravel...thanks past me, you suck at coding. D, E, and P suck as variable names, and you NEED to DOCUMENT what your code does. 
-        //ok done. the names made SOME sense, but single letters suck as names regardless without some kind of clarification, even a comment ^ 
         while(byte1 != 4){
             var p = byte2*4//p = pointer
             var x = p+2
@@ -485,11 +471,11 @@ placeBlock(renderer,(xpos*16)+(xOffset*256),(ypos*16)+(yOffset*256))//xpos and y
             }
             if(byte1 === 2){
                 drawObj(ctx,parseInt(byteArray[loc + x], 16)+(xOffset*256), parseInt(byteArray[loc + y], 16)+(yOffset*256), byteArray[loc + p])
+                objnums[currentChunk] += 1
                 byte2 += 1
                 byte1 = 0
             }
         }
-        objnum = byte1
     }
     var renderCurrentScreens=function(width,height,chunkSelect){
     renderedChunks = []
@@ -504,8 +490,8 @@ placeBlock(renderer,(xpos*16)+(xOffset*256),(ypos*16)+(yOffset*256))//xpos and y
     } else if(document.getElementById("roomedit").height < height*256){
          document.getElementById("roomedit").height = height*256
     }
-    var x = width
-    var y = height
+    var x = width-1
+    var y = height-1
     while(x > -1){
         while(y > -1){
             if(!chunkSelect){
@@ -515,7 +501,7 @@ placeBlock(renderer,(xpos*16)+(xOffset*256),(ypos*16)+(yOffset*256))//xpos and y
             
             y-=1
         }
-        y=height
+        y=height-1
         x-=1
     }
   var x = width
@@ -579,48 +565,110 @@ added = true
     roomedit.addEventListener("mousedown", function(e){
         if(e.buttons === 1){
         if(document.getElementById("mode").selectedIndex === 1){
-        var ctx = this.getContext("2d")
-        var ID = document.getElementById("OBJID").value
-        var x = Math.floor(e.offsetX/16)
-        var y = Math.floor(e.offsetY/16)
-        var sy = y*16
-        var sx = x*16
-        var type = objectList[document.getElementById("OBJType").selectedIndex][0]
-        var loc = document.getElementById("enemy-dat").value
-        var e = loc.substr(2, 4)
-        var d = parseInt(e, 16)
-        d += parseInt("80", 16)
-        e = loc.substr(0, 2)
-        loc = parseInt(""+d.toString(16)+""+e+"", 16)
         
-        if(objnum <= 15){
+        //var ctx = this.getContext("2d")
+        var ID = document.getElementById("OBJID").value
+        var ox = Math.floor(e.offsetX/256)
+        var oy = Math.floor(e.offsetY/256)//object offset from base chunk
+        //var offset = ox + (oy*16)
+        var currentChunk = selectedChunk+(ox + (oy*16))//+offset
+        //if(ox === 0 && oy === 0 || subSelectedChunk === (ox+(oy*16))){
+        var x = e.offsetX-(ox*256)
+        var y = e.offsetY-(oy*256)//object position on screen, in pixels
+        var sy = Math.floor(y/16)*16
+        var sx = Math.floor(x/16)*16//object position on screen, in pixels, normalized
+        var type = objectList[document.getElementById("OBJType").selectedIndex][0]
+        
+        /*var selection = input.selectedIndex*512
+        var loc = parseInt("C2E0", 16)+selection
+        var locp = loc + point
+        epointers[p] = ""+byteArray[locp]+""+byteArray[locp+1]+""
+        point += 2
+        p += 1
+        //add 8 to second byte to get actual enemy location(pointers are little-endian)*/
+        var selection = (document.getElementById("bankselect").selectedIndex*512)+(currentChunk*2)
+        var locp = parseInt("C2E0", 16)+selection
+        var loc = parseInt(""+(parseInt(byteArray[locp+1],16)+128).toString(16)+""+byteArray[locp]+"",16)
+        var loc1 = parseInt(""+(parseInt(byteArray[locp+3],16)+128).toString(16)+""+byteArray[locp+2]+"",16)
+        var loc2 = parseInt(""+(parseInt(byteArray[locp+5],16)+128).toString(16)+""+byteArray[locp+4]+"",16)
+        var loc3 = parseInt(""+(parseInt(byteArray[locp+7],16)+128).toString(16)+""+byteArray[locp+6]+"",16)
+        //var loc4 = parseInt(""+(parseInt(byteArray[locp+9],16)+128).toString(16)+""+byteArray[locp+8]+"",16)
+        console.log(""+loc.toString(16)+" "+loc1.toString(16)+" "+loc2.toString(16)+" "+loc3.toString(16)+"")
+        if(objnums[currentChunk] <= 15){
             //drawObj(ctx,sx, sy, type)
-        var num = objnum*4
-        if(sy.toString(16) === "0"){
-            sy = "00"
+        var num = objnums[currentChunk]*4
+        
+        //string formatting corrrection. who knew that javascript does not act like z80 binary.
+        //y
+        if(sy < 15){
+            sy = "0"+sy.toString(16)+""
         } else {
-            var yy = sy.toString(16)
-            sy = yy
+            sy =  sy.toString(16)
         }
-        if(sx.toString(16) === "0"){
-            sx = "00"
+        //x
+        if(sx < 15){
+            sx = "0"+sx.toString(16)+""
         } else {
-            var yy = sx.toString(16)
-            sx = yy
+            
+            sx = sx.toString(16)
         }
+        
+        if(type < 15){
+            type = "0"+type.toString(16)+""
+        } else {
+            type =  type.toString(16)
+        }
+        //0xFDAD-0xFFFF - Free Space
+        //check nearest 4 neigbors enemy data pointer for overlap, if so point to free space 
+        if(loc+(num-1) >= loc1){
+            correctedEpointers += 1
+            objnums[selectedChunk + 1] = 0
+            var loct = (parseInt("FDAD",16)+correctedEpointers).toString(16)
+            byteArray[parseInt(loct,16)]="ff"
+            var a = parseInt(loct.substr(2,2),16)
+            var b = parseInt(loct.substr(0,2),16)-parseInt("80",16)
+            epointers[selectedChunk+1]=""+a.toString(16)+""+b.toString(16)+""
+            byteArray[loc1] = a.toString(16)
+            byteArray[loc1+1] = b.toString(16)
+            if(loc+(num-1) >= loc2){
+                objnums[selectedChunk + 2] = 0
+                epointers[selectedChunk+2]=""+a.toString(16)+""+b.toString(16)+""
+                byteArray[loc2] = a.toString(16)
+                byteArray[loc2] = b.toString(16)
+                if(loc+(num-1) >= loc3){
+                    objnums[selectedChunk + 3] = 0
+                    epointers[selectedChunk+3]=""+a.toString(16)+""+b.toString(16)+""
+                    byteArray[loc3] = a.toString(16)
+                    byteArray[loc3] = b.toString(16)
+                }
+            }    
+        }
+        
+        /*var selection = input.selectedIndex*512
+        var locp = parseInt("C2E0", 16)+selection
+        var locp = loc + point
+        epointers[p] = ""+byteArray[locp]+""+byteArray[locp+1]+""
+        point += 2
+        p += 1*/
+        //append data to bytearray
         byteArray[loc+num] = ID
-        byteArray[loc+num+1] = type.toString(16)
+        byteArray[loc+num+1] = type
         byteArray[loc+num+2] = sx
         byteArray[loc+num+3] = sy
         byteArray[loc+num+4] = "ff"
-        objnum += 1
+        
+        objnums[currentChunk] += 1
         k += 1
-//drawOBJ(ctx,sx,sy, type)
-    
+        renderCurrentScreens()
+        drawObj(ctx,sx+(ox*256),sy+(oy*256), parseInt(type,16))
+        console.log(""+ID+" "+x+" "+y+" "+sx+" "+sy+" "+type+" "+loc.toString(16)+"")
         } else {
-            window.alert("16 is the object limit per screen")
-    
+        console.error("16 objects max per screen, and that's pushing it in this engine")
         }
+    
+        //} else {
+        //console.error("Editing objects outside the selected zone is not yet supported. Working on it.")
+        //}
         
     } else if(document.getElementById("mode").selectedIndex === 2){
         var x = Math.floor(e.offsetX/16)
@@ -639,9 +687,9 @@ added = true
     })
     roomedit.addEventListener("mousemove", function(e){
 
-    if(document.getElementById("mode").selectedIndex === 0){
-        var ctx = this.getContext("2d")
-        if(e.buttons === 1){
+    if(e.buttons === 1){
+        if(document.getElementById("mode").selectedIndex === 0){
+            var ctx = this.getContext("2d")
             placeBlock(ctx,e.offsetX,e.offsetY,tile)//,chunkOffset,screenOffsetX,screenOffsetY,true)
             }
         }
@@ -650,10 +698,10 @@ added = true
     roomedit.addEventListener("mouseup", function(e){
     if(e.button === 0){
         renderCurrentScreens()
+        }
         var y = Math.floor((selectedChunk + subSelectedChunk)/16)
         var x = (selectedChunk + subSelectedChunk)-y
         drawSquare(document.getElementById("roomedit").getContext("2d"),borderX+1,borderY+1,0,0,255,255)
-        }
     })
     var roomTransition = "ff"
         var pointertext = document.getElementById("pointers")
@@ -737,13 +785,14 @@ renderCurrentScreens()
             scroll[currentChunk] = scrolls[scrollSelect.selectedIndex]
             renderCurrentScreens()
         }
-         epointertext.onchange=function(){
+        epointertext.onchange=function(){
         var currentChunk = selectedChunk + subSelectedChunk
             var selection = input.selectedIndex*512
             var loc = parseInt("C2E0", 16)+selection
             var locp = loc + currentChunk
             epointers[currentChunk] = epointertext.value
-            byteArray[loc] = epointertext.value
+            byteArray[locp] = epointertext.value.substr(0,2)
+            byteArray[locp+1] = epointertext.value.substr(2,2)
             renderCurrentScreens()
             }
 
@@ -805,7 +854,7 @@ renderCurrentScreens()
         scroll[point] = byteArray[locp]
         point += 1
     }
-    point = 0
+    /*point = 0
     while(point != 512){
         var selection = input.selectedIndex*512
         var loc = parseInt("C2E0", 16)+selection
@@ -813,7 +862,7 @@ renderCurrentScreens()
         epointers[point] = ""+byteArray[locp]+""+byteArray[locp+1]+""
         point += 2
         //add 8 to second byte to get actual enemy location(pointers are little-endian)
-    }
+    }*/
     point = 0
     var p = 0
     while(point != 512){
@@ -879,29 +928,58 @@ for (let p = 0; p < 1024; p += 4) {
 }
 imageDatas=array
 }
+var checkSpawn = function(pos, xOffset, yOffset){    
+var bank = document.getElementById("bankselect").selectedIndex + 9    
+if(byteArray[parseInt("4E75", 16)] === "0"+bank.toString(16)+""){
+            if(byteArray[20073] === "0"+pos.substr(0, 1)+""){
+                if(byteArray[20075] === "0"+pos.substr(1, 2)+""){
+                    var x = parseInt(byteArray[20074], 16)+(xOffset*256)
+                    var y = parseInt(byteArray[20072], 16)+(yOffset*256)
+                    var ctx = roomedit.getContext("2d")
+                    ctx.drawImage(samus, x-1, y-11)
+                    //ctx.drawImage(imagetileset,0,0,16,16,x,y+16,16,32)
+                }
+            }
+        }
+
+}
 var spawn = function(x, y){
     var xOffset = Math.floor(x/256)
-    var yOffset = Math.floor(y/256)
+    var yOffset = Math.floor(y/256)//get  and normalize screen positions
     var xPos = x-(xOffset*256)
-    var yPos = y-(yOffset*256)
-    var currentChunk = selectedChunk + ((yOffset*16)+xOffset)
+    var yPos = y-(yOffset*256)//get samus position by subtracting normalized screen position from mouse position. 
+    var currentChunk = selectedChunk + ((yOffset*16)+xOffset)//add screen offsets to current chunk
         while(currentChunk > 255){
-        currentChunk -= 256}
+        currentChunk -= 256}//clamp maximum chunk value
     //var screenY = Math.floor(currentChunk/16)
     //var screenX = currentChunk - (screenY*16)
-    console.log("screen - X"+xOffset+",Y:"+yOffset+"; pixel - X:"+xPos+",Y:"+yPos+"")
-    hex = currentChunk.toString(16)
-    byteArray[20068] = ""+yPos.toString(16)+""//pixel Y position Samus
-    byteArray[20069] = "0"+yOffset.toString(16)+""//screen y 
-    byteArray[20070] = ""+xPos.toString(16)+""//pixel x
-    byteArray[20071] = "0"+xOffset.toString(16)+""//screen X
-    byteArray[20072] = ""+yPos.toString(16)+""//pixel y Camera
-    byteArray[20073] = "0"+yOffset.toString(16)+""//screen Y
-    byteArray[20074] = ""+xPos.toString(16)+""//pixel x
-    byteArray[20075] = "0"+xOffset.toString(16)+""//screen x
+    //console.log("screen - X"+xOffset+",Y:"+yOffset+"; pixel - X:"+xPos+",Y:"+yPos+"")
+    chunkString = currentChunk.toString(16)
+    //var yPosString = Math.floor(currentChunk/16).toString(16)
+    //var xPosString = (currentChunk - parseInt(yPosString, 16)).toString(16)
+    var xPosString = xPos.toString(16)
+    var yPosString = yPos.toString(16)
+    console.log(""+xPosString+" "+yPosString+"")
+    if(parseInt(xPosString,16) < 16){
+        xPosString = "0"+xPos.toString(16)+""
+        console.log("x is below 16...RIGHT?!!")
+    }
+    if(parseInt(yPosString,16) < 16){
+        yPosString = "0"+yPos.toString(16)+""
+        console.log("y is below 16...RIGHT?!!")
+    }
+    console.log(""+chunkString+" "+xPos+" "+yPos+" "+xPosString+" "+yPosString+"")
+    byteArray[20068] = yPosString//pixel Y position Samus
+    byteArray[20069] = "0"+chunkString.substr(0,1)+""//screen y 
+    byteArray[20070] = xPosString//pixel x
+    byteArray[20071] = "0"+chunkString.substr(1,1)+""//screen X
+    byteArray[20072] = yPosString//pixel y Camera
+    byteArray[20073] = "0"+chunkString.substr(0,1)+""//screen Y
+    byteArray[20074] = xPosString//pixel x
+    byteArray[20075] = "0"+chunkString.substr(1,1)+""//screen x
     var bank = document.getElementById("bankselect").selectedIndex + 9
     byteArray[parseInt("4E75", 16)] = "0"+bank.toString(16)+""
-    console.log("set spawn to bank "+bank.toString(16)+" on screen "+hex.toString(16)+", at x "+xPos+" and y "+yPos+"")
+    console.log("set spawn to bank "+bank.toString(16)+" on screen "+chunkString+", at x "+xPos+" and y "+yPos+"")
     var tileset = document.getElementById("tileset").selectedIndex + 9
     var sel = document.getElementById("tileset").selectedIndex
     var collisions = [1,2,0,5,4,6,6,6,7]
@@ -922,7 +1000,7 @@ var spawn = function(x, y){
 
     collision1 = "4"+collisions[sel]+""
     collision0 = "80"
-    checkSpawn(hex,xOffset,yOffset)
+    checkSpawn(chunkString,xOffset,yOffset)
 }
 var viewdat = function(draw){/*
     var loc = epointers[selectedChunk+subSelectedChunk]
@@ -959,7 +1037,6 @@ var viewdat = function(draw){/*
         var ctx = roomedit.getContext("2d")
         var objects = []
         var rawObjects = []
-        //love undocumented speghetti to unravel...thanks past me, you suck at coding. D, E, and P suck as variable names, and you NEED to DOCUMENT what your code does. 
         //ok done. the names made SOME sense, but single letters suck as names regardless without some kind of clarification, even a comment ^ 
         while(byte1 != 4){
             var p = byte2*4//p = pointer
@@ -1003,8 +1080,77 @@ enableElement("object manager","position: absolute; left: 50px; top: 280px; bord
 }
 return objects
 }
-var deleteobj = function(input){
-    var loc = epointers[selectedChunk]
+/*var editobj = function(input,newObject,chunk){
+    if(!chunk){
+        var currentChunk = selectedChunk+subSelectedChunk
+    } else {
+        var currentChunk = chunk
+    }
+    while(currentChunk >= 256){
+    currentChunk -= 255
+    }
+
+    if(!newObject){
+        var newObject = {ID:"ff",type:"ff",sx:"ff",sy:"ff"}
+        var loc = epointers[currentChunk]
+        console.log("deleting object "+input+" out of "+objnums[currentChunk]+" total")
+        objnums[currentChunk] -= 1
+    } else {
+        var loc = newObject.loc
+        objnums[currentChunk] += 1
+        var input = objnums[currentChunk]
+    }
+    var e = loc.substr(2, 4)
+    var d = parseInt(e, 16)
+    d += parseInt("80", 16)
+    e = loc.substr(0, 2)
+    loc = parseInt(""+d.toString(16)+""+e+"", 16)
+    console.log(loc)
+    e = 0
+    d = 0
+    var length = viewdat().length
+    while(e != 4){
+            var p = d*4
+            if(byteArray[loc + p] != "ff"){
+                d += 1
+            } else {
+                e = 4
+            }
+        }
+    //objnums[currentChunk]=length
+    var p = input*4
+    
+    var g = length*4
+    if(objnums[currentChunk] <= 15){
+        if(document.getElementById("objselect").selectedIndex < d){
+        console.log(""+document.getElementById("objselect").selectedIndex-d+" objects were orphaned")
+        byteArray[loc + p] = byteArray[loc + g]
+        byteArray[loc + 1 + p] = byteArray[loc + 1 + g]
+        byteArray[loc + 2 + p] = byteArray[loc + 2 + g]
+        byteArray[loc + 3 + p] = byteArray[loc + 3 + g]       
+        console.log("fixed all orphaned objects")
+        }        
+        
+        byteArray[loc + g] = newObject.ID.toString(16)
+        byteArray[loc + 1 + g] = newObject.type.toString(16)
+        byteArray[loc + 2 + g] = newObject.sx.toString(16)
+        byteArray[loc + 3 + g] = newObject.sy.toString(16)
+        } else {
+            window.alert("16 is the object limit per screen")
+    
+        }
+    /*} else {
+        byteArray[loc + g] = newObject.ID.toString(16)
+        byteArray[loc + 1 + g] = newObject.type.toString(16)
+        byteArray[loc + 2 + g] = newObject.sx.toString(16)
+        byteArray[loc + 3 + g] = newObject.sy.toString(16)
+    }*//*
+renderCurrentScreens()
+    
+}*/
+
+var deleteObj = function(input){
+    var loc = epointers[selectedChunk+subSelectedChunk]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
     d += parseInt("80", 16)
@@ -1027,7 +1173,7 @@ var deleteobj = function(input){
     d -= 1
     var p = input*4
     console.log("deleting object "+input+", with "+d+" total")
-    objnum -= 1
+    objnums[selectedChunk] -= 1
     if(input < d){
         console.log(""+d-input+" objects were orphaned")
         var g = d*4
@@ -1048,11 +1194,13 @@ var deleteobj = function(input){
         byteArray[loc + 2 + g] = "ff"
         byteArray[loc + 3 + g] = "ff"
     }
-renderCurrentScreen()
+renderCurrentScreens()
     
 }
+
+
 var deleted = function(){
-    deleteobj(document.getElementById("objselect").selectedIndex)
+    deleteObj(document.getElementById("objselect").selectedIndex)
 }
 /*var addbank = function(n, s){
 if (totalbanksadded <= 255){
