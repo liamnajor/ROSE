@@ -1,4 +1,3 @@
-var correctedEpointers = 0
 var drawObj=function(ctx,x,y,type){
 ctx.beginPath()
 ctx.lineWidth = 3;
@@ -95,7 +94,7 @@ var drawSquare = function(ctx, x, y, xOffset, yOffset, width, height, color, fac
         }
         while(currentChunk > 255){
         currentChunk -= 256}
-	    roomTransition = "ff"
+	    roomTransition = 'ff'
         pointertext = document.getElementById("pointers")
         scrollSelect = document.querySelector("#scroll")
         transtext = document.getElementById("rtransition")
@@ -103,7 +102,7 @@ var drawSquare = function(ctx, x, y, xOffset, yOffset, width, height, color, fac
         pointertext.value = pointers[currentChunk]
         transtext.value = room_transitions[currentChunk]
         scrollSelect.value = scroll[currentChunk]
-        epointertext.value = epointers[currentChunk]
+        epointertext.value = epointers[document.getElementById("bankselect").selectedIndex][currentChunk]
         
     
 	    }
@@ -444,7 +443,8 @@ placeBlock(renderer,(xpos*16)+(xOffset*256),(ypos*16)+(yOffset*256))//xpos and y
         var pos = currentChunk.toString(16)
         var bank = document.getElementById("bankselect").selectedIndex + 9
         checkSpawn(pos, xOffset, yOffset)    
-        var loc = epointers[parseInt(pos,16)]//loc = pointer string
+        var loc = epointers[document.getElementById("bankselect").selectedIndex][parseInt(pos,16)]//loc = pointer string
+        //console.log(loc)
         var byte1 = loc.substr(2, 4)
         //byte 1 (e) is the first byte of a 2 byte pointer, and temporary placeholder for the second byte
         var byte2 = parseInt(byte1, 16)
@@ -463,7 +463,7 @@ placeBlock(renderer,(xpos*16)+(xOffset*256),(ypos*16)+(yOffset*256))//xpos and y
             var y = p+3
             var t = p+1//t = type
             if(byte1 === 0){
-                if(byteArray[loc + p] != "ff"){//check for terminating operator at pointer location
+                if(byteArray[loc + p] != 'ff'){//check for terminating operator at pointer location
                     byte1 = 2
                 } else {
                     byte1 = 4
@@ -590,10 +590,9 @@ added = true
         var locp = parseInt("C2E0", 16)+selection
         var loc = parseInt(""+(parseInt(byteArray[locp+1],16)+128).toString(16)+""+byteArray[locp]+"",16)
         var loc1 = parseInt(""+(parseInt(byteArray[locp+3],16)+128).toString(16)+""+byteArray[locp+2]+"",16)
-        var loc2 = parseInt(""+(parseInt(byteArray[locp+5],16)+128).toString(16)+""+byteArray[locp+4]+"",16)
-        var loc3 = parseInt(""+(parseInt(byteArray[locp+7],16)+128).toString(16)+""+byteArray[locp+6]+"",16)
-        //var loc4 = parseInt(""+(parseInt(byteArray[locp+9],16)+128).toString(16)+""+byteArray[locp+8]+"",16)
-        console.log(""+loc.toString(16)+" "+loc1.toString(16)+" "+loc2.toString(16)+" "+loc3.toString(16)+"")
+        //var loc2 = parseInt(""+(parseInt(byteArray[locp+5],16)+128).toString(16)+""+byteArray[locp+4]+"",16)
+        //var loc3 = parseInt(""+(parseInt(byteArray[locp+7],16)+128).toString(16)+""+byteArray[locp+6]+"",16)
+        //console.log(""+loc.toString(16)+" "+loc1.toString(16)+" "+loc2.toString(16)+" "+loc3.toString(16)+"")
         if(objnums[currentChunk] <= 15){
             //drawObj(ctx,sx, sy, type)
         var num = objnums[currentChunk]*4
@@ -619,31 +618,41 @@ added = true
             type =  type.toString(16)
         }
         //0xFDAD-0xFFFF - Free Space
-        //check nearest 4 neigbors enemy data pointer for overlap, if so point to free space 
-        if(loc+(num-1) >= loc1){
-            correctedEpointers += 1
-            objnums[selectedChunk + 1] = 0
-            var loct = (parseInt("FDAD",16)+correctedEpointers).toString(16)
-            byteArray[parseInt(loct,16)]="ff"
+        //check nearest neigbor enemy data pointer for overlap
+        if(byteArray[loc+num+1] === 'ff'){
+        console.error("object list allocation exceeded")
+        /*if(document.getElementById("repointMode").checked === true){
+        console.log("creating new list in free space at 0xE244-0xE2FF and 0xFDAD-0XFFFF")
+            var t = parseInt("E2FF",16)
+            if(byteArray[t]!="00"){console.log("???")}
+            while(byteArray[t]!="00" && t < 46){//1st free space:0xE2FF-0xE244=187, 187/4=46.75 
+                t += 1
+            }
+            if(t>46){
+                t = parseInt("FDAD",16)
+                while(byteArray[t]!='00' && t < 198){//2nd free space 0xFFFF-0xFDAD=594, 594/4=198
+                    t += 1
+                }
+                if(t > 198){
+                    window.alert("You have completely filled the ROM with objects as it is currently allocated")
+                }
+            }
+            var loct=t.toString(16)
+            loc=t
+            var i = 0
+            while(i!=64){
+                byteArray[loc+i]='ff'
+                i+=1
+            }
             var a = parseInt(loct.substr(2,2),16)
             var b = parseInt(loct.substr(0,2),16)-parseInt("80",16)
-            epointers[selectedChunk+1]=""+a.toString(16)+""+b.toString(16)+""
-            byteArray[loc1] = a.toString(16)
-            byteArray[loc1+1] = b.toString(16)
-            if(loc+(num-1) >= loc2){
-                objnums[selectedChunk + 2] = 0
-                epointers[selectedChunk+2]=""+a.toString(16)+""+b.toString(16)+""
-                byteArray[loc2] = a.toString(16)
-                byteArray[loc2] = b.toString(16)
-                if(loc+(num-1) >= loc3){
-                    objnums[selectedChunk + 3] = 0
-                    epointers[selectedChunk+3]=""+a.toString(16)+""+b.toString(16)+""
-                    byteArray[loc3] = a.toString(16)
-                    byteArray[loc3] = b.toString(16)
-                }
-            }    
-        }
-        
+            objnums[selectedChunk] = 0
+            epointers[document.getElementById("bankselect").selectedIndex][selectedChunk]=""+a.toString(16)+""+b.toString(16)+""
+            byteArray[locp+2] = a.toString(16)
+            byteArray[locp+3] = b.toString(16)
+            }*/
+        } else {
+        console.log("within range of pointed list")
         /*var selection = input.selectedIndex*512
         var locp = parseInt("C2E0", 16)+selection
         var locp = loc + point
@@ -655,13 +664,12 @@ added = true
         byteArray[loc+num+1] = type
         byteArray[loc+num+2] = sx
         byteArray[loc+num+3] = sy
-        byteArray[loc+num+4] = "ff"
-        
+        byteArray[loc+num+4] = 'ff'
         objnums[currentChunk] += 1
-        k += 1
         renderCurrentScreens()
-        drawObj(ctx,sx+(ox*256),sy+(oy*256), parseInt(type,16))
-        console.log(""+ID+" "+x+" "+y+" "+sx+" "+sy+" "+type+" "+loc.toString(16)+"")
+        drawObj(document.getElementById("roomedit").getContext("2d"),parseInt(sx,16)+(ox*256),parseInt(sy,16)+(oy*256), parseInt(type,16))
+        //console.log(""+ID+" "+x+" "+y+" "+sx+" "+sy+" "+type+" "+loc.toString(16)+"")
+        }
         } else {
         console.error("16 objects max per screen, and that's pushing it in this engine")
         }
@@ -689,8 +697,7 @@ added = true
 
     if(e.buttons === 1){
         if(document.getElementById("mode").selectedIndex === 0){
-            var ctx = this.getContext("2d")
-            placeBlock(ctx,e.offsetX,e.offsetY,tile)//,chunkOffset,screenOffsetX,screenOffsetY,true)
+            placeBlock(document.getElementById("roomedit").getContext("2d"),e.offsetX,e.offsetY,tile)//,chunkOffset,screenOffsetX,screenOffsetY,true)
             }
         }
     })
@@ -703,7 +710,7 @@ added = true
         var x = (selectedChunk + subSelectedChunk)-y
         drawSquare(document.getElementById("roomedit").getContext("2d"),borderX+1,borderY+1,0,0,255,255)
     })
-    var roomTransition = "ff"
+    var roomTransition = 'ff'
         var pointertext = document.getElementById("pointers")
         var scrollSelect = document.querySelector("#scroll")
         var transtext = document.getElementById("rtransition")
@@ -790,7 +797,7 @@ renderCurrentScreens()
             var selection = input.selectedIndex*512
             var loc = parseInt("C2E0", 16)+selection
             var locp = loc + currentChunk
-            epointers[currentChunk] = epointertext.value
+            epointers[input.selectedIndex][currentChunk] = epointertext.value
             byteArray[locp] = epointertext.value.substr(0,2)
             byteArray[locp+1] = epointertext.value.substr(2,2)
             renderCurrentScreens()
@@ -817,7 +824,7 @@ renderCurrentScreens()
                 }
             }
             var i = 0;
-            while(parseInt(byteArray[offset+i],16)!=parseInt("FF",16)){
+            while(parseInt(byteArray[offset+i],16)!=parseInt('ff',16)){
             if(i===0){roomTransition=""}
                 roomTransition += ""+byteArray[offset+i]+","
             i +=1}
@@ -865,11 +872,12 @@ renderCurrentScreens()
     }*/
     point = 0
     var p = 0
+    epointers[input.selectedIndex]=[]
     while(point != 512){
         var selection = input.selectedIndex*512
         var loc = parseInt("C2E0", 16)+selection
         var locp = loc + point
-        epointers[p] = ""+byteArray[locp]+""+byteArray[locp+1]+""
+        epointers[input.selectedIndex][p] = ""+byteArray[locp]+""+byteArray[locp+1]+""
         point += 2
         p += 1
         //add 8 to second byte to get actual enemy location(pointers are little-endian)
@@ -1023,7 +1031,7 @@ var viewdat = function(draw){/*
 //var pos = currentChunk.toString(16)
         //var bank = document.getElementById("bankselect").selectedIndex + 9
         //checkSpawn(pos, xOffset, yOffset)       
-        var loc = epointers[selectedChunk+subSelectedChunk]//loc = pointer string
+        var loc = epointers[document.getElementById("bankselect").selectedIndex][selectedChunk+subSelectedChunk]//loc = pointer string
         var byte1 = loc.substr(2, 4)
         //byte 1 (e) is the first byte of a 2 byte pointer, and temporary placeholder for the second byte
         var byte2 = parseInt(byte1, 16)
@@ -1040,7 +1048,7 @@ var viewdat = function(draw){/*
         //ok done. the names made SOME sense, but single letters suck as names regardless without some kind of clarification, even a comment ^ 
         while(byte1 != 4){
             var p = byte2*4//p = pointer
-            if(byteArray[loc + p] != "ff"){
+            if(byteArray[loc + p] != 'ff'){
 		    var type = byteArray[loc + p + 1]
 		    if(logObjectList[parseInt(type, 16)] != undefined){
 		    type = logObjectList[parseInt(type,16)]
@@ -1150,7 +1158,7 @@ renderCurrentScreens()
 }*/
 
 var deleteObj = function(input){
-    var loc = epointers[selectedChunk+subSelectedChunk]
+    var loc = epointers[document.getElementById("bankselect").selectedIndex][selectedChunk+subSelectedChunk]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
     d += parseInt("80", 16)
@@ -1163,7 +1171,7 @@ var deleteObj = function(input){
     var objects = []
     while(e != 4){
             var p = d*4
-            if(byteArray[loc + p] != "ff"){
+            if(byteArray[loc + p] != 'ff'){
                 objects[d] = [""+byteArray[loc + p]+"",""+byteArray[loc + p + 1]+"",""+byteArray[loc + p + 2]+"",""+byteArray[loc + p + 3]+""]
                 d += 1
             } else {
@@ -1182,17 +1190,17 @@ var deleteObj = function(input){
         byteArray[loc + 2 + p] = byteArray[loc + 2 + g]
         byteArray[loc + 3 + p] = byteArray[loc + 3 + g]       
             
-        byteArray[loc + g] = "ff"
-        byteArray[loc + 1 + g] = "ff"
-        byteArray[loc + 2 + g] = "ff"
-        byteArray[loc + 3 + g] = "ff"
+        byteArray[loc + g] = 'ff'
+        byteArray[loc + 1 + g] = 'ff'
+        byteArray[loc + 2 + g] = 'ff'
+        byteArray[loc + 3 + g] = 'ff'
         console.log("fixed all orphaned objects")
     } else {
         var g = d*4
-        byteArray[loc + g] = "ff"
-        byteArray[loc + 1 + g] = "ff"
-        byteArray[loc + 2 + g] = "ff"
-        byteArray[loc + 3 + g] = "ff"
+        byteArray[loc + g] = 'ff'
+        byteArray[loc + 1 + g] = 'ff'
+        byteArray[loc + 2 + g] = 'ff'
+        byteArray[loc + 3 + g] = 'ff'
     }
 renderCurrentScreens()
     
