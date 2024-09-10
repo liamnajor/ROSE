@@ -1161,6 +1161,7 @@ var deleteObj = function(input){
     var loc = epointers[document.getElementById("bankselect").selectedIndex][selectedChunk+subSelectedChunk]
     var e = loc.substr(2, 4)
     var d = parseInt(e, 16)
+    
     d += parseInt("80", 16)
     e = loc.substr(0, 2)
     var loc = parseInt(""+d.toString(16)+""+e+"", 16)
@@ -1180,8 +1181,9 @@ var deleteObj = function(input){
         }
     d -= 1
     var p = input*4
-    console.log("deleting object "+input+", with "+d+" total")
+    if(d >= input){
     objnums[selectedChunk] -= 1
+    console.log("deleting object "+input+", with "+d+" total")
     if(input < d){
         console.log(""+d-input+" objects were orphaned")
         var g = d*4
@@ -1201,7 +1203,7 @@ var deleteObj = function(input){
         byteArray[loc + 1 + g] = 'ff'
         byteArray[loc + 2 + g] = 'ff'
         byteArray[loc + 3 + g] = 'ff'
-    }
+    }}
 renderCurrentScreens()
     
 }
